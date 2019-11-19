@@ -1,0 +1,15 @@
+# Found from the Quartus Timing Analyzer
+# Not fully complete, but good enough for a start.
+# Area  F   E   D   C   B   A
+# Inverters are effectively free
+1 1     94
+# 2/2/2/2, 5/2
+2 1     94  300
+# 3/3, 4/3, 5/3
+3 1     94  300 435
+# 4/4, 5/4 with 1 shared term
+4 1     94  300 435 462
+# 5/5 with 2 shared terms
+5 1     94  300 435 462 586
+# 6, 6/6 with 4 shared terms
+6 2     94  300 435 462 586 605

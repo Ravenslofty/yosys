@@ -104,6 +104,7 @@ struct SynthQuickLogicPass : public ScriptPass
     void script() YS_OVERRIDE
     {
         if (check_label("begin")) {
+            run("read_verilog -lib +/quicklogic/cells_sim.v");
             run(stringf("hierarchy -check %s", top_opt.c_str()));
         }
 

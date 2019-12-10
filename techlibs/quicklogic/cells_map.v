@@ -1,63 +1,141 @@
-module \$_MUX_ (
-   input A,
-   input B,
-   input S,
-   output Y
-);
-    QLOGIC_MUX _TECHMAP_REPLACE_ (.A(A), .B(B), .S(S), .Y(Y));
+module \$lut (A, Y);
+    parameter WIDTH = 0;
+    parameter LUT = 0;
+
+    input [WIDTH-1:0] A;
+    output Y;
+
+    generate
+        if (WIDTH == 1)
+        begin
+            LUT1 #(.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]));
+        end
+        else if (WIDTH == 2)
+        begin
+            LUT2 #(.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]));
+        end
+        else if (WIDTH == 3)
+        begin
+            LUT3 #(.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]), .I2(A[2]));
+        end
+        else if (WIDTH == 4)
+        begin
+            LUT4 #(.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]), .I2(A[2]), .I3(A[3]));
+        end
+        else
+        begin
+            wire _TECHMAP_FAIL_ = 1;
+        end
+    endgenerate
 endmodule
 
-module \$_DFF_N_ (
-   input D,
-   input C,
-   output Q
-);
-    wire nC = ~ C;
-    QLOGIC_DFFE _TECHMAP_REPLACE_ (.S(1'b0), .D(D), .E(1'b1), .QCK(nC), .R(1'b0), .QZ(Q));
+module \$_MUX_ (A, B, S, Y);
+
+    parameter WIDTH = 0;
+
+    input [WIDTH-1:0] A, B;
+    input S;
+    output reg [WIDTH-1:0] Y;
+
+    generate
+        if (WIDTH == 1)
+        begin
+            mux2x0 _TECHMAP_REPLACE_ (.Q(Y[0]), .S(S), .A(A[0]), .B(B[0]));
+        end
+        else
+        begin
+            wire _TECHMAP_FAIL_ = 1;
+        end
+    endgenerate
 endmodule
 
-module \$_DFF_P_ (
-   input D,
-   input C,
-   output Q
-);
-    QLOGIC_DFFE _TECHMAP_REPLACE_ (.S(1'b0), .D(D), .E(1'b1), .QCK(C), .R(1'b0), .QZ(Q));
+module \$_NOT_ (A, Y);
+    input A;
+    output Y;
+    inv _TECHMAP_REPLACE_ (.Q(Y), .A(A));
 endmodule
 
-module \$_DFF_PN0_ (
-   input D,
-   input C,
-   input R,
-   output Q
-);
-    wire nR = ~ R;
-    QLOGIC_DFFE _TECHMAP_REPLACE_ (.S(1'b0), .D(D), .E(1'b1), .QCK(C), .R(nR), .QZ(Q));
+module \$_AND_ (A, B, Y);
+    input A;
+    input B;
+    output Y;
+    AND2I0 _TECHMAP_REPLACE_ (.Q(Q), .A(A), .B(B));
 endmodule
 
-module \$_DFF_PP0_ (
-   input D,
-   input C,
-   input R,
-   output Q
-);
-    QLOGIC_DFFE _TECHMAP_REPLACE_ (.S(1'b0), .D(D), .E(1'b1), .QCK(C), .R(R), .QZ(Q));
+module \$_DFF_N_ (D, Q, C);
+    input D;
+    input C;
+    output Q;
+    dff _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C));
 endmodule
 
-module \$__DFFE_PP0_ (
-   input D,
-   input C,
-   input E,
-   input R,
-   output Q
-);
-    wire nE = ~ E;
-    QLOGIC_DFFE _TECHMAP_REPLACE_ (.S(1'b0), .D(D), .E(nE), .QCK(C), .R(R), .QZ(Q));
+module \$_DFF_P_ (D, Q, C);
+    input D;
+    input C;
+    output Q;
+    dff _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C));
 endmodule
 
-module \$_NOT_ (
-   input A,
-   output Y
-);
-    QLOGIC_NOT _TECHMAP_REPLACE_ (.A(A), .Y(Y));
+module \$_DFF_NN0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .CLR(~R));
 endmodule
 
+module \$_DFF_NN1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .PRE(~R));
+endmodule
+
+module \$_DFF_NP0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .CLR(R));
+endmodule
+
+module \$_DFF_NP1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .PRE(R));
+endmodule
+
+module \$_DFF_PN0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .CLR(~R));
+endmodule
+
+module \$_DFF_PN1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .PRE(~R));
+endmodule
+
+module \$_DFF_PP0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .CLR(R));
+endmodule
+
+module \$_DFF_PP1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .PRE(R));
+endmodule

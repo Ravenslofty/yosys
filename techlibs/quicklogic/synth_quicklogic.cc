@@ -35,6 +35,9 @@ struct SynthQuickLogicPass : public ScriptPass
         log("        write the design to the specified BLIF file. writing of an output file\n");
         log("        is omitted if this parameter is not specified.\n");
         log("\n");
+        log("    -flatten\n");
+        log("        flatten design before synthesis\n");
+        log("\n");
         help_script();
         log("\n");
     }
@@ -112,14 +115,14 @@ struct SynthQuickLogicPass : public ScriptPass
             run("proc");
             if (flatten || help_mode)
                 run("flatten", "(with '-flatten')");
-            run("opt");
+            run("opt_expr");
+            run("opt_clean");
             run("check");
+            run("opt");
             run("techmap");
-            run("abc -script +collapse;,muxes;,");
-            run("lut2mux");
+            run("abc -lut 1:4");
             run("proc");
             run("opt");
-            run("dff2dffe");
             run("techmap -map +/quicklogic/cells_map.v");
         }
 

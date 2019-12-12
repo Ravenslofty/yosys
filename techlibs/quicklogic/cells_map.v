@@ -66,7 +66,9 @@ module \$_DFF_N_ (D, Q, C);
     input D;
     input C;
     output Q;
-    dff _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C));
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    dff tmpdff (.Q(Q), .D(D), .CLK(C_INV));
 endmodule
 
 module \$_DFF_P_ (D, Q, C);
@@ -81,7 +83,11 @@ module \$_DFF_NN0_ (D, Q, C, R);
     input C;
     input R;
     output Q;
-    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .CLR(~R));
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    wire R_INV;
+    inv clrinv (.Q(R_INV), .A(R));
+    dffc tmpdffc (.Q(Q), .D(D), .CLK(C_INV), .CLR(R_INV));
 endmodule
 
 module \$_DFF_NN1_ (D, Q, C, R);
@@ -89,7 +95,11 @@ module \$_DFF_NN1_ (D, Q, C, R);
     input C;
     input R;
     output Q;
-    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .PRE(~R));
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    wire R_INV;
+    inv preinv (.Q(R_INV), .A(R));
+    dffp tmpdffp (.Q(Q), .D(D), .CLK(C_INV), .PRE(R_INV));
 endmodule
 
 module \$_DFF_NP0_ (D, Q, C, R);
@@ -97,7 +107,9 @@ module \$_DFF_NP0_ (D, Q, C, R);
     input C;
     input R;
     output Q;
-    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .CLR(R));
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    dffc tmpdffc (.Q(Q), .D(D), .CLK(C_INV), .CLR(R));
 endmodule
 
 module \$_DFF_NP1_ (D, Q, C, R);
@@ -105,7 +117,9 @@ module \$_DFF_NP1_ (D, Q, C, R);
     input C;
     input R;
     output Q;
-    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(~C), .PRE(R));
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    dffp tmpdffp (.Q(Q), .D(D), .CLK(C_INV), .PRE(R));
 endmodule
 
 module \$_DFF_PN0_ (D, Q, C, R);
@@ -113,7 +127,9 @@ module \$_DFF_PN0_ (D, Q, C, R);
     input C;
     input R;
     output Q;
-    dffc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .CLR(~R));
+    wire R_INV;
+    inv preinv (.Q(R_INV), .A(R));
+    dffc tmpdffc (.Q(Q), .D(D), .CLK(C), .CLR(R_INV));
 endmodule
 
 module \$_DFF_PN1_ (D, Q, C, R);
@@ -121,7 +137,9 @@ module \$_DFF_PN1_ (D, Q, C, R);
     input C;
     input R;
     output Q;
-    dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .PRE(~R));
+    wire R_INV;
+    inv preinv (.Q(R_INV), .A(R));
+    dffp tmpdffp (.Q(Q), .D(D), .CLK(C), .PRE(R_INV));
 endmodule
 
 module \$_DFF_PP0_ (D, Q, C, R);

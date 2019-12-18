@@ -124,6 +124,8 @@ struct SynthQuickLogicPass : public ScriptPass
             run("proc");
             run("opt");
             run("techmap -map +/quicklogic/cells_map.v");
+            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P");
+            run("techmap -map +/quicklogic/cells_map.v");
         }
 
         if (check_label("edif")) {

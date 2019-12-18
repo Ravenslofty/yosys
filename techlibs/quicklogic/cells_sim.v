@@ -158,6 +158,18 @@ module mux8x0(output Q, input S0, S1, S2, A, B, C, D, E, F, G, H);
     assign Q = S2 ? (S1 ? (S0 ? H : G) : (S0 ? F : E)) : (S1 ? (S0 ? D : C) : (S0 ? B : A));
 endmodule
 
+module inpad(output Q, input P);
+    assign Q = P;
+endmodule
+
+module outpad(output P, input A);
+    assign P = A;
+endmodule
+
+module ckpad(output Q, input P);
+    assign Q = P;
+endmodule
+
 // module DFFSEC(output Q, input D, CLR, EN, CLK, N_11);
 //     parameter [0:0] INIT = 1'b0;
 //     // TODO implement

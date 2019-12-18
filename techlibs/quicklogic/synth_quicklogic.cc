@@ -130,7 +130,7 @@ struct SynthQuickLogicPass : public ScriptPass
 
         if (check_label("edif")) {
             if (!edif_file.empty() || help_mode)
-                run(stringf("write_edif -pvector bra %s", edif_file.c_str()));
+                run(stringf("write_edif -nogndvcc -attrprop -pvector par %s", edif_file.c_str()));
         }
 
         if (check_label("blif")) {

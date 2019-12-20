@@ -166,8 +166,8 @@ module outpad(output P, input A);
     assign P = A;
 endmodule
 
-module ckpad(output Q, input P);
-    assign Q = P;
+module ckpad(output CLK, input P);
+    assign CLK = P;
 endmodule
 
 // module DFFSEC(output Q, input D, CLR, EN, CLK, N_11);

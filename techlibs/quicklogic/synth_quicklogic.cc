@@ -124,7 +124,10 @@ struct SynthQuickLogicPass : public ScriptPass
             run("proc");
             run("opt");
             run("techmap -map +/quicklogic/cells_map.v");
-            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P");
+            run("select -set clock_inputs */t:dff* %x:+[CLK] */t:dff* %d");
+            run("select -set invclock_inputs */t:dff* %x:+[CLK] */t:dff* %d %n");
+            run("iopadmap -bits -inpad ckpad CLK:P @clock_inputs");
+            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P @invclock_inputs");
             run("techmap -map +/quicklogic/cells_map.v");
         }
 

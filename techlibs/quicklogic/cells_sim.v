@@ -45,7 +45,7 @@ module inv(output Q, input A);
 endmodule
 
 //               QZ      QDI  QCK
-module dff(output Q, input D, CLK);
+module dff(output reg Q, input D, CLK);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK) begin
@@ -54,7 +54,7 @@ module dff(output Q, input D, CLK);
 endmodule
 
 //                QZ      QDI  QCK  QRT
-module dffc(output Q, input D, CLK, CLR);
+module dffc(output reg Q, input D, CLK, CLR);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR) begin
@@ -66,7 +66,7 @@ module dffc(output Q, input D, CLK, CLR);
 endmodule
 
 //                QZ      QDI  QCK  QST
-module dffp(output Q, input D, CLK, PRE);
+module dffp(output reg Q, input D, CLK, PRE);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge PRE) begin
@@ -78,7 +78,7 @@ module dffp(output Q, input D, CLK, PRE);
 endmodule
 
 //                 QZ      QDI  QCK  QRT  QST
-module dffpc(output Q, input D, CLK, CLR, PRE);
+module dffpc(output reg Q, input D, CLK, CLR, PRE);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR, posedge PRE) begin
@@ -92,7 +92,7 @@ module dffpc(output Q, input D, CLK, CLR, PRE);
 endmodule
 
 //                QZ      QDI  QCK QEN
-module dffe(output Q, input D, CLK, EN);
+module dffe(output reg Q, input D, CLK, EN);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK) begin
@@ -102,7 +102,7 @@ module dffe(output Q, input D, CLK, EN);
 endmodule
 
 //                 QZ      QDI  QCK QEN  QRT
-module dffec(output Q, input D, CLK, EN, CLR);
+module dffec(output reg Q, input D, CLK, EN, CLR);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR) begin
@@ -114,7 +114,7 @@ module dffec(output Q, input D, CLK, EN, CLR);
 endmodule
 
 //                  QZ      QDI  QCK QEN  QRT  QST
-module dffepc(output Q, input D, CLK, EN, CLR, PRE);
+module dffepc(output reg Q, input D, CLK, EN, CLR, PRE);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR, posedge PRE) begin

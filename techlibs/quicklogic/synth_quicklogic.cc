@@ -126,7 +126,7 @@ struct SynthQuickLogicPass : public ScriptPass
             run("techmap -map +/quicklogic/cells_map.v");
             run("select -set clock_inputs */t:dff* %x:+[CLK] */t:dff* %d");
             run("select -set invclock_inputs */t:dff* %x:+[CLK] */t:dff* %d %n");
-            run("iopadmap -bits -inpad ckpad CLK:P @clock_inputs");
+            run("iopadmap -bits -inpad ckpad Q:P @clock_inputs");
             run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P @invclock_inputs");
             run("splitnets -ports");
             run("techmap -map +/quicklogic/cells_map.v");

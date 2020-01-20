@@ -29,15 +29,15 @@ module \$lut (A, Y);
         end
         else if (WIDTH == 2)
         begin
-            LUT2 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]));
+            LUT2 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[1]), .I1(A[0]));
         end
         else if (WIDTH == 3)
         begin
-            LUT3 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]), .I2(A[2]));
+            LUT3 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[2]), .I1(A[1]), .I2(A[0]));
         end
         else if (WIDTH == 4)
         begin
-            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]), .I2(A[2]), .I3(A[3]));
+            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[3]), .I1(A[2]), .I2(A[1]), .I3(A[0]));
         end
         else
         begin
@@ -76,7 +76,7 @@ module \$_AND_ (A, B, Y);
     input A;
     input B;
     output Y;
-    AND2I0 _TECHMAP_REPLACE_ (.Q(Q), .A(A), .B(B));
+    AND2I0 _TECHMAP_REPLACE_ (.Q(Y), .A(A), .B(B));
 endmodule
 
 module \$_DFF_N_ (D, Q, C);

@@ -44,6 +44,10 @@ module inv(output Q, input A);
     assign Q = A ? 0 : 1;
 endmodule
 
+module buff(output Q, input A);
+    assign Q = A;
+endmodule
+
 //               QZ      QDI  QCK
 module dff(output reg Q, input D, CLK);
     parameter [0:0] INIT = 1'b0;
@@ -134,6 +138,11 @@ endmodule
 
 //                  FZ       FS F1 F2
 module mux2x0(output Q, input S, A, B);
+    assign Q = S ? B : A;
+endmodule
+
+//                  FZ       FS F1 F2
+module mux2x1(output Q, input S, A, B);
     assign Q = S ? B : A;
 endmodule
 

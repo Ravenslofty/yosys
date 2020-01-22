@@ -278,6 +278,25 @@ module ram8k_2x1_cell_macro (
     input [3:0] RMB);
 
 endmodule /* ram8k_2x1_cell_macro */
+
+(* blackbox *)
+module qlal4s3_32x32_mult_cell (
+    input [31:0] Amult,
+    input [31:0] Bmult,
+    input [1:0] Valid_mult,
+    output [63:0] Cmult);
+
+endmodule /* qlal4s3_32x32_mult_cell */
+
+(* blackbox *)
+module qlal4s3_16x16_mult_cell (
+    input [15:0] Amult,
+    input [15:0] Bmult,
+    input [1:0] Valid_mult,
+    output [31:0] Cmult);
+
+endmodule /* qlal4s3_16x16_mult_cell */
+
 // module DFFSEC(output Q, input D, CLR, EN, CLK, N_11);
 //     parameter [0:0] INIT = 1'b0;
 //     // TODO implement

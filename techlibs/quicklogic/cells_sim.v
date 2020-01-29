@@ -179,6 +179,14 @@ module ckpad(output Q, input P);
     assign Q = P;
 endmodule
 
+module logic_0(output a);
+    assign a = 0;
+endmodule
+
+module logic_1(output a);
+    assign a = 1;
+endmodule
+
 // BLACK BOXES
 
 (* blackbox *)

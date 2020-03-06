@@ -174,3 +174,23 @@ module \$_DFF_PP1_ (D, Q, C, R);
     output Q;
     dffp _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .PRE(R));
 endmodule
+
+module \$_DFFSR_NPP_ (D, Q, C, R, S);
+    input D;
+    input C;
+    input R;
+    input S;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    dffpc tmpdffpc (.Q(Q), .D(D), .CLK(C_INV), .CLR(R), .PRE(S));
+endmodule
+
+module \$_DFFSR_PPP_ (D, Q, C, R, S);
+    input D;
+    input C;
+    input R;
+    input S;
+    output Q;
+    dffpc tmpdffpc (.Q(Q), .D(D), .CLK(C), .CLR(R), .PRE(S));
+endmodule

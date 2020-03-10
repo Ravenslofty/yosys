@@ -292,7 +292,7 @@ module ram8k_2x1_cell_macro (
 endmodule /* ram8k_2x1_cell_macro */
 
 (* blackbox *)
-module qlal4s3_32x32_mult_cell (
+module qlal4s3_mult_32x32_cell (
     input [31:0] Amult,
     input [31:0] Bmult,
     input [1:0] Valid_mult,
@@ -301,7 +301,7 @@ module qlal4s3_32x32_mult_cell (
 endmodule /* qlal4s3_32x32_mult_cell */
 
 (* blackbox *)
-module qlal4s3_16x16_mult_cell (
+module qlal4s3_mult_16x16_cell (
     input [15:0] Amult,
     input [15:0] Bmult,
     input [1:0] Valid_mult,

@@ -108,7 +108,7 @@ struct SynthQuickLogicPass : public ScriptPass
     {
         if (check_label("begin")) {
             run("read_verilog -lib +/quicklogic/cells_sim.v");
-            run(stringf("hierarchy -check"));
+            run(stringf("hierarchy -check %s", top_opt.c_str()));
         }
 
         if (check_label("prepare")) {
@@ -134,13 +134,14 @@ struct SynthQuickLogicPass : public ScriptPass
         }
 
         if (check_label("edif")) {
-            if (!edif_file.empty() || help_mode)
-                run(stringf("write_edif -nogndvcc -attrprop -pvector par %s", edif_file.c_str()));
+            if (!edif_file.empty() || help_mode) {
+                    run(stringf("write_edif -nogndvcc -attrprop -pvector par %s %s", top_opt.c_str(), edif_file.c_str()));
+            }
         }
 
         if (check_label("blif")) {
             if (!blif_file.empty() || help_mode)
-                run(stringf("write_blif %s", blif_file.c_str()));
+                run(stringf("write_blif %s %s", top_opt.c_str(), blif_file.c_str()));
         }
     }
 } SynthQuickLogicPass;

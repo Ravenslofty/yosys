@@ -180,6 +180,7 @@ endmodule
 // BLACK BOXES
 
 (* blackbox *)
+(* keep *)
 module qlal4s3b_cell_macro(
 input	WB_CLK,
 input	WBs_ACK,

@@ -116,14 +116,23 @@ struct SynthQuickLogicPass : public ScriptPass
             if (flatten || help_mode)
                 run("flatten", "(with '-flatten')");
             run("opt_expr");
+            run("proc");
             run("opt_clean");
+            run("proc");
             run("check");
             run("opt");
+            run("proc");
             run("techmap");
             run("abc -lut 1:4");
+            run("opt_clean");
             run("proc");
-            run("opt");
             run("techmap -map +/quicklogic/cells_map.v");
+            run("clean");
+            run("opt");
+            run("check");
+            run("peepopt");
+            run("opt_clean -purge");
+            run("clean -purge");
             run("select -set clock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d");
             run("select -set invclock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d %n");
             run("iopadmap -bits -inpad ckpad Q:P @clock_inputs");
@@ -131,6 +140,8 @@ struct SynthQuickLogicPass : public ScriptPass
             run("splitnets -ports -format ()");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");
             run("techmap -map +/quicklogic/cells_map.v");
+            run("clean -purge");
+            run("opt");
         }
 
         if (check_label("edif")) {

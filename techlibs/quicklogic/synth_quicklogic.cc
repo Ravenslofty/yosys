@@ -46,6 +46,7 @@ struct SynthQuickLogicPass : public ScriptPass
     std::string edif_file = "";
     std::string blif_file = "";
     std::string exe_file = "";
+    std::string currmodule = "";
     bool flatten = false;
 
     void clear_flags() YS_OVERRIDE
@@ -133,10 +134,15 @@ struct SynthQuickLogicPass : public ScriptPass
             run("peepopt");
             run("opt_clean -purge");
             run("clean -purge");
+            this->currmodule = this->active_design->top_module()->name.str();
+            if (this->currmodule.size() > 0)
+                run(stringf("select -module %s", this->currmodule.c_str()));
             run("select -set clock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d");
             run("select -set invclock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d %n");
             run("iopadmap -bits -inpad ckpad Q:P @clock_inputs");
             run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P @invclock_inputs");
+            if (this->currmodule.size() > 0)
+                run("select -clear");
             run("splitnets -ports -format ()");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");
             run("techmap -map +/quicklogic/cells_map.v");
@@ -146,7 +152,7 @@ struct SynthQuickLogicPass : public ScriptPass
 
         if (check_label("edif")) {
             if (!edif_file.empty() || help_mode) {
-                    run(stringf("write_edif -nogndvcc -attrprop -pvector par %s %s", top_opt.c_str(), edif_file.c_str()));
+                    run(stringf("write_edif -nogndvcc -attrprop -pvector par -top %s %s", this->currmodule.c_str(), edif_file.c_str()));
             }
         }
 

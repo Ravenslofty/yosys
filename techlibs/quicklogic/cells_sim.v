@@ -121,6 +121,18 @@ module dffepc(output reg Q, input D, CLK, EN, CLR, PRE);
     end
 endmodule
 
+//                 QZ        QDI    QCK  QRT
+module dffsc(output reg Q, input D, CLK, CLR);
+    parameter [0:0] INIT = 1'b0;
+    initial Q = INIT;
+    always @(posedge CLK, posedge CLR) begin
+        if (CLR)
+            Q <= 1'b0;
+        else
+            Q <= D;
+    end
+endmodule
+
 //                  FZ       FS F2 (F1 TO 0)
 module AND2I0(output Q, input A, B);
     assign Q = A ? B : 0;

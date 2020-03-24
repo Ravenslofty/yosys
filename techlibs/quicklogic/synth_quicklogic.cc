@@ -116,6 +116,7 @@ struct SynthQuickLogicPass : public ScriptPass
             run("proc");
             if (flatten || help_mode)
                 run("flatten", "(with '-flatten')");
+            run("tribuf -logic");
             run("opt_expr");
             run("proc");
             run("opt_clean");
@@ -141,6 +142,7 @@ struct SynthQuickLogicPass : public ScriptPass
             run("select -set invclock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d %n");
             run("iopadmap -bits -inpad ckpad Q:P @clock_inputs");
             run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P @invclock_inputs");
+            run("iopadmap -bits -tinoutpad bipad EN:Q:A:P");
             if (this->currmodule.size() > 0)
                 run("select -clear");
             run("splitnets -ports -format ()");

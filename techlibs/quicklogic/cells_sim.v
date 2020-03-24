@@ -181,6 +181,11 @@ module ckpad(output Q, input P);
     assign Q = P;
 endmodule
 
+module bipad(input A, input EN, output Q, inout P);
+    assign Q = P;
+    assign P = EN ? A : 1'bz;
+endmodule
+
 module logic_0(output a);
     assign a = 0;
 endmodule

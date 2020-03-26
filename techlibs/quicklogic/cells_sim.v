@@ -269,11 +269,6 @@ input   WB_CLKS);
 endmodule /* qlal4s3b_cell_macro */
 
 (* blackbox *)
-module bipad (input A, input EN, inout P, output Q);
-
-endmodule
-
-(* blackbox *)
 module gclkbuff (input A, output Z);
 
 endmodule

@@ -135,7 +135,11 @@ struct SynthQuickLogicPass : public ScriptPass
             run("peepopt");
             run("opt_clean -purge");
             run("clean -purge");
-            this->currmodule = this->active_design->top_module()->name.str();
+            /* avoid sefault when this code is run without active design (e.g when calling help) */
+            if (!this->active_design)
+                this->currmodule = "top";
+            else
+                this->currmodule = this->active_design->top_module()->name.str();
             if (this->currmodule.size() > 0)
                 run(stringf("select -module %s", this->currmodule.c_str()));
             run("select -set clock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d");

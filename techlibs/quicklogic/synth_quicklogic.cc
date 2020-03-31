@@ -112,20 +112,21 @@ struct SynthQuickLogicPass : public ScriptPass
             run("clean");
             run("check");
             run("opt_clean -purge");
-            run("clean -purge");
-            /* avoid sefault when this code is run without active design (e.g when calling help) */
-            if (!this->active_design)
-                this->currmodule = "top";
-            else
+            if (help_mode) {
+                run("select -module top");
+            } else {
                 this->currmodule = this->active_design->top_module()->name.str();
-            if (this->currmodule.size() > 0)
-                run(stringf("select -module %s", this->currmodule.c_str()));
+                if (this->currmodule.size() > 0)
+                    run(stringf("select -module %s", this->currmodule.c_str()));
+            }
             run("select -set clock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d");
             run("select -set invclock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d %n");
             run("iopadmap -bits -inpad ckpad Q:P @clock_inputs");
             run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P @invclock_inputs");
             run("iopadmap -bits -tinoutpad bipad EN:Q:A:P");
-            if (this->currmodule.size() > 0)
+            if (help_mode) {
+                run("select -clear");
+            } else if (this->currmodule.size() > 0)
                 run("select -clear");
             run("splitnets -ports -format ()");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");

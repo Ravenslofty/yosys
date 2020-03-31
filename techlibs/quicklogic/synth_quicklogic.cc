@@ -19,14 +19,6 @@ struct SynthQuickLogicPass : public ScriptPass
         log("    -top <module>\n");
         log("         use the specified module as top module\n");
         log("\n");
-        log("    -exe <command>\n");
-#ifdef ABCEXTERNAL
-        log("        use the specified command instead of \"" ABCEXTERNAL "\" to execute ABC.\n");
-#else
-        log("        use the specified command instead of \"<yosys-bindir>/yosys-abc\" to execute ABC.\n");
-#endif
-        log("        This can e.g. be used to call a specific version of ABC or a wrapper.\n");
-        log("\n");
         log("    -edif <file>\n");
         log("        write the design to the specified edif file. writing of an output file\n");
         log("        is omitted if this parameter is not specified.\n");
@@ -45,18 +37,12 @@ struct SynthQuickLogicPass : public ScriptPass
     std::string top_opt = "-auto-top";
     std::string edif_file = "";
     std::string blif_file = "";
-    std::string exe_file = "";
     std::string currmodule = "";
     bool flatten = false;
 
     void clear_flags() YS_OVERRIDE
     {
         top_opt = "-auto-top";
-#ifdef ABCEXTERNAL
-        exe_file = ABCEXTERNAL;
-#else
-        exe_file = proc_self_dirname() + "yosys-abc";
-#endif
         flatten = false;
         edif_file.clear();
         blif_file.clear();
@@ -84,10 +70,6 @@ struct SynthQuickLogicPass : public ScriptPass
             }
             if (args[argidx] == "-flatten") {
                 flatten = true;
-                continue;
-            }
-            if (args[argidx] == "-exe" && argidx+1 < args.size()) {
-                exe_file = args[++argidx];
                 continue;
             }
             break;

@@ -100,16 +100,12 @@ struct SynthQuickLogicPass : public ScriptPass
                 run("flatten", "(with '-flatten')");
             run("tribuf -logic");
             run("opt_expr");
-            run("proc");
             run("opt_clean");
-            run("proc");
             run("check");
             run("opt");
-            run("proc");
             run("techmap");
             run("abc -lut 1:4");
             run("opt_clean");
-            run("proc");
             run("techmap -map +/quicklogic/cells_map.v");
             run("clean");
             run("opt");

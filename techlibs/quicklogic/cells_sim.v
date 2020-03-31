@@ -197,6 +197,46 @@ endmodule
 // BLACK BOXES
 
 (* blackbox *)
+module logic_cell_macro(
+    input BA1,
+    input BA2,
+    input BAB,
+    input BAS1,
+    input BAS2,
+    input BB1,
+    input BB2,
+    input BBS1,
+    input BBS2,
+    input BSL,
+    input F1,
+    input F2,
+    input FS,
+    input QCK,
+    input QCKS,
+    input QDI,
+    input QDS,
+    input QEN,
+    input QRT,
+    input QST,
+    input TA1,
+    input TA2,
+    input TAB,
+    input TAS1,
+    input TAS2,
+    input TB1,
+    input TB2,
+    input TBS,
+    input TBS1,
+    input TBS2,
+    input TSL,
+    output CZ,
+    output FZ,
+    output QZ,
+    output TZ);
+
+endmodule
+
+(* blackbox *)
 (* keep *)
 module qlal4s3b_cell_macro(
 input	WB_CLK,

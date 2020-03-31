@@ -103,14 +103,14 @@ struct SynthQuickLogicPass : public ScriptPass
             run("opt_clean");
             run("check");
             run("opt");
+            run("peepopt");
+            run("opt_clean");
             run("techmap");
             run("abc -lut 1:4");
             run("opt_clean");
             run("techmap -map +/quicklogic/cells_map.v");
             run("clean");
-            run("opt");
             run("check");
-            run("peepopt");
             run("opt_clean -purge");
             run("clean -purge");
             /* avoid sefault when this code is run without active design (e.g when calling help) */

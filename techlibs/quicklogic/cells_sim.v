@@ -194,9 +194,6 @@ module logic_1(output a);
     assign a = 1;
 endmodule
 
-// BLACK BOXES
-
-(* blackbox *)
 module logic_cell_macro(
     input BA1,
     input BA2,
@@ -234,7 +231,44 @@ module logic_cell_macro(
     output QZ,
     output TZ);
 
+wire TAP1,TAP2,TBP1,TBP2,BAP1,BAP2,BBP1,BBP2,QCKP,TAI,TBI,BAI,BBI,TZI,BZI,CZI,QZI;
+reg QZ;
+
+assign TAP1 = TAS1 ? ~TA1 : TA1; 
+assign TAP2 = TAS2 ? ~TA2 : TA2; 
+assign TBP1 = TBS1 ? ~TB1 : TB1; 
+assign TBP2 = TBS2 ? ~TB2 : TB2;
+assign BAP1 = BAS1 ? ~BA1 : BA1;
+assign BAP2 = BAS2 ? ~BA2 : BA2;
+assign BBP1 = BBS1 ? ~BB1 : BB1;
+assign BBP2 = BBS2 ? ~BB2 : BB2;
+
+assign TAI = TSL ? TAP2 : TAP1;
+assign TBI = TSL ? TBP2 : TBP1;
+assign BAI = BSL ? BAP2 : BAP1;
+assign BBI = BSL ? BBP2 : BBP1;
+assign TZI = TAB ? TBI : TAI;
+assign BZI = BAB ? BBI : BAI;
+assign CZI = TBS ? BZI : TZI;
+assign QZI = QDS ? QDI : CZI ;
+assign FZ = FS ? F2 : F1;
+assign TZ = TZI;
+assign CZ = CZI;
+assign QCKP = QCKS ? QCK : ~QCK;
+
+always @(posedge QCKP)
+	if(~QRT && ~QST)
+		if(QEN)
+		QZ = QZI;
+always @(QRT or QST)
+	if(QRT)
+		QZ = 1'b0;
+	else if (QST)
+		QZ = 1'b1;
+
 endmodule
+
+// BLACK BOXES
 
 (* blackbox *)
 (* keep *)

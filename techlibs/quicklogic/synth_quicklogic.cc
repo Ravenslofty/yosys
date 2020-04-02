@@ -131,6 +131,8 @@ struct SynthQuickLogicPass : public ScriptPass
             run("splitnets -ports -format ()");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");
             run("techmap -map +/quicklogic/cells_map.v");
+            run("setundef -zero -params -undriven -expose");
+            run("opt_clean");
             run("clean -purge");
             run("opt");
         }

@@ -378,6 +378,13 @@ module ram8k_2x1_cell_macro (
 endmodule /* ram8k_2x1_cell_macro */
 
 (* blackbox *)
+module gpio_cell_macro (
+    input DS, ESEL, FIXHOLD, IE, INEN, IQC, IQCS, IQE, IQR, OQE, OQI, OSEL, WPD,
+    inout IP,
+    output IQZ);
+endmodule /*  gpio_cell_macro */
+
+(* blackbox *)
 module qlal4s3_mult_32x32_cell (
     input [31:0] Amult,
     input [31:0] Bmult,

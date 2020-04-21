@@ -1,0 +1,46 @@
+read_verilog v/dffs.v
+design -save read
+
+# DFF
+hierarchy -top my_dff
+proc
+equiv_opt -assert -map +/quicklogic/cells_sim.v synth_quicklogic -top my_dff -flatten
+design -load postopt
+cd my_dff
+stat
+select -assert-count 1 t:dff
+select -assert-count 2 t:inpad
+select -assert-count 1 t:outpad
+select -assert-count 4 t:*
+
+# DFFC
+design -load read
+synth_quicklogic -top my_dffc -flatten
+cd my_dffc
+stat
+select -assert-count 1 t:dffc
+select -assert-count 3 t:inpad
+select -assert-count 1 t:outpad
+select -assert-count 5 t:*
+
+# DFFP
+design -load read
+synth_quicklogic -top my_dffp -flatten
+cd my_dffp
+stat
+select -assert-count 1 t:dffp
+select -assert-count 3 t:inpad
+select -assert-count 1 t:outpad
+select -assert-count 5 t:*
+
+# DFFPC
+design -load read
+synth_quicklogic -top my_dffpc -flatten
+cd my_dffpc
+stat
+select -assert-count 1 t:dffpc
+select -assert-count 4 t:inpad
+select -assert-count 1 t:outpad
+
+# Allow to have an extra LUT2 which gates the PRE input
+#select -assert-count 6 t:*

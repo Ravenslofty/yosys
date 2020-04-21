@@ -46,39 +46,6 @@ module \$lut (A, Y);
     endgenerate
 endmodule
 
-module \$_MUX_ (A, B, S, Y);
-
-    parameter WIDTH = 0;
-
-    input [WIDTH-1:0] A, B;
-    input S;
-    output reg [WIDTH-1:0] Y;
-
-    generate
-        if (WIDTH == 1)
-        begin
-            mux2x0 _TECHMAP_REPLACE_ (.Q(Y[0]), .S(S), .A(A[0]), .B(B[0]));
-        end
-        else
-        begin
-            wire _TECHMAP_FAIL_ = 1;
-        end
-    endgenerate
-endmodule
-
-module \$_NOT_ (A, Y);
-    input A;
-    output Y;
-    inv _TECHMAP_REPLACE_ (.Q(Y), .A(A));
-endmodule
-
-module \$_AND_ (A, B, Y);
-    input A;
-    input B;
-    output Y;
-    AND2I0 _TECHMAP_REPLACE_ (.Q(Y), .A(A), .B(B));
-endmodule
-
 module \$_DFF_N_ (D, Q, C);
     input D;
     input C;

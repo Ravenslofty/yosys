@@ -22,13 +22,3 @@ module my_dffp ( input d, clk, pre, output reg q );
             q <= d;
 endmodule
 
-module my_dffpc ( input d, clk, clr, pre, output reg q );
-    initial q <= 1'b0;
-    always @( posedge clk or posedge clr or posedge pre )
-        if ( clr )
-            q <= 1'b0;
-        else if ( pre )
-            q <= 1'b1;
-        else
-            q <= d;
-endmodule

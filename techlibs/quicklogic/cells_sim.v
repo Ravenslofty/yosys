@@ -38,8 +38,12 @@ module buff(output Q, input A);
     assign Q = A;
 endmodule
 
-//               QZ      QDI  QCK
-module dff(output reg Q, input D, CLK);
+module dff(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK) begin
@@ -47,8 +51,14 @@ module dff(output reg Q, input D, CLK);
     end
 endmodule
 
-//                QZ      QDI  QCK  QRT
-module dffc(output reg Q, input D, CLK, CLR);
+module dffc(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    (* clkbuf_sink *)
+    input CLR
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR) begin
@@ -59,8 +69,14 @@ module dffc(output reg Q, input D, CLK, CLR);
     end
 endmodule
 
-//                QZ      QDI  QCK  QST
-module dffp(output reg Q, input D, CLK, PRE);
+module dffp(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    (* clkbuf_sink *)
+    input PRE
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge PRE) begin
@@ -71,8 +87,16 @@ module dffp(output reg Q, input D, CLK, PRE);
     end
 endmodule
 
-//                 QZ      QDI  QCK  QRT  QST
-module dffpc(output reg Q, input D, CLK, CLR, PRE);
+module dffpc(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    (* clkbuf_sink *)
+    input CLR,
+    (* clkbuf_sink *)
+    input PRE
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR, posedge PRE) begin
@@ -85,8 +109,13 @@ module dffpc(output reg Q, input D, CLK, CLR, PRE);
     end
 endmodule
 
-//                QZ      QDI  QCK QEN
-module dffe(output reg Q, input D, CLK, EN);
+module dffe(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    input EN
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK) begin
@@ -95,8 +124,15 @@ module dffe(output reg Q, input D, CLK, EN);
     end
 endmodule
 
-//                 QZ      QDI  QCK QEN  QRT
-module dffec(output reg Q, input D, CLK, EN, CLR);
+module dffec(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    input EN,
+    (* clkbuf_sink *)
+    input CLR
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR) begin
@@ -107,8 +143,17 @@ module dffec(output reg Q, input D, CLK, EN, CLR);
     end
 endmodule
 
-//                  QZ      QDI  QCK QEN  QRT  QST
-module dffepc(output reg Q, input D, CLK, EN, CLR, PRE);
+module dffepc(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    input EN,
+    (* clkbuf_sink *)
+    input CLR,
+    (* clkbuf_sink *)
+    input PRE
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR, posedge PRE) begin
@@ -121,8 +166,14 @@ module dffepc(output reg Q, input D, CLK, EN, CLR, PRE);
     end
 endmodule
 
-//                 QZ        QDI    QCK  QRT
-module dffsc(output reg Q, input D, CLK, CLR);
+module dffsc(
+    output reg Q,
+    input D,
+    (* clkbuf_sink *)
+    input CLK,
+    (* clkbuf_sink *)
+    input CLR
+);
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     always @(posedge CLK, posedge CLR) begin
@@ -352,10 +403,16 @@ module ram8k_2x1_cell_macro (
     input [10:0] A1_1,
     input [10:0] A2_0,
     input [10:0] A2_1,
+    (* clkbuf_sink *)
     input CLK1_0,
+    (* clkbuf_sink *)
     input CLK1_1,
+    (* clkbuf_sink *)
+    input CLK2_0,
+    (* clkbuf_sink *)
+    input CLK2_1,
     output Almost_Empty_0, Almost_Empty_1, Almost_Full_0, Almost_Full_1,
-    input ASYNC_FLUSH_0, ASYNC_FLUSH_1,CLK2_0, CLK2_1, ASYNC_FLUSH_S0, ASYNC_FLUSH_S1, CLK1EN_0, CLK1EN_1, CLK1S_0, CLK1S_1,CLK2EN_0,CLK2EN_1, CLK2S_0, CLK2S_1, CONCAT_EN_0, CONCAT_EN_1, CS1_0, CS1_1,CS2_0, CS2_1, DIR_0, DIR_1, FIFO_EN_0, FIFO_EN_1, P1_0, P1_1, P2_0,P2_1, PIPELINE_RD_0, PIPELINE_RD_1,
+    input ASYNC_FLUSH_0, ASYNC_FLUSH_1, ASYNC_FLUSH_S0, ASYNC_FLUSH_S1, CLK1EN_0, CLK1EN_1, CLK1S_0, CLK1S_1,CLK2EN_0,CLK2EN_1, CLK2S_0, CLK2S_1, CONCAT_EN_0, CONCAT_EN_1, CS1_0, CS1_1,CS2_0, CS2_1, DIR_0, DIR_1, FIFO_EN_0, FIFO_EN_1, P1_0, P1_1, P2_0,P2_1, PIPELINE_RD_0, PIPELINE_RD_1,
     output [3:0] POP_FLAG_0,
     output [3:0] POP_FLAG_1,
     output [3:0] PUSH_FLAG_0,

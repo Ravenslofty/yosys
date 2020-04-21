@@ -119,11 +119,8 @@ struct SynthQuickLogicPass : public ScriptPass
                 if (this->currmodule.size() > 0)
                     run(stringf("select -module %s", this->currmodule.c_str()));
             }
-            run("select -set clock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d");
-            run("select -set invclock_inputs */t:dff* %x:+[CLK,CLR,PRE] */t:dff* %d %n");
-            run("iopadmap -bits -inpad ckpad Q:P @clock_inputs");
-            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P @invclock_inputs");
-            run("iopadmap -bits -tinoutpad bipad EN:Q:A:P");
+            run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
+            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P -ignore ckpad P");
             if (help_mode) {
                 run("select -clear");
             } else if (this->currmodule.size() > 0)
@@ -131,7 +128,7 @@ struct SynthQuickLogicPass : public ScriptPass
             run("splitnets -ports -format ()");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");
             run("techmap -map +/quicklogic/cells_map.v");
-            run("setundef -zero -params -undriven -expose");
+            run("setundef -zero -params -undriven");
             run("opt_clean");
             run("clean -purge");
             run("opt");

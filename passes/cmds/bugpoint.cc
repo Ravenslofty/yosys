@@ -84,12 +84,20 @@ struct BugpointPass : public Pass {
 	{
 		design->sort();
 
-		std::ofstream f("bugpoint-case.il");
-		ILANG_BACKEND::dump_design(f, design, /*only_selected=*/false, /*flag_m=*/true, /*flag_n=*/false);
+		Pass::call(design, "write_verilog -attr2comment -defparam -nohex -decimal bugpoint-case.vqm");
+
+		std::ofstream f("attosoc.qsf");
+		f << "set_global_assignment -name FAMILY \"Cyclone V\"\n"
+		  << "set_global_assignment -name VQM_FILE bugpoint-case.vqm\n"
+		  << "set_global_assignment -name DEVICE 5CSEBA6U23I7DK\n"
+		  << "set_global_assignment -name TOP_LEVEL_ENTITY attosoc\n";
 		f.close();
 
-		string yosys_cmdline = stringf("%s -qq -L bugpoint-case.log -s %s bugpoint-case.il", yosys_cmd.c_str(), script.c_str());
-		return run_command(yosys_cmdline) == 0;
+		log("Running Quartus\n");
+
+		run_command("quartus_map -c attosoc attosoc | tee bugpoint-case.log");
+
+		return run_command("grep -q -F \"Internal Error: Sub-system: SGN, File: /quartus/synth/sgn/sgn_utility.cpp\" bugpoint-case.log") != 0;
 	}
 
 	bool check_logfile(string grep)
@@ -410,6 +418,8 @@ struct BugpointPass : public Pass {
 						delete crashing_design;
 					crashing_design = simplified;
 					found_something = true;
+					Pass::call(crashing_design, "write_verilog -attr2comment -defparam -nohex -decimal bugpoint-best-new.vqm");
+					run_command("cp bugpoint-best-new.vqm bugpoint-best.vqm");
 				}
 				else
 				{

@@ -46,9 +46,8 @@ module dff(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK) begin
+    always @(posedge CLK)
         Q <= D;
-    end
 endmodule
 
 module dffc(
@@ -61,12 +60,12 @@ module dffc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK, posedge CLR) begin
+    always @(posedge CLK)
+        if (~CLR)
+            Q <= D;
+    always @(CLR)
         if (CLR)
             Q <= 1'b0;
-        else
-            Q <= D;
-    end
 endmodule
 
 module dffp(
@@ -79,12 +78,12 @@ module dffp(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK, posedge PRE) begin
+    always @(posedge CLK)
+        if (~PRE)
+            Q <= D;
+    always @(PRE)
         if (PRE)
             Q <= 1'b1;
-        else
-            Q <= D;
-    end
 endmodule
 
 module dffpc(
@@ -99,14 +98,14 @@ module dffpc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK, posedge CLR, posedge PRE) begin
+    always @(posedge CLK)
+        if ((~PRE) && (~CLR))
+            Q <= D;
+    always @(CLR or PRE)
         if (CLR)
             Q <= 1'b0;
         else if (PRE)
             Q <= 1'b1;
-        else
-            Q <= D;
-    end
 endmodule
 
 module dffe(
@@ -118,10 +117,9 @@ module dffe(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK) begin
+    always @(posedge CLK)
         if (EN)
             Q <= D;
-    end
 endmodule
 
 module dffec(
@@ -135,12 +133,13 @@ module dffec(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK, posedge CLR) begin
+    always @(posedge CLK)
+        if (~CLR)
+            if (EN)
+                Q <= D;
+    always @(CLR)
         if (CLR)
             Q <= 1'b0;
-        else if (EN)
-            Q <= D;
-    end
 endmodule
 
 module dffepc(
@@ -156,32 +155,15 @@ module dffepc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK, posedge CLR, posedge PRE) begin
+    always @(posedge CLK)
+        if (~CLR && ~PRE)
+            if (EN)
+                Q <= D;
+    always @(CLR or PRE)
         if (CLR)
             Q <= 1'b0;
         else if (PRE)
             Q <= 1'b1;
-        else if (EN)
-            Q <= D;
-    end
-endmodule
-
-module dffsc(
-    output reg Q,
-    input D,
-    (* clkbuf_sink *)
-    input CLK,
-    (* clkbuf_sink *)
-    input CLR
-);
-    parameter [0:0] INIT = 1'b0;
-    initial Q = INIT;
-    always @(posedge CLK, posedge CLR) begin
-        if (CLR)
-            Q <= 1'b0;
-        else
-            Q <= D;
-    end
 endmodule
 
 //                  FZ       FS F2 (F1 TO 0)

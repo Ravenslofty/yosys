@@ -416,11 +416,13 @@ module ram8k_2x1_cell_macro (
 
 endmodule /* ram8k_2x1_cell_macro */
 
-(* blackbox *)
 module gpio_cell_macro (
     input DS, ESEL, FIXHOLD, IE, INEN, IQC, IQCS, IQE, IQR, OQE, OQI, OSEL, WPD,
     inout IP,
-    output IQZ);
+    output IZ);
+
+    assign IZ = INEN ? IP : 1'b0;
+    assign IP = IEN ? OQI : 1'bz;
 endmodule /*  gpio_cell_macro */
 
 (* blackbox *)

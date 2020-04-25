@@ -63,6 +63,9 @@ struct SynthIntelALMPass : public ScriptPass {
 		log("    -nobram\n");
 		log("        do not use block RAM cells in output netlist\n");
 		log("\n");
+		log("    -nodsp\n");
+		log("        do not map multipliers to MISTRAL_MUL cells\n");
+		log("\n");
 		log("    -noflatten\n");
 		log("        do not flatten design before synthesis\n");
 		log("\n");
@@ -72,7 +75,7 @@ struct SynthIntelALMPass : public ScriptPass {
 	}
 
 	string top_opt, family_opt, bram_type, vout_file;
-	bool flatten, quartus, nolutram, nobram;
+	bool flatten, quartus, nolutram, nobram, nodsp;
 
 	void clear_flags() YS_OVERRIDE
 	{
@@ -84,6 +87,7 @@ struct SynthIntelALMPass : public ScriptPass {
 		quartus = false;
 		nolutram = false;
 		nobram = false;
+		nodsp = false;
 	}
 
 	void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
@@ -126,6 +130,10 @@ struct SynthIntelALMPass : public ScriptPass {
 				nobram = true;
 				continue;
 			}
+			if (args[argidx] == "-nodsp") {
+				nodsp = true;
+				continue;
+			}
 			if (args[argidx] == "-noflatten") {
 				flatten = false;
 				continue;
@@ -164,6 +172,7 @@ struct SynthIntelALMPass : public ScriptPass {
 			run(stringf("read_verilog -sv -lib +/intel/%s/cells_sim.v", family_opt.c_str()));
 			run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/alm_sim.v", family_opt.c_str()));
 			run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/dff_sim.v", family_opt.c_str()));
+			run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/dsp_sim.v", family_opt.c_str()));
 
 			// Misc and common cells
 			run("read_verilog -lib +/intel/common/altpll_bb.v");
@@ -171,16 +180,38 @@ struct SynthIntelALMPass : public ScriptPass {
 			run(stringf("hierarchy -check %s", help_mode ? "-top <top>" : top_opt.c_str()));
 		}
 
-		if (flatten && check_label("flatten", "(unless -noflatten)")) {
+		if (check_label("coarse")) {
 			run("proc");
-			run("flatten");
+			if (flatten || help_mode)
+				run("flatten", "(skip if -noflatten)");
 			run("tribuf -logic");
 			run("deminout");
-		}
-
-		if (check_label("coarse")) {
-			run("synth -run coarse -lut 6");
-			run("techmap -map +/intel_alm/common/arith_alm_map.v");
+			run("opt_expr");
+			run("opt_clean");
+			run("check");
+			run("opt");
+			run("wreduce");
+			run("peepopt");
+			run("opt_clean");
+			run("share");
+			run("techmap -map +/cmp2lut.v -D LUT_WIDTH=6");
+			run("opt_expr");
+			run("opt_clean");
+			if (help_mode || !nodsp) {
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=27 -D DSP_B_MAXWIDTH=27  -D DSP_A_MINWIDTH=19 -D DSP_B_MINWIDTH=19  -D DSP_SIGNEDONLY  -D DSP_NAME=__MUL27X27");
+				run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=18 -D DSP_B_MAXWIDTH=18  -D DSP_A_MINWIDTH=10 -D DSP_B_MINWIDTH=10  -D DSP_SIGNEDONLY  -D DSP_NAME=__MUL18X18");
+				run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=9 -D DSP_B_MAXWIDTH=9  -D DSP_A_MINWIDTH=2 -D DSP_B_MINWIDTH=2  -D DSP_SIGNEDONLY  -D DSP_NAME=__MUL9X9");
+				run("chtype -set $mul t:$__soft_mul");
+			}
+			run("alumacc");
+			run("techmap -map +/intel_alm/common/arith_alm_map.v -map +/intel_alm/common/dsp_map.v");
+			run("opt");
+			run("fsm");
+			run("opt -fast");
+			run("memory -nomap");
+			run("opt_clean");
 		}
 
 		if (!nobram && check_label("map_bram", "(skip if -nobram)")) {

@@ -681,10 +681,13 @@ module RAM16S4 (DO, DI, AD, WRE, CLK);
    input 	      CLK;
    input 	      WRE;
 
-  // TODO: check these numbers
   specify
-    if (WRE) (posedge CLK => (DO : DI)) = 0;
-    (AD => DO) = 0;
+    (AD => DO) = (270, 405);
+	// TODO: ask Eddie about positive/negative edge setup times.
+	$setup(DI, posedge CLK, 62);
+	$setup(WRE, posedge CLK, 62);
+	$setup(AD, posedge CLK, 62);
+	(posedge CLK => (DO : {WIDTH{1'bx}})) = (474, 565);
   endspecify
 
    reg [15:0] 	    mem0, mem1, mem2, mem3;

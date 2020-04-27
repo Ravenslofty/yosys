@@ -1,8 +1,10 @@
 `ifdef cyclonev
 `define LCELL cyclonev_lcell_comb
+`define MAC cyclonev_mac
 `endif
 `ifdef cyclone10gx
 `define LCELL cyclone10gx_lcell_comb
+`define MAC cyclone10gx_mac
 `endif
 
 module __MISTRAL_VCC(output Q);
@@ -78,5 +80,56 @@ parameter LUT0 = 16'h0000;
 parameter LUT1 = 16'h0000;
 
 `LCELL #(.lut_mask({16'h0, LUT1, 16'h0, LUT0})) _TECHMAP_REPLACE_ (.dataa(A), .datab(B), .datac(C), .datad(D0), .dataf(D1), .cin(CI), .sumout(SO), .cout(CO));
+
+endmodule
+
+
+module MISTRAL_MUL27X27(A, B, Y);
+
+parameter A_SIGNED = 0;
+parameter B_SIGNED = 1;
+parameter A_WIDTH = 27;
+parameter B_WIDTH = 27;
+parameter Y_WIDTH = 54;
+
+input [A_WIDTH-1:0] A;
+input [B_WIDTH-1:0] B;
+output [Y_WIDTH-1:0] Y;
+
+`MAC #(.ax_width(A_WIDTH), .ay_scan_in_width(B_WIDTH), .result_a_width(Y_WIDTH), .operation_mode("M27x27")) _TECHMAP_REPLACE_ (.ax(A), .ay(B), .resulta(Y));
+
+endmodule
+
+
+module MISTRAL_MUL18X18(A, B, Y);
+
+parameter A_SIGNED = 0;
+parameter B_SIGNED = 1;
+parameter A_WIDTH = 18;
+parameter B_WIDTH = 19;
+parameter Y_WIDTH = 37;
+
+input [A_WIDTH-1:0] A;
+input [B_WIDTH-1:0] B;
+output [Y_WIDTH-1:0] Y;
+
+`MAC #(.ax_width(B_WIDTH), .ay_scan_in_width(A_WIDTH), .result_a_width(Y_WIDTH), .operation_mode("M18x18_FULL")) _TECHMAP_REPLACE_ (.ax(B), .ay(A), .resulta(Y));
+
+endmodule
+
+
+module MISTRAL_MUL9X9(A, B, Y);
+
+parameter A_SIGNED = 0;
+parameter B_SIGNED = 1;
+parameter A_WIDTH = 9;
+parameter B_WIDTH = 9;
+parameter Y_WIDTH = 18;
+
+input [A_WIDTH-1:0] A;
+input [B_WIDTH-1:0] B;
+output [Y_WIDTH-1:0] Y;
+
+`MAC #(.ax_width(A_WIDTH), .ay_scan_in_width(B_WIDTH), .result_a_width(Y_WIDTH), .operation_mode("M9x9")) _TECHMAP_REPLACE_ (.ax(A), .ay(B), .resulta(Y));
 
 endmodule

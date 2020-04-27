@@ -61,12 +61,14 @@ module MISTRAL_FF(
 `ifdef cyclonev
 specify
     (posedge CLK => (Q : DATAIN)) = 262;
+    (posedge CLK => (Q : SDATA)) = 262;
     $setup(DATAIN, posedge CLK, 522);
 endspecify
 `endif
 `ifdef cyclone10gx
 specify
     (posedge CLK => (Q : DATAIN)) = 219;
+    (posedge CLK => (Q : SDATA)) = 219;
     $setup(DATAIN, posedge CLK, 268);
 endspecify
 `endif

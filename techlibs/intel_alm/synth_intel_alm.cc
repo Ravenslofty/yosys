@@ -189,7 +189,11 @@ struct SynthIntelALMPass : public ScriptPass {
 			run("techmap -map +/cmp2lut.v -D LUT_WIDTH=6");
 			run("opt_expr");
 			run("opt_clean");
-			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=18 -D DSP_B_MAXWIDTH=19  -D DSP_A_MINWIDTH=2 -D DSP_B_MINWIDTH=2  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MAC18X19");
+			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=27 -D DSP_B_MAXWIDTH=27  -D DSP_A_MINWIDTH=19 -D DSP_B_MINWIDTH=19  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MUL27X27");
+			run("chtype -set $mul t:$__soft_mul");
+			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=18 -D DSP_B_MAXWIDTH=18  -D DSP_A_MINWIDTH=10 -D DSP_B_MINWIDTH=10  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MUL18X18");
+			run("chtype -set $mul t:$__soft_mul");
+			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=9 -D DSP_B_MAXWIDTH=9  -D DSP_A_MINWIDTH=2 -D DSP_B_MINWIDTH=2  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MUL9X9");
 			run("chtype -set $mul t:$__soft_mul");
 			run("alumacc");
 			run("techmap -map +/intel_alm/common/arith_alm_map.v");

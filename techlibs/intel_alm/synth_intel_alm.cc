@@ -164,6 +164,8 @@ struct SynthIntelALMPass : public ScriptPass {
 			run(stringf("read_verilog -sv -lib +/intel/%s/cells_sim.v", family_opt.c_str()));
 			run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/alm_sim.v", family_opt.c_str()));
 			run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/dff_sim.v", family_opt.c_str()));
+            run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/mem_sim.v", family_opt.c_str()));
+			run(stringf("read_verilog -specify -lib -D %s +/intel_alm/common/dsp_sim.v", family_opt.c_str()));
 
 			// Misc and common cells
 			run("read_verilog -lib +/intel/common/altpll_bb.v");
@@ -171,16 +173,36 @@ struct SynthIntelALMPass : public ScriptPass {
 			run(stringf("hierarchy -check %s", help_mode ? "-top <top>" : top_opt.c_str()));
 		}
 
-		if (flatten && check_label("flatten", "(unless -noflatten)")) {
+		if (check_label("coarse")) {
 			run("proc");
-			run("flatten");
+			if (flatten || help_mode)
+				run("flatten", "(skip if -noflatten)");
 			run("tribuf -logic");
 			run("deminout");
-		}
-
-		if (check_label("coarse")) {
-			run("synth -run coarse -lut 6");
+			run("opt_expr");
+			run("opt_clean");
+			run("check");
+			run("opt");
+			run("wreduce");
+			run("peepopt");
+			run("opt_clean");
+			run("share");
+			run("techmap -map +/cmp2lut.v -D LUT_WIDTH=6");
+			run("opt_expr");
+			run("opt_clean");
+			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=27 -D DSP_B_MAXWIDTH=27  -D DSP_A_MINWIDTH=19 -D DSP_B_MINWIDTH=19  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MUL27X27");
+			run("chtype -set $mul t:$__soft_mul");
+			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=18 -D DSP_B_MAXWIDTH=18  -D DSP_A_MINWIDTH=10 -D DSP_B_MINWIDTH=10  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MUL18X18");
+			run("chtype -set $mul t:$__soft_mul");
+			run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=9 -D DSP_B_MAXWIDTH=9  -D DSP_A_MINWIDTH=2 -D DSP_B_MINWIDTH=2  -D DSP_SIGNEDONLY  -D DSP_NAME=MISTRAL_MUL9X9");
+			run("chtype -set $mul t:$__soft_mul");
+			run("alumacc");
 			run("techmap -map +/intel_alm/common/arith_alm_map.v");
+			run("opt");
+			run("fsm");
+			run("opt -fast");
+			run("memory -nomap");
+			run("opt_clean");
 		}
 
 		if (!nobram && check_label("map_bram", "(skip if -nobram)")) {
@@ -190,7 +212,6 @@ struct SynthIntelALMPass : public ScriptPass {
 
 		if (!nolutram && check_label("map_lutram", "(skip if -nolutram)")) {
 			run("memory_bram -rules +/intel_alm/common/lutram_mlab.txt", "(for Cyclone V / Cyclone 10GX)");
-			run("techmap -map +/intel_alm/common/lutram_mlab_map.v", "(for Cyclone V / Cyclone 10GX)");
 		}
 
 		if (check_label("map_ffram")) {

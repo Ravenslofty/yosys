@@ -1,18 +1,12 @@
 `ifdef cyclonev
 `define LCELL cyclonev_lcell_comb
-<<<<<<< .merge_file_ORHbN5
 `define MLAB cyclonev_mlab_cell
-`endif
-`ifdef cyclone10gx
-`define LCELL cyclone10gx_lcell_comb
-`define MLAB cyclone10gx_mlab_cell
-=======
 `define MAC cyclonev_mac
 `endif
 `ifdef cyclone10gx
 `define LCELL cyclone10gx_lcell_comb
+`define MLAB cyclone10gx_mlab_cell
 `define MAC cyclone10gx_mac
->>>>>>> .merge_file_fRTbYa
 `endif
 
 module __MISTRAL_VCC(output Q);

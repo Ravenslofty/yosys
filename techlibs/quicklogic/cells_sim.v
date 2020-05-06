@@ -60,12 +60,12 @@ module dffc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK)
-        if (~CLR)
-            Q <= D;
-    always @(CLR)
+
+    always @(posedge CLK or posedge CLR)
         if (CLR)
             Q <= 1'b0;
+        else
+            Q <= D;
 endmodule
 
 module dffp(
@@ -78,12 +78,12 @@ module dffp(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK)
-        if (~PRE)
-            Q <= D;
-    always @(PRE)
+
+    always @(posedge CLK or posedge PRE)
         if (PRE)
             Q <= 1'b1;
+        else
+            Q <= D;
 endmodule
 
 module dffpc(
@@ -98,14 +98,14 @@ module dffpc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK)
-        if ((~PRE) && (~CLR))
-            Q <= D;
-    always @(CLR or PRE)
+
+    always @(posedge CLK or posedge CLK or posedge PRE)
         if (CLR)
             Q <= 1'b0;
         else if (PRE)
             Q <= 1'b1;
+        else
+            Q <= D;
 endmodule
 
 module dffe(
@@ -133,13 +133,12 @@ module dffec(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK)
-        if (~CLR)
-            if (EN)
-                Q <= D;
-    always @(CLR)
+
+    always @(posedge CLK or posedge CLR)
         if (CLR)
             Q <= 1'b0;
+        else if (EN)
+            Q <= D;
 endmodule
 
 module dffepc(
@@ -155,15 +154,12 @@ module dffepc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
-    always @(posedge CLK)
-        if (~CLR && ~PRE)
-            if (EN)
-                Q <= D;
-    always @(CLR or PRE)
+
+    always @(posedge CLK or posedge PRE)
         if (CLR)
-            Q <= 1'b0;
-        else if (PRE)
             Q <= 1'b1;
+        else if (EN)
+            Q <= D;
 endmodule
 
 //                  FZ       FS F2 (F1 TO 0)
@@ -422,7 +418,7 @@ module gpio_cell_macro (
     output IZ);
 
     assign IZ = INEN ? IP : 1'b0;
-    assign IP = IEN ? OQI : 1'bz;
+    assign IP = IE   ? OQI : 1'bz;
 endmodule /*  gpio_cell_macro */
 
 (* blackbox *)

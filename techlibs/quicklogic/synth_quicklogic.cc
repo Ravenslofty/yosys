@@ -98,6 +98,9 @@ struct SynthQuickLogicPass : public ScriptPass
             run("proc");
             if (flatten || help_mode)
                 run("flatten", "(with '-flatten')");
+        }
+
+        if (check_label("corase")) {
             run("tribuf -logic");
             run("opt_expr");
             run("opt_clean");
@@ -108,10 +111,16 @@ struct SynthQuickLogicPass : public ScriptPass
             run("techmap");
             run("abc -lut 1:4");
             run("opt_clean");
+        }
+
+        if (check_label("map")) {
             run("techmap -map +/quicklogic/cells_map.v");
             run("clean");
             run("check");
             run("opt_clean -purge");
+        }
+
+        if (check_label("iomap")) {
             if (help_mode) {
                 run("select -module top");
             } else {
@@ -125,6 +134,9 @@ struct SynthQuickLogicPass : public ScriptPass
                 run("select -clear");
             } else if (this->currmodule.size() > 0)
                 run("select -clear");
+        }
+
+        if (check_label("finalize")) {
             run("splitnets -ports -format ()");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");
             run("techmap -map +/quicklogic/cells_map.v");

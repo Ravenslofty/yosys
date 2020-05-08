@@ -100,7 +100,7 @@ struct SynthQuickLogicPass : public ScriptPass
                 run("flatten", "(with '-flatten')");
         }
 
-        if (check_label("corase")) {
+        if (check_label("coarse")) {
             run("tribuf -logic");
             run("opt_expr");
             run("opt_clean");

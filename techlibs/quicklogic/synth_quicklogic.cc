@@ -34,7 +34,7 @@ struct SynthQuickLogicPass : public ScriptPass
         log("\n");
     }
 
-    std::string top_opt = "-auto-top";
+    std::string top_opt = "";
     std::string edif_file = "";
     std::string blif_file = "";
     std::string currmodule = "";
@@ -91,7 +91,7 @@ struct SynthQuickLogicPass : public ScriptPass
     {
         if (check_label("begin")) {
             run("read_verilog -lib +/quicklogic/cells_sim.v");
-            run(stringf("hierarchy -check %s", top_opt.c_str()));
+            run(stringf("hierarchy -check %s", (top_opt.empty()) ? "-auto-top" : top_opt.c_str()));
         }
 
         if (check_label("prepare")) {
@@ -102,53 +102,41 @@ struct SynthQuickLogicPass : public ScriptPass
 
         if (check_label("coarse")) {
             run("tribuf -logic");
-            run("opt_expr");
+            run("deminout");
+            run("opt");
             run("opt_clean");
             run("check");
-            run("opt");
             run("peepopt");
             run("opt_clean");
+            run("check");
             run("techmap");
             run("abc -lut 1:4");
             run("opt_clean");
+            run("check");
         }
 
         if (check_label("map")) {
             run("techmap -map +/quicklogic/cells_map.v");
-            run("clean");
+            run("opt_clean");
             run("check");
-            run("opt_clean -purge");
         }
 
         if (check_label("iomap")) {
-            if (help_mode) {
-                run("select -module top");
-            } else {
-                this->currmodule = this->active_design->top_module()->name.str();
-                if (this->currmodule.size() > 0)
-                    run(stringf("select -module %s", this->currmodule.c_str()));
-            }
             run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
-            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P -ignore ckpad P");
-            if (help_mode) {
-                run("select -clear");
-            } else if (this->currmodule.size() > 0)
-                run("select -clear");
+            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P -ignore ckpad P A:top");
         }
 
         if (check_label("finalize")) {
             run("splitnets -ports -format ()");
-            run("hilomap -hicell logic_1 a -locell logic_0 a -singleton");
-            run("techmap -map +/quicklogic/cells_map.v");
             run("setundef -zero -params -undriven");
+            run("hilomap -hicell logic_1 a -locell logic_0 a -singleton A:top");
             run("opt_clean");
-            run("clean -purge");
-            run("opt");
+            run("check");
         }
 
         if (check_label("edif")) {
             if (!edif_file.empty() || help_mode) {
-                    run(stringf("write_edif -nogndvcc -attrprop -pvector par -top %s %s", this->currmodule.c_str(), edif_file.c_str()));
+                run(stringf("write_edif -nogndvcc -attrprop -pvector par %s %s", this->currmodule.c_str(), edif_file.c_str()));
             }
         }
 

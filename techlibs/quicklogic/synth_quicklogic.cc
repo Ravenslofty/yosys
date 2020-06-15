@@ -27,9 +27,6 @@ struct SynthQuickLogicPass : public ScriptPass
         log("        write the design to the specified BLIF file. writing of an output file\n");
         log("        is omitted if this parameter is not specified.\n");
         log("\n");
-        log("    -flatten\n");
-        log("        flatten design before synthesis\n");
-        log("\n");
         help_script();
         log("\n");
     }
@@ -38,12 +35,10 @@ struct SynthQuickLogicPass : public ScriptPass
     std::string edif_file = "";
     std::string blif_file = "";
     std::string currmodule = "";
-    bool flatten = false;
 
     void clear_flags() YS_OVERRIDE
     {
         top_opt = "-auto-top";
-        flatten = false;
         edif_file.clear();
         blif_file.clear();
     }
@@ -66,10 +61,6 @@ struct SynthQuickLogicPass : public ScriptPass
             }
             if (args[argidx] == "-blif" && argidx+1 < args.size()) {
                 blif_file = args[++argidx];
-                continue;
-            }
-            if (args[argidx] == "-flatten") {
-                flatten = true;
                 continue;
             }
             break;
@@ -96,8 +87,7 @@ struct SynthQuickLogicPass : public ScriptPass
 
         if (check_label("prepare")) {
             run("proc");
-            if (flatten || help_mode)
-                run("flatten", "(with '-flatten')");
+            run("flatten");
             run("wreduce -keepdc");
             run("muxpack");
         }

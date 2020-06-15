@@ -119,6 +119,7 @@ struct SynthQuickLogicPass : public ScriptPass
             run("techmap -map +/quicklogic/cells_map.v");
             run("opt_clean");
             run("check");
+            run("autoname");
         }
 
         if (check_label("iomap")) {

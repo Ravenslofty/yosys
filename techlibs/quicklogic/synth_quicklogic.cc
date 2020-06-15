@@ -98,6 +98,8 @@ struct SynthQuickLogicPass : public ScriptPass
             run("proc");
             if (flatten || help_mode)
                 run("flatten", "(with '-flatten')");
+            run("wreduce -keepdc");
+            run("muxpack");
         }
 
         if (check_label("coarse")) {
@@ -105,13 +107,11 @@ struct SynthQuickLogicPass : public ScriptPass
             run("deminout");
             run("opt");
             run("opt_clean");
-            run("check");
             run("peepopt");
-            run("opt_clean");
-            run("check");
             run("techmap");
-            run("abc -lut 1:4");
-            run("opt_clean");
+            run("muxcover -mux8 -mux4");
+            run("abc -luts 1,2,2,4");
+            run("opt");
             run("check");
         }
 

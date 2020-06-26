@@ -55,7 +55,7 @@ endmodule
 module \$_MUX4_ (A, B, C, D, S, T, U, Y);
     input A, B, C, D, S, T, U;
     output Y;
-    mux4x0 _TECHMAP_REPLACE_ (.A(A), .B(B), .C(C), .D(D), .S0(S), .S1(T), .S2(U), .Q(Y));
+    mux4x0 _TECHMAP_REPLACE_ (.A(A), .B(B), .C(C), .D(D), .S0(S), .S1(T), .Q(Y));
 endmodule
 
 module \$_DFF_N_ (D, Q, C);

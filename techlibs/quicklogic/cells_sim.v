@@ -462,23 +462,3 @@ module qlal4s3_mult_cell_macro(
     output [63:0] Cmult);
 
 endmodule
-
-// module DFFSEC(output Q, input D, CLR, EN, CLK, N_11);
-//     parameter [0:0] INIT = 1'b0;
-//     // TODO implement
-// endmodule
-// 
-// module DFFSEP(output Q, input D, CLR, EN, CLK, N_11);
-//     parameter [0:0] INIT = 1'b0;
-//     // TODO implement
-// endmodule
-// 
-// module DFFSLE_APC(output Q, input D, CLR, EN, CLK, N_11);
-//     parameter [0:0] INIT = 1'b0;
-//     // TODO implement
-// endmodule
-// 
-// module DFFSEC_APC(output Q, input D, CLR, EN, CLK, N_11);
-//     parameter [0:0] INIT = 1'b0;
-//     // TODO implement
-// endmodule

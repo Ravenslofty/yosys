@@ -82,7 +82,7 @@ struct SynthQuickLogicPass : public ScriptPass
     {
         if (check_label("begin")) {
             run("read_verilog -lib +/quicklogic/cells_sim.v");
-            run(stringf("hierarchy -check %s", (top_opt.empty()) ? "-auto-top" : top_opt.c_str()));
+            run(stringf("hierarchy -check %s", top_opt.c_str()));
         }
 
         if (check_label("prepare")) {

@@ -300,13 +300,16 @@ module logic_cell_macro(
     assign CZ = CZI;
     assign QCKP = QCKS ? QCK : ~QCK;
 
-    always @(posedge QCKP or posedge QRT or posedge QST)
-        if (QRT)
-            QZ <= 1'b0;
+
+    always @(posedge QCKP)
+        if(~QRT && ~QST)
+            if(QEN)
+                QZ = QZI;
+    always @(QRT or QST)
+        if(QRT)
+            QZ = 1'b0;
         else if (QST)
-            QZ <= 1'b1;
-        else
-            QZ <= QZI;
+            QZ = 1'b1;
 
 endmodule
 

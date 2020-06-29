@@ -200,33 +200,37 @@ module mux8x0(output Q, input S0, S1, S2, A, B, C, D, E, F, G, H);
     assign Q = S2 ? (S1 ? (S0 ? H : G) : (S0 ? F : E)) : (S1 ? (S0 ? D : C) : (S0 ? B : A));
 endmodule
 
-module inpad(...);
-    output Q;
+module inpad(
+    output Q,
     (* iopad_external_pin *)
-    input P;
+    input P
+);
     assign Q = P;
 endmodule
 
-module outpad(...);
+module outpad(
     (* iopad_external_pin *)
-    output P;
-    input A;
+    output P,
+    input A
+);
     assign P = A;
 endmodule
 
-module ckpad(...);
-    output Q;
+module ckpad(
+    output Q,
     (* iopad_external_pin *)
-    input P;
+    input P
+);
     assign Q = P;
 endmodule
 
-module bipad(...);
-    input A;
-    input EN;
-    output Q;
+module bipad(
+    input A,
+    input EN,
+    output Q,
     (* iopad_external_pin *)
-    inout P;
+    inout P
+);
     assign Q = P;
     assign P = EN ? A : 1'bz;
 endmodule

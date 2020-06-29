@@ -290,7 +290,7 @@ module qlal4s3_mult_16x16_cell (
     assign Amult_w = {{16{Amult[15]}}, Amult};
     assign Bmult_w = {{16{Bmult[15]}}, Bmult};
     assign Cmult = Cmult_w[31:0];
-    assign Valid_mult_w = {1'b0, Valid_mult[0]}
+    assign Valid_mult_w = {1'b0, Valid_mult[0]};
 
     qlal4s3_mult_32x32_cell I1 ( .Amult(Amult_w), .Bmult(Bmult_w), .Cmult(Cmult_w), .Valid_mult(Valid_mult_w));
 endmodule

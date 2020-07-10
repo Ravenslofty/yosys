@@ -2696,13 +2696,6 @@ qlal4s3b_cell_macro_bfm	 u_ASSP_bfm_inst(
 
 endmodule /* qlal4s3b_cell_macro */
 
-(* blackbox *)
-module gclkbuff (input A, output Z);
-
-assign Z = A;
-
-endmodule
-
 `timescale 1ns/10ps
 module fifo_controller_model(
 	 Rst_n,

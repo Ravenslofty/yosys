@@ -42,6 +42,7 @@ struct SynthQuickLogicPass : public ScriptPass
         log("        generate the synthesis netlist for the specified family.\n");
         log("        supported values:\n");
         log("        - pp3: PolarPro 3 \n");
+        log("        - ap3: ArcticPro 3 \n");
         log("\n");
         log("    -edif <file>\n");
         log("        write the design to the specified edif file. writing of an output file\n");
@@ -163,10 +164,15 @@ struct SynthQuickLogicPass : public ScriptPass
 
         if (check_label("map_gates")) {
             run("techmap");
+            std::string abc_opts;
+
             if (family == "pp3") {
                 run("muxcover -mux8 -mux4");
-                run("abc -luts 1,2,2,4");
+                abc_opts += " -luts 1,2,2,4";
+            } else if (family == "ap3") {
+                abc_opts += " -luts 4:4";// + lut_size_s;
             }
+            run("abc" + abc_opts);
             run("opt");
         }
 
@@ -205,10 +211,8 @@ struct SynthQuickLogicPass : public ScriptPass
         }
         
         if (check_label("iomap")) {
-            if (family == "pp3") {
-                run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
-                run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
-            }
+            run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
+            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
         }
 
         if (check_label("finalize")) {

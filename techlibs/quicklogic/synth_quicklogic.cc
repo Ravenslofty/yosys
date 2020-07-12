@@ -171,7 +171,7 @@ struct SynthQuickLogicPass : public ScriptPass
                 abc_opts += " -luts 1,2,2,4";
             } else if (family == "ap3") {
                 // Prefer LUT4 over any other size
-                abc_opts += " -luts 1,1,1,0";
+                abc_opts += " -luts 3,2,1,0";
             }
             run("abc" + abc_opts);
             run("opt");

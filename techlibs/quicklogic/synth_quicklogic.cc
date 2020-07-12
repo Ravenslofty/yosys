@@ -170,7 +170,8 @@ struct SynthQuickLogicPass : public ScriptPass
                 run("muxcover -mux8 -mux4");
                 abc_opts += " -luts 1,2,2,4";
             } else if (family == "ap3") {
-                abc_opts += " -luts 4:4";// + lut_size_s;
+                // Prefer LUT4 over any other size
+                abc_opts += " -luts 1,1,1,0";
             }
             run("abc" + abc_opts);
             run("opt");

@@ -139,7 +139,7 @@ module RAM (RADDR,RRLSEL,REN,RMODE,
     output [31:0] RDATA;
     output [3:0]  FFLAGS;
     input [2:0] 	 FIFO_DEPTH;
-    input 	 FMODE, POWERDN, PROTECT,
+    input 	 FMODE, POWERDN, PROTECT;
    
     RAM _TECHMAP_REPLACE_ (
                 .RADDR(RADDR),

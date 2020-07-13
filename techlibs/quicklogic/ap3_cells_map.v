@@ -25,15 +25,15 @@ module \$lut (A, Y);
     generate
         if (WIDTH == 1)
         begin
-            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(1'b0), .I2(1'b0), .I3(1'b0));
+            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(1'b0), .I2(1'b0), .I3(A[0]));
         end
         else if (WIDTH == 2)
         begin
-            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[1]), .I1(A[0]), .I2(1'b0), .I3(1'b0));
+            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(1'b0), .I2(A[1]), .I3(A[0]));
         end
         else if (WIDTH == 3)
         begin
-            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(A[2]), .I1(A[1]), .I2(A[0]), .I3(1'b0));
+            LUT4 #(.INIT(INIT_address_inverse(LUT))) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(A[2]), .I2(A[1]), .I3(A[0]));
         end
         else if (WIDTH == 4)
         begin

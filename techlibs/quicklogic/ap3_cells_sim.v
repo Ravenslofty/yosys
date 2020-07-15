@@ -21,6 +21,109 @@ module ff(
             CQZ <= D;
 endmodule
 
+module ck_buff ( 
+	output Q,
+    (* iopad_external_pin *)
+	input A
+);
+    
+	assign Q = A;
+
+endmodule /* ck buff */
+
+module in_buff ( 
+	output Q,
+    (* iopad_external_pin *)
+	input A
+);
+
+    assign Q = A;
+
+endmodule /* in buff */
+
+module out_buff ( 
+    (* iopad_external_pin *)
+	output Q,
+	input A
+);
+
+	assign Q = A;
+
+endmodule /* out buff */
+
+module d_buff ( 
+    (* iopad_external_pin *)
+	output Q,
+	input A,
+	input EN
+);
+
+	wire dsel_mux_op;
+
+	assign dsel_mux_op = EN ? 1'b1 : 1'b0;
+	
+	assign Q = dsel_mux_op;
+
+endmodule /* d buff */
+
+module in_reg (
+	output dataOut,
+	input clk, 
+	input sel, 
+	input hold, 
+	input rst, 
+	input dataIn
+);
+
+	wire dataIn_reg_int, dataIn_reg_int_buff;
+	wire fixhold_mux_op;
+
+	reg iqz_reg;
+
+	assign dataIn_reg_int = dataIn;
+
+	assign dataIn_reg_int_buff = dataIn_reg_int;
+
+	assign fixhold_mux_op = hold ? dataIn_reg_int_buff : dataIn_reg_int;
+
+	always @(posedge clk or posedge rst)
+	begin
+		if(rst)
+			iqz_reg <= 1'b0;
+		else
+			iqz_reg <= fixhold_mux_op;	
+	end
+
+	assign dataOut = sel ? dataIn_reg_int : iqz_reg;
+
+endmodule /* in_reg*/
+
+module out_reg (
+	output dataOut,
+	input clk, 
+	input sel,
+	input rst, 
+	input dataIn
+);
+
+	wire sel_mux_op;
+
+    reg dataOut_reg;
+
+    always @(posedge clk or posedge rst)
+    begin
+        if (rst)
+            dataOut_reg <= 1'b0;
+        else
+            dataOut_reg <= dataIn;
+    end
+
+    assign sel_mux_op = sel ? dataIn : dataOut_reg;
+
+    assign dataOut = osel_mux_op;
+
+endmodule /* out_reg*/
+
 (* blackbox *)
 module RAM (RADDR,RRLSEL,REN,RMODE,
 	    WADDR,WDATA,WEN,WMODE,

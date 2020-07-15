@@ -16,41 +16,6 @@ module buff(output Q, input A);
     assign Q = A;
 endmodule
 
-module inpad(
-    output Q,
-    (* iopad_external_pin *)
-    input P
-);
-    assign Q = P;
-endmodule
-
-module outpad(
-    (* iopad_external_pin *)
-    output P,
-    input A
-);
-    assign P = A;
-endmodule
-
-module ckpad(
-    output Q,
-    (* iopad_external_pin *)
-    input P
-);
-    assign Q = P;
-endmodule
-
-module bipad(
-    input A,
-    input EN,
-    output Q,
-    (* iopad_external_pin *)
-    inout P
-);
-    assign Q = P;
-    assign P = EN ? A : 1'bz;
-endmodule
-
 module logic_0(output a);
     assign a = 0;
 endmodule

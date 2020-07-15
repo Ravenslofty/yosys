@@ -212,8 +212,13 @@ struct SynthQuickLogicPass : public ScriptPass
         }
         
         if (check_label("iomap")) {
-            run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
-            run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
+            if (family == "pp3") {
+                run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
+                run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
+            } else if (family == "ap3") {
+                run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
+                run("iopadmap -bits -outpad out_buff A:Q -inpad in_buff Q:A -toutpad EN:A:Q A:top");
+            }
         }
 
         if (check_label("finalize")) {

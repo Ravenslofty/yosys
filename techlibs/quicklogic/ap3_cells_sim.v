@@ -54,16 +54,12 @@ endmodule /* out buff */
 module d_buff ( 
     (* iopad_external_pin *)
 	output Q,
-	input A,
 	input EN
 );
 
-	wire dsel_mux_op;
 
-	assign dsel_mux_op = EN ? 1'b1 : 1'b0;
+	assign Q = EN ? 1'b1 : 1'b0;
 	
-	assign Q = dsel_mux_op;
-
 endmodule /* d buff */
 
 module in_reg (
@@ -120,7 +116,7 @@ module out_reg (
 
     assign sel_mux_op = sel ? dataIn : dataOut_reg;
 
-    assign dataOut = osel_mux_op;
+    assign dataOut = sel_mux_op;
 
 endmodule /* out_reg*/
 

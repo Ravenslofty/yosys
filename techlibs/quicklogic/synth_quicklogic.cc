@@ -48,6 +48,9 @@ struct SynthQuickLogicPass : public ScriptPass
         log("        write the design to the specified edif file. writing of an output file\n");
         log("        is omitted if this parameter is not specified.\n");
         log("\n");
+        log("    -adder\n");
+        log("        use adder cells in output netlist\n");
+        log("\n");
         log("    -blif <file>\n");
         log("        write the design to the specified BLIF file. writing of an output file\n");
         log("        is omitted if this parameter is not specified.\n");
@@ -61,11 +64,13 @@ struct SynthQuickLogicPass : public ScriptPass
     std::string blif_file = "";
     std::string currmodule = "";
     std::string family = "";
-
+    bool inferAdder;
+    
     void clear_flags() override
     {
         top_opt = "-auto-top";
         family = "pp3";
+        inferAdder = false;
         edif_file.clear();
         blif_file.clear();
     }
@@ -88,6 +93,10 @@ struct SynthQuickLogicPass : public ScriptPass
             }
             if (args[argidx] == "-edif" && argidx+1 < args.size()) {
                 edif_file = args[++argidx];
+                continue;
+            }
+            if (args[argidx] == "-adder") {
+                inferAdder = true;
                 continue;
             }
             if (args[argidx] == "-blif" && argidx+1 < args.size()) {
@@ -180,7 +189,12 @@ struct SynthQuickLogicPass : public ScriptPass
         if (check_label("map")) {
             std::string techMapArgs = " -map +/quicklogic/cells_map.v";
             techMapArgs += " -map +/quicklogic/" + family + "_cells_map.v";
-            run("techmap" + techMapArgs);
+            if (inferAdder) {
+                techMapArgs += " -map +/quicklogic/" + family + "_arith_map.v";
+                run("techmap" + techMapArgs);
+            } else {
+                run("techmap" + techMapArgs);
+            }
             run("opt_clean");
             run("opt");
         }

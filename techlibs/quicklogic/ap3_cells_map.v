@@ -1,3 +1,4 @@
+
 module \$lut (A, Y);
     parameter WIDTH = 0;
     parameter LUT = 0;

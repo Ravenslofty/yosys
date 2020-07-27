@@ -68,6 +68,7 @@ module in_reg (
 	input sel, 
 	input hold, 
 	input rst, 
+	(* iopad_external_pin *)
 	input dataIn
 );
 
@@ -95,6 +96,7 @@ module in_reg (
 endmodule /* in_reg*/
 
 module out_reg (
+	(* iopad_external_pin *)
 	output dataOut,
 	input clk, 
 	input sel,
@@ -119,6 +121,17 @@ module out_reg (
     assign dataOut = sel_mux_op;
 
 endmodule /* out_reg*/
+
+module carry_out(
+	output CO,
+	input A,
+    input B,
+    input CI
+);
+	assign CO = ((A&B) + (B&CI) + (CI&A));
+
+endmodule
+
 
 (* blackbox *)
 module RAM (RADDR,RRLSEL,REN,RMODE,

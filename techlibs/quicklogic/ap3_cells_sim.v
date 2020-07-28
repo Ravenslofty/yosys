@@ -1,3 +1,4 @@
+(* abc9_flop, lib_whitebox *)
 module ff(
     output reg CQZ,
     input D,
@@ -30,6 +31,13 @@ module add(
 );
 
    assign {CO, S} = A + B + CI;
+endmodule
+
+(* lib_whitebox *)
+module carry (output CO, input A, B, CI);
+
+	assign CO = (A && B) || ((A || B) && CI);
+
 endmodule
 
 module ck_buff ( 

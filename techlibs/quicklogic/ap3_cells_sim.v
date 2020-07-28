@@ -21,6 +21,17 @@ module ff(
             CQZ <= D;
 endmodule
 
+module add(
+   output S,
+   output CO,
+   input A,
+   input B,
+   input CI
+);
+
+   assign {CO, S} = A + B + CI;
+endmodule
+
 module ck_buff ( 
 	output Q,
     (* iopad_external_pin *)
@@ -121,17 +132,6 @@ module out_reg (
     assign dataOut = sel_mux_op;
 
 endmodule /* out_reg*/
-
-module carry_out(
-	output CO,
-	input A,
-    input B,
-    input CI
-);
-	assign CO = ((A&B) + (B&CI) + (CI&A));
-
-endmodule
-
 
 (* blackbox *)
 module RAM (RADDR,RRLSEL,REN,RMODE,

@@ -1,4 +1,5 @@
 
+`ifndef NO_LUT
 module \$lut (A, Y);
     parameter WIDTH = 0;
     parameter LUT = 0;
@@ -46,6 +47,7 @@ module \$lut (A, Y);
         end
     endgenerate
 endmodule
+`endif
 
 module \$_DFF_ (D, CQZ, QCK, QEN, QRT, QST);
     input D;

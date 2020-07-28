@@ -1,7 +1,6 @@
 
 OBJS += techlibs/quicklogic/synth_quicklogic.o
-OBJS += techlibs/quicklogic/quicklogic_eqn.o
-OBJS += techlibs/quicklogic/pp3_braminit.o
+OBJS += techlibs/quicklogic/quicklogic_fixcarry.o
 
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/cells_map.v))
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap3_cells_map.v))

@@ -175,6 +175,18 @@ module \$_DFFSR_PPP_ (D, Q, C, R, S);
     ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(R), .QST(S));
 endmodule
 
+module \$_DLATCH_N_ (E, D, Q);
+  wire [1023:0] _TECHMAP_DO_ = "simplemap; opt";
+  input E, D;
+  output Q = !E ? D : Q;
+endmodule
+
+module \$_DLATCH_P_ (E, D, Q);
+  wire [1023:0] _TECHMAP_DO_ = "simplemap; opt";
+  input E, D;
+  output Q = E ? D : Q;
+endmodule
+
 module RAM (RADDR,RRLSEL,REN,RMODE,
 	    WADDR,WDATA,WEN,WMODE,
 	    FMODE,FFLUSH,RCLK,WCLK,RDATA,

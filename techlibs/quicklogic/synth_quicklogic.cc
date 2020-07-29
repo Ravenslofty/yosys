@@ -28,7 +28,7 @@ struct SynthQuicklogicPass : public ScriptPass
 {
 	SynthQuicklogicPass() : ScriptPass("synth_quicklogic", "synthesis for Quicklogic FPGAs") { }
 
-	void help() YS_OVERRIDE
+	void help() override
 	{
 		//   |---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|
 		log("\n");
@@ -65,7 +65,7 @@ struct SynthQuicklogicPass : public ScriptPass
     string top_opt, edif_file, blif_file, family, currmodule;
     bool inferAdder;
 
-    void clear_flags() YS_OVERRIDE
+    void clear_flags() override
     {
         top_opt = "-auto-top";
         edif_file = "";
@@ -75,7 +75,7 @@ struct SynthQuicklogicPass : public ScriptPass
         inferAdder = false;
     }
 
-    void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
+    void execute(std::vector<std::string> args, RTLIL::Design *design) override
     {
         string run_from, run_to;
         clear_flags();
@@ -118,7 +118,7 @@ struct SynthQuicklogicPass : public ScriptPass
         log_pop();
     }
 
-    void script() YS_OVERRIDE
+    void script() override
     {
         if (check_label("begin"))
         {
@@ -164,15 +164,15 @@ struct SynthQuicklogicPass : public ScriptPass
         if (check_label("map_gates"))
         {
             if (inferAdder)
-            {
-                run("techmap -map +/quicklogic/" + family + "_arith_map.v");
-            }
-            run("techmap -map +/techmap.v");
-            run("opt -fast");
-        }
+			{
+		    	run("techmap -map +/quicklogic/" + family + "_arith_map.v");
+			} 
+			run("techmap -map +/techmap.v");
+			run("opt -fast");
+		}
 
-        if (check_label("map_ffs"))
-        {
+		if (check_label("map_ffs"))
+		{
             std::string techMapArgs = " -map +/quicklogic/cells_map.v";
             techMapArgs += " -map +/quicklogic/" + family + "_cells_map.v";
             run("techmap -D NO_LUT " + techMapArgs);

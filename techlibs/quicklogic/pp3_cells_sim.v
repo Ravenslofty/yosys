@@ -19,6 +19,16 @@ module LUT3(output O, input I0, I1, I2);
     assign O = INIT[{I2, I1, I0}];
 endmodule
 
+// O:  CZ
+// I0: TA1 TA2 TB1 TB2 BA1 BA2 BB1 BB2
+// I1: TSL BSL
+// I2: TAB BAB
+// I3: TBS
+module LUT4(output O, input I0, I1, I2, I3);
+    parameter [15:0] INIT = 0;
+    assign O = INIT[{I3, I2, I1, I0}];
+endmodule
+
 module inpad(
     output Q,
     (* iopad_external_pin *)

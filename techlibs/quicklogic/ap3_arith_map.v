@@ -29,26 +29,30 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
 	(* force_downto *)
 	wire [Y_WIDTH-1:0] BB = BI ? ~B_buf : B_buf;
 	(* force_downto *)
-	wire [Y_WIDTH-1:0] C = { CO, CI };
+	wire [Y_WIDTH-1:0] C = { COx, CIx };
+
+	full_adder adder_cin (
+		.A(CI),
+		.B(1'b1),
+		.CI(1'b0),
+		.CO(CIx)
+	);
 
 	genvar i;
 	generate for (i = 0; i < Y_WIDTH; i = i + 1) begin: slice
-
-		carry carry_inst_i (
+		full_adder adder_i (
 			.A(AA[i]),
 			.B(BB[i]),
 			.CI(C[i]),
+			.S(Y[i]),
 			.CO(CO[i])
 		);
 
-		LUT4 #(
-			.INIT(16'b 1110_1000_1001_0110)
-		) adder_i (
-			.I0(AA[i]),
-			.I1(BB[i]),
-			.I2(C[i]),
-			.I3(1'b0),
-			.O(Y[i])
+		full_adder adder_cout (
+			.A(1'b0),
+			.B(1'b0),
+			.CI(COx[i]),
+			.S(CO[i])
 		);
 		
 	  end: slice	  

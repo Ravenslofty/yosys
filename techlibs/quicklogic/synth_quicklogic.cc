@@ -223,20 +223,23 @@ struct SynthQuickLogicPass : public ScriptPass {
         if (check_label("map_luts"))
         {
             std::string abc_opts;
-
+            run("freduce");
             if (family == "pp3") {
                 run("muxcover -mux8 -mux4");
                 abc_opts += " -luts 1,2,2,4";
             } else if (family == "ap3") {
                 // Prefer LUT4 over any other size
-                abc_opts += " -luts 3,2,1,0";
+                abc_opts += " -dress -lut 4"; //-luts 3,2,1,0";
             }
             run("abc" + abc_opts);
+            run("opt -fast");
 
             std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
 
             run("techmap" + techMapArgs);
-            run("clean");
+            run("opt_clean");
+            run("autoname");
+            run("check");
         }
 
         if (check_label("map_cells"))

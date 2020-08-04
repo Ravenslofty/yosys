@@ -223,7 +223,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         if (check_label("map_luts"))
         {
             std::string abc_opts;
-            run("freduce");
+            //run("freduce");
             if (family == "pp3") {
                 run("muxcover -mux8 -mux4");
                 abc_opts += " -luts 1,2,2,4";

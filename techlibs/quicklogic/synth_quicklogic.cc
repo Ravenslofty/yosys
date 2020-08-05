@@ -136,41 +136,75 @@ struct SynthQuickLogicPass : public ScriptPass {
 
     void script() YS_OVERRIDE
     {
-        if (check_label("begin"))
-        {
+        if (check_label("begin")) {
             std::string readVelArgs = " +/quicklogic/" + family + "_cells_sim.v";
-            run("read_verilog -lib +/quicklogic/cells_sim.v" + readVelArgs);
+            run("read_verilog -lib -specify +/quicklogic/cells_sim.v" + readVelArgs);
             run(stringf("hierarchy -check %s", help_mode ? "-top <top>" : top_opt.c_str()));
         }
 
-        if (check_label("flatten"))
-        {
+        if (check_label("prepare")) {
             run("proc");
             run("flatten");
+            run("tribuf -logic");
+            run("opt_expr");
+            run("opt_clean");
+            run("deminout");
+            run("opt");
         }
 
-        if (check_label("coarse"))
-        {
-            run("tribuf -logic");
-            run("deminout");
+        if (check_label("coarse")) {
             run("opt_expr");
             run("opt_clean");
             run("check");
             run("opt");
             run("wreduce -keepdc");
             run("peepopt");
+            run("pmuxtree");
             run("opt_clean");
-            run("alumacc");
             run("share");
+            run("techmap -map +/cmp2lut.v -D LUT_WIDTH=4");
+            run("opt_expr");
+            run("opt_clean");
+
+            run("alumacc");
             run("opt");
             run("fsm");
             run("opt -fast");
+<<<<<<< HEAD
 
             run("read_verilog -lib +/quicklogic/cells_sim.v");
+||||||| parent of a1151941b (Adding lut optimization support for AP3)
 
+            run("memory -nomap");
+            run("opt_clean");
+        }
+=======
+            run("memory -nomap");
+            run("opt_clean");
+        }
+>>>>>>> a1151941b (Adding lut optimization support for AP3)
+
+<<<<<<< HEAD
 			run(stringf("hierarchy -check %s", help_mode ? "-top <top>" : top_opt.c_str()));
 		}
+||||||| parent of a1151941b (Adding lut optimization support for AP3)
+        if (check_label("map_ffram"))
+        {
+            run("opt -fast -mux_undef -undriven -fine");
+            run("memory_map");
+            run("opt -undriven -fine");
+        }
+=======
+        if (check_label("map_ffram")) {
+            run("opt -fast -mux_undef -undriven -fine");
+            run("memory_map -iattr -attr !ram_block -attr !rom_block -attr logic_block "
+                    "-attr syn_ramstyle=auto -attr syn_ramstyle=registers "
+                    "-attr syn_romstyle=auto -attr syn_romstyle=logic");
+            run("opt -undriven -fine");
+        }
+>>>>>>> a1151941b (Adding lut optimization support for AP3)
 
+<<<<<<< HEAD
 		if (check_label("flatten"))
 		{
 			run("proc");
@@ -204,54 +238,77 @@ struct SynthQuickLogicPass : public ScriptPass {
 
 		if (check_label("map_gates"))
 		{
+||||||| parent of a1151941b (Adding lut optimization support for AP3)
+        if (check_label("map_gates"))
+        {
+=======
+        if (check_label("map_gates")) {
+>>>>>>> a1151941b (Adding lut optimization support for AP3)
             if (inferAdder)
             {
-                run("techmap -map +/quicklogic/" + family + "_arith_map.v");
+                run("techmap -map +/techmap.v -map +/quicklogic/" + family + "_arith_map.v");
+            } else {
+                run("techmap");
             }
-            run("techmap -map +/techmap.v");
-            run("opt -fast");
-        }
-
-        if (check_label("map_ffs"))
-        {
-            std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
-            run("techmap -D NO_LUT " + techMapArgs);
-            run("opt_expr -mux_undef");
-            run("simplemap");
-        }
-
-        if (check_label("map_luts"))
-        {
-            std::string abc_opts;
-            //run("freduce");
             if (family == "pp3") {
                 run("muxcover -mux8 -mux4");
-                abc_opts += " -luts 1,2,2,4";
-            } else if (family == "ap3") {
-                run("nlutmap -luts N_4");
-                // Prefer LUT4 over any other size
-                abc_opts += " -dress -lut 4"; //-luts 3,2,1,0";
             }
-            run("abc" + abc_opts);
+            run("opt_expr -clkinv");
             run("opt -fast");
-
-            std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
-
-            run("techmap" + techMapArgs);
+            run("opt_expr");
+            run("opt_merge");
+            run("opt_rmdff");
             run("opt_clean");
-            run("autoname");
-            run("check");
+            run("opt");
         }
 
-        if (check_label("map_cells"))
-        {
+        if (check_label("map_ffs")) {
+            if (family == "pp3") {
+                run("dff2dffe");
+            } else {
+                run("dff2dffe -direct-match $_DFF_*");
+            }
+
+            std::string techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
+            run("techmap " + techMapArgs);
+            run("opt_expr -mux_undef");
+            run("simplemap");
+            run("opt_expr");
+            run("opt_merge");
+            run("opt_rmdff");
+            run("opt_clean");
+            run("opt");
+        }
+
+        if (check_label("map_luts")) {
+            std::string techMapArgs = " -map +/quicklogic/" + family + "_latches_map.v";
+            run("techmap " + techMapArgs);
+            if (family == "pp3") {
+                run("abc -luts 1,2,2");
+            } else {
+                run("nlutmap -luts N_4");
+                run("abc -dress -lut 4 -dff");
+            }
+
+            techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
+            run("techmap " + techMapArgs);
+            run("clean");
+
+            techMapArgs = " -map +/quicklogic/" + family + "_lut_map.v";
+            run("techmap " + techMapArgs);
+            run("clean");
+            run("opt_lut -dlogic carry:A=2:B=1:CI=0");
+        }
+
+        if (check_label("map_cells")) {
+
             std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
             run("techmap" + techMapArgs);
             run("clean");
         }
 
-        if (check_label("check"))
-        {
+        if (check_label("check")) {
+            run("autoname");
             run("hierarchy -check");
             run("stat");
             run("check -noinit");
@@ -277,43 +334,17 @@ struct SynthQuickLogicPass : public ScriptPass {
 			run("clean");
 		}
 
-		if (check_label("check"))
-		{
-			run("hierarchy -check");
-			run("stat");
-			run("check -noinit");
-		}
-		
-		if (check_label("iomap")) {
-			if (family == "pp3") {
-				run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
-				run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
-			} else if (family == "ap3") {
-				run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
-				run("iopadmap -bits -outpad out_buff A:Q -inpad in_buff Q:A -toutpad EN:A:Q A:top");
-			}
-		}
+        if (check_label("edif")) {
+            if (!edif_file.empty() || help_mode)
+                run(stringf("write_edif -nogndvcc -attrprop -pvector par %s %s", this->currmodule.c_str(), edif_file.c_str()));
+        }
 
-		if (check_label("finalize")) {
-			run("splitnets -ports -format ()");
-			run("setundef -zero -params -undriven");
-			run("hilomap -hicell logic_1 a -locell logic_0 a -singleton A:top");
-			run("opt_clean");
-			run("check");
-		}
+        if (check_label("blif")) {
+            if (!blif_file.empty() || help_mode)
+                run(stringf("write_blif %s %s", top_opt.c_str(), blif_file.c_str()));
+        }
 
-		if (check_label("edif"))
-		{
-			if (!edif_file.empty() || help_mode)
-				run(stringf("write_edif -nogndvcc -attrprop -pvector par %s %s", this->currmodule.c_str(), edif_file.c_str()));
-		}
-
-		if (check_label("blif"))
-		{
-			if (!blif_file.empty() || help_mode)
-				run(stringf("write_blif %s %s", top_opt.c_str(), blif_file.c_str()));
-		}
-	}
+    }
 } SynthQuicklogicPass;
 
 PRIVATE_NAMESPACE_END

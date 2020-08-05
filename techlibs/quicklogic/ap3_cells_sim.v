@@ -28,7 +28,7 @@ module ff(
     parameter [0:0] INIT = 1'b0;
     initial CQZ = INIT;
 
-    always @(posedge CLK or posedge QRT or posedge QST)
+    always @(posedge QCK or posedge QRT or posedge QST)
         if (QRT)
             CQZ <= 1'b0;
         else if (QST)
@@ -46,6 +46,15 @@ module full_adder(
 );
 
    assign {CO, S} = A + B + CI;
+endmodule
+
+module carry(
+	output CO,
+	input A,
+	input B,
+	input CI
+);
+	assign CO = (I0 && I1) || ((I0 || I1) && CI);
 endmodule
 
 module ck_buff ( 

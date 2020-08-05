@@ -44,6 +44,7 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
 
     genvar i;
     generate for (i = 0; i < Y_WIDTH; i = i + 1) begin: slice
+        
         full_adder adder_i (
             .A(AA[i]),
             .B(BB[i]),

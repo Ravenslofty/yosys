@@ -1,0 +1,189 @@
+module \$_DFF_ (D, CQZ, QCK, QEN, QRT, QST);
+    input D;
+    input QCK;
+    input QEN;
+    input QRT;
+    input QST;
+    output CQZ;
+    ff _TECHMAP_REPLACE_ (.CQZ(CQZ), .D(D), .QCK(QCK), .QEN(QEN), .QRT(QRT), .QST(QST));
+endmodule
+
+module \$_DFF_N_ (D, Q, C);
+    input D;
+    input C;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C_INV), .QEN(1'b1), .QRT(1'b0), .QST(1'b0));
+endmodule
+
+module \$_DFF_P_ (D, Q, C);
+    input D;
+    input C;
+    output Q;
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(1'b0), .QST(1'b0));
+endmodule
+
+module \$_DFF_NN0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    wire R_INV;
+    inv clrinv (.Q(R_INV), .A(R));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C_INV), .QEN(1'b1), .QRT(R_INV), .QST(1'b0));
+endmodule
+
+module \$_DFF_NN1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    wire R_INV;
+    inv preinv (.Q(R_INV), .A(R));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C_INV), .QEN(1'b1), .QRT(1'b0), .QST(R_INV));
+endmodule
+
+module \$_DFF_NP0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C_INV), .QEN(1'b1), .QRT(R), .QST(1'b0));
+endmodule
+
+module \$_DFF_NP1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C_INV), .QEN(1'b1), .QRT(1'b0), .QST(R));
+endmodule
+
+module \$_DFF_PN0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    wire R_INV;
+    inv preinv (.Q(R_INV), .A(R));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(R_INV), .QST(1'b0));
+endmodule
+
+module \$_DFF_PN1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    wire R_INV;
+    inv preinv (.Q(R_INV), .A(R));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(1'b0), .QST(R_INV));
+endmodule
+
+module \$_DFF_PP0_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(R), .QST(1'b0));
+endmodule
+
+module \$_DFF_PP1_ (D, Q, C, R);
+    input D;
+    input C;
+    input R;
+    output Q;
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(1'b0), .QST(R));
+endmodule
+
+module \$_DFFSR_NPP_ (D, Q, C, R, S);
+    input D;
+    input C;
+    input R;
+    input S;
+    output Q;
+    wire C_INV;
+    inv clkinv (.Q(C_INV), .A(C));
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C_INV), .QEN(1'b1), .QRT(R), .QST(S));
+endmodule
+
+module \$_DFFSR_PPP_ (D, Q, C, R, S);
+    input D;
+    input C;
+    input R;
+    input S;
+    output Q;
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(1'b1), .QRT(R), .QST(S));
+endmodule
+
+module  \$_DFFE_NN_ (input D, C, E, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(!C), .QEN(!E), .QRT(1'b0), .QST(1'b0));
+    //SB_DFFNE _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(!E)); 
+ endmodule
+
+/*module  \$_DFFE_NN_ (input D, C, E, output Q); 
+    SB_DFFNE _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(!E)); 
+ endmodule*/
+
+module  \$_DFFE_PN_ (input D, C, E, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(!E), .QRT(1'b0), .QST(1'b0));
+    //SB_DFFE  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(!E)); 
+endmodule
+
+module  \$_DFFE_NP_ (input D, C, E, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(!C), .QEN(E), .QRT(1'b0), .QST(1'b0));
+    //SB_DFFNE _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E)); 
+endmodule
+
+module  \$_DFFE_PP_ (input D, C, E, output Q); 
+    //SB_DFFE  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E)); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(E), .QRT(1'b0), .QST(1'b0));
+endmodule
+
+module  \$__DFFE_NN0 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(!C), .QEN(E), .QRT(!R), .QST(1'b0));
+    //SB_DFFNER _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .R(!R)); 
+endmodule
+
+module  \$__DFFE_NN1 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(!C), .QEN(E), .QRT(1'b0), .QST(!R));
+    //SB_DFFNES _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .S(!R)); 
+endmodule
+
+module  \$__DFFE_PN0 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(E), .QRT(!R), .QST(1'b0));
+    //SB_DFFER  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .R(!R)); 
+endmodule
+
+module  \$__DFFE_PN1 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(E), .QRT(1'b0), .QST(!R));
+    //SB_DFFES  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .S(!R)); 
+endmodule
+
+module  \$__DFFE_NP0 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(!C), .QEN(E), .QRT(R), .QST(1'b0));
+    //SB_DFFNER _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .R(R)); 
+endmodule
+
+module  \$__DFFE_NP1 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(!C), .QEN(E), .QRT(1'b0), .QST(R));
+    //SB_DFFNES _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .S(R)); 
+endmodule
+
+module  \$__DFFE_PP0 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(E), .QRT(R), .QST(1'b0));
+    //SB_DFFER  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .R(R)); 
+endmodule
+
+module  \$__DFFE_PP1 (input D, C, E, R, output Q); 
+    ff _TECHMAP_REPLACE_ (.CQZ(Q), .D(D), .QCK(C), .QEN(E), .QRT(1'b0), .QST(R));
+    //SB_DFFES  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .C(C), .E(E), .S(R));
+endmodule

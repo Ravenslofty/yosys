@@ -247,20 +247,28 @@ struct SynthQuickLogicPass : public ScriptPass {
 >>>>>>> a1151941b (Adding lut optimization support for AP3)
             if (inferAdder)
             {
+                if(family == "ap3") {
+                    run("ap3_wrapcarry");
+                }
                 run("techmap -map +/techmap.v -map +/quicklogic/" + family + "_arith_map.v");
             } else {
                 run("techmap");
             }
+            run("opt -fast");
             if (family == "pp3") {
                 run("muxcover -mux8 -mux4");
             }
-            run("opt_expr -clkinv");
-            run("opt -fast");
-            run("opt_expr");
-            run("opt_merge");
-            run("opt_rmdff");
-            run("opt_clean");
-            run("opt");
+            if(family == "ap3") {
+                run("ap3_opt");
+            } else {
+                run("opt_expr -clkinv");
+                run("opt -fast");
+                run("opt_expr");
+                run("opt_merge");
+                run("opt_rmdff");
+                run("opt_clean");
+                run("opt");
+            }
         }
 
         if (check_label("map_ffs")) {
@@ -274,11 +282,15 @@ struct SynthQuickLogicPass : public ScriptPass {
             run("techmap " + techMapArgs);
             run("opt_expr -mux_undef");
             run("simplemap");
-            run("opt_expr");
-            run("opt_merge");
-            run("opt_rmdff");
-            run("opt_clean");
-            run("opt");
+            if(family == "ap3") {
+                run("ap3_opt -full");
+            } else {
+                run("opt_expr");
+                run("opt_merge");
+                run("opt_rmdff");
+                run("opt_clean");
+                run("opt");
+            }
         }
 
         if (check_label("map_luts")) {
@@ -289,23 +301,23 @@ struct SynthQuickLogicPass : public ScriptPass {
             } else if (family == "ap2") {
                 run("abc -dress -luts 5,4,4,0,2 -dff");
             } else {
-                run("nlutmap -luts N_4");
+                //run("nlutmap -luts N_4");
                 run("abc -dress -lut 4 -dff");
             }
 
+            if(family == "ap3") {
+			    run("ap3_wrapcarry -unwrap");
+            }
             techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
             run("techmap " + techMapArgs);
             run("clean");
-
-            techMapArgs = " -map +/quicklogic/" + family + "_lut_map.v";
-            run("techmap " + techMapArgs);
-            run("clean");
-            run("opt_lut -dlogic carry:A=2:B=1:CI=0");
+            run("opt_lut -dlogic QL_CARRY:I0=2:I1=1:CI=0");
         }
 
         if (check_label("map_cells")) {
 
             std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
+            techMapArgs += " -map +/quicklogic/" + family + "_lut_map.v";
             run("techmap" + techMapArgs);
             run("clean");
         }

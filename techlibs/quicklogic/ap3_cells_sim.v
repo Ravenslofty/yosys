@@ -48,13 +48,14 @@ module full_adder(
    assign {CO, S} = A + B + CI;
 endmodule
 
-module carry(
+(* lib_whitebox *)
+module QL_CARRY(
 	output CO,
-	input A,
-	input B,
+	input I0,
+	input I1,
 	input CI
 );
-	assign CO = (I0 && I1) || ((I0 || I1) && CI);
+	assign CO = ((I0 ^ I1) & CI) | (~(I0 ^ I1) & (I0 & I1)); 
 endmodule
 
 module ck_buff ( 

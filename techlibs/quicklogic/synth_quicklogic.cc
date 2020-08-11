@@ -171,31 +171,10 @@ struct SynthQuickLogicPass : public ScriptPass {
             run("opt");
             run("fsm");
             run("opt -fast");
-<<<<<<< HEAD
-
-            run("read_verilog -lib +/quicklogic/cells_sim.v");
-||||||| parent of a1151941b (Adding lut optimization support for AP3)
-
             run("memory -nomap");
             run("opt_clean");
         }
-=======
-            run("memory -nomap");
-            run("opt_clean");
-        }
->>>>>>> a1151941b (Adding lut optimization support for AP3)
 
-<<<<<<< HEAD
-			run(stringf("hierarchy -check %s", help_mode ? "-top <top>" : top_opt.c_str()));
-		}
-||||||| parent of a1151941b (Adding lut optimization support for AP3)
-        if (check_label("map_ffram"))
-        {
-            run("opt -fast -mux_undef -undriven -fine");
-            run("memory_map");
-            run("opt -undriven -fine");
-        }
-=======
         if (check_label("map_ffram")) {
             run("opt -fast -mux_undef -undriven -fine");
             run("memory_map -iattr -attr !ram_block -attr !rom_block -attr logic_block "
@@ -203,53 +182,11 @@ struct SynthQuickLogicPass : public ScriptPass {
                     "-attr syn_romstyle=auto -attr syn_romstyle=logic");
             run("opt -undriven -fine");
         }
->>>>>>> a1151941b (Adding lut optimization support for AP3)
-
-<<<<<<< HEAD
-		if (check_label("flatten"))
-		{
-			run("proc");
-			run("flatten");
-            run("wreduce -keepdc");
-            run("muxpack");
-			run("tribuf -logic");
-			run("deminout");
-			run("opt");
-			run("opt_clean");
-			run("peepopt");
-		}
-
-		if (check_label("coarse"))
-		{
-			run("synth -run coarse");
-			/*run("opt");
-			run("opt_clean");
-			run("peepopt");
-			run("techmap");
-			run("opt");
-			run("check");*/
-		}
-
-		if (check_label("map_ffram"))
-		{
-			run("opt -fast -mux_undef -undriven -fine");
-			run("memory_map");
-			run("opt -undriven -fine");
-		}
-
-		if (check_label("map_gates"))
-		{
-||||||| parent of a1151941b (Adding lut optimization support for AP3)
-        if (check_label("map_gates"))
-        {
-=======
+        
         if (check_label("map_gates")) {
->>>>>>> a1151941b (Adding lut optimization support for AP3)
-            if (inferAdder)
+            if (inferAdder && family != "pp3")
             {
-                if(family == "ap3") {
-                    run("ap3_wrapcarry");
-                }
+                run("ap3_wrapcarry");
                 run("techmap -map +/techmap.v -map +/quicklogic/" + family + "_arith_map.v");
             } else {
                 run("techmap");
@@ -258,7 +195,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             if (family == "pp3") {
                 run("muxcover -mux8 -mux4");
             }
-            if(family == "ap3") {
+            if(family != "pp3") {
                 run("ap3_opt");
             } else {
                 run("opt_expr -clkinv");
@@ -282,7 +219,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             run("techmap " + techMapArgs);
             run("opt_expr -mux_undef");
             run("simplemap");
-            if(family == "ap3") {
+            if(family != "pp3") {
                 run("ap3_opt -full");
             } else {
                 run("opt_expr");
@@ -299,14 +236,14 @@ struct SynthQuickLogicPass : public ScriptPass {
             if (family == "pp3") {
                 run("abc -luts 1,2,2");
             } else if (family == "ap2") {
-                run("abc -dress -luts 5,4,4,0,2 -dff");
+                run("abc -dress -lut 5 -dff"); //-luts 5,4,4,0,2
             } else {
                 //run("nlutmap -luts N_4");
                 run("abc -dress -lut 4 -dff");
             }
 
-            if(family == "ap3") {
-			    run("ap3_wrapcarry -unwrap");
+            if(family != "pp3") {
+                run("ap3_wrapcarry -unwrap");
             }
             techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
             run("techmap " + techMapArgs);
@@ -333,13 +270,10 @@ struct SynthQuickLogicPass : public ScriptPass {
             if (family == "pp3") {
                 run("clkbufmap -buf $_BUF_ Y:A -inpad ckpad Q:P");
                 run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
-            } else if (family == "ap2") {
+            } else {
                 run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
                 run("iopadmap -bits -outpad out_buff A:Q -inpad in_buff Q:A -toutpad EN:A:Q A:top");
-            } else if (family == "ap3") {
-                run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
-                run("iopadmap -bits -outpad out_buff A:Q -inpad in_buff Q:A -toutpad EN:A:Q A:top");
-            }
+            } 
         }
 
         if (check_label("finalize")) {

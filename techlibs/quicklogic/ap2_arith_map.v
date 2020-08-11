@@ -17,10 +17,6 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
     (* force_downto *)
     output [Y_WIDTH-1:0] CO;
 
-    wire CIx;
-    (* force_downto *)
-    wire [Y_WIDTH-1:0] COx;
-
     wire _TECHMAP_FAIL_ = Y_WIDTH <= 2;
 
     (* force_downto *)
@@ -33,32 +29,22 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
     (* force_downto *)
     wire [Y_WIDTH-1:0] BB = BI ? ~B_buf : B_buf;
     (* force_downto *)
-    wire [Y_WIDTH-1:0] C = { COx, CIx };
-
-    full_adder adder_cin (
-        .A(CI),
-        .B(1'b1),
-        .CI(1'b0),
-        .CO(CIx)
-    );
+    wire [Y_WIDTH-1:0] C = {CO, CI};
 
     genvar i;
     generate for (i = 0; i < Y_WIDTH; i = i + 1) begin: slice
-        
-        full_adder adder_i (
-            .A(AA[i]),
-            .B(BB[i]),
-            .CI(C[i]),
-            .S(Y[i]),
-            .CO(COx[i])
-        );
-
-        full_adder adder_cout (
-            .A(1'b0),
-            .B(1'b0),
-            .CI(COx[i]),
-            .S(CO[i])
-        );
+        \$__AP3_CARRY_WRAPPER #(
+            .LUT(16'b 1110_1000_1001_0110),
+            .I2_IS_CI(1'b1)
+        ) carry (
+			.A(AA[i]),
+			.B(BB[i]),
+			.CI(C[i]),
+			.I2(1'bx),
+			.I3(1'b0),
+			.CO(CO[i]),
+			.O(Y[i])
+		);
 
     end: slice	  
     endgenerate

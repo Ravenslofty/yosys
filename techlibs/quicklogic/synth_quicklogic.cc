@@ -236,7 +236,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             if (family == "pp3") {
                 run("abc -luts 1,2,2");
             } else if (family == "ap2") {
-                run("abc -dress -luts 5,4,4,1,3 -dff"); //-luts 5,4,4,0,2
+                run("abc -dress -lut 4:5 -dff"); //-luts 5,4,4,1,3
             } else {
                 //run("nlutmap -luts N_4");
                 run("abc -dress -lut 4 -dff");

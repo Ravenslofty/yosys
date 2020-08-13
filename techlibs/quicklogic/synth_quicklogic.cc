@@ -234,7 +234,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             std::string techMapArgs = " -map +/quicklogic/" + family + "_latches_map.v";
             run("techmap " + techMapArgs);
             if (family == "pp3") {
-                run("abc -luts 1,2,2");
+                run("abc -lut 3"); // -luts 1,2,2
             } else if (family == "ap2") {
                 run("abc -dress -lut 4:5 -dff"); //-luts 5,4,4,1,3
             } else {

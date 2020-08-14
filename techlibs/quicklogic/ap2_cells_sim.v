@@ -6,7 +6,9 @@ module LUT4(
    input I2,
    input I3
 );
-    parameter [15:0] INIT = 0;
+    parameter [15:0] INIT = 16'h0;
+	parameter EQN = "(I0)";
+    
     wire [7:0] s3 = I3 ? INIT[15:8] : INIT[7:0];
 	wire [3:0] s2 = I2 ?       s3[ 7:4] :       s3[3:0];
 	wire [1:0] s1 = I1 ?       s2[ 3:2] :       s2[1:0];
@@ -14,14 +16,22 @@ module LUT4(
 endmodule
 
 (* abc9_lut=1, lib_whitebox *)
-module LUT5(output O, input I0, I1, I2, I3, I4);
-  parameter [31:0] INIT = 0;
-  wire [15: 0] s4 = I4 ? INIT[31:16] : INIT[15: 0];
-  wire [ 7: 0] s3 = I3 ?   s4[15: 8] :   s4[ 7: 0];
-  wire [ 3: 0] s2 = I2 ?   s3[ 7: 4] :   s3[ 3: 0];
-  wire [ 1: 0] s1 = I1 ?   s2[ 3: 2] :   s2[ 1: 0];
-  assign O = I0 ? s1[1] : s1[0];
-  
+module LUT5(
+    output O, 
+    input I0, 
+    input I1,
+    input I2,
+    input I3,
+    input I4
+);
+    parameter [31:0] INIT = 32'h0;
+    parameter EQN = "(I0)";
+
+    wire [15: 0] s4 = I4 ? INIT[31:16] : INIT[15: 0];
+    wire [ 7: 0] s3 = I3 ?   s4[15: 8] :   s4[ 7: 0];
+    wire [ 3: 0] s2 = I2 ?   s3[ 7: 4] :   s3[ 3: 0];
+    wire [ 1: 0] s1 = I1 ?   s2[ 3: 2] :   s2[ 1: 0];
+    assign O = I0 ? s1[1] : s1[0];
 endmodule
 
 module dff(
@@ -158,13 +168,13 @@ module dffsep(
 	input CLK,
 	input EN,
     (* clkbuf_sink *)
-    input PRE
+    input P
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
     
-	always @(posedge CLK or posedge PRE)
-        if (PRE)
+	always @(posedge CLK or posedge P)
+        if (P)
             Q <= 1'b1;
         else if (EN)
             Q <= D;

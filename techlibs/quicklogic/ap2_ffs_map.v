@@ -58,7 +58,7 @@ module  \$__DFFE_NN0 (input D, C, E, R, output Q);
 endmodule
 
 module  \$__DFFE_NN1 (input D, C, E, R, output Q); 
-    dffsep _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(!C), .EN(E), .PRE(!R)); 
+    dffsep _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(!C), .EN(E), .P(!R)); 
 endmodule
 
 module  \$__DFFE_PN0 (input D, C, E, R, output Q); 
@@ -66,7 +66,7 @@ module  \$__DFFE_PN0 (input D, C, E, R, output Q);
 endmodule
 
 module  \$__DFFE_PN1 (input D, C, E, R, output Q); 
-    dffsep  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(C), .EN(E), .PRE(!R));
+    dffsep  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(C), .EN(E), .P(!R));
 endmodule
 
 module  \$__DFFE_NP0 (input D, C, E, R, output Q); 
@@ -74,7 +74,7 @@ module  \$__DFFE_NP0 (input D, C, E, R, output Q);
 endmodule
 
 module  \$__DFFE_NP1 (input D, C, E, R, output Q); 
-    dffsep _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(!C), .EN(E), .PRE(R)); 
+    dffsep _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(!C), .EN(E), .P(R)); 
 endmodule
 
 module  \$__DFFE_PP0 (input D, C, E, R, output Q); 
@@ -82,5 +82,5 @@ module  \$__DFFE_PP0 (input D, C, E, R, output Q);
 endmodule
 
 module  \$__DFFE_PP1 (input D, C, E, R, output Q); 
-    dffsep  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(C), .EN(E), .PRE(R)); 
+    dffsep  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(C), .EN(E), .P(R)); 
 endmodule

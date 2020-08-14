@@ -1,6 +1,7 @@
 
 OBJS += techlibs/quicklogic/synth_quicklogic.o
 OBJS += techlibs/quicklogic/ap3_opt.o
+OBJS += techlibs/quicklogic/quicklogic_eqn.o
 #OBJS += techlibs/quicklogic/quicklogic_fixcarry.o
 
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap3_ffs_map.v))

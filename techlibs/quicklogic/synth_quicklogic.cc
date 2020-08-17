@@ -188,7 +188,7 @@ struct SynthQuickLogicPass : public ScriptPass
         if (check_label("map_luts")) {
             std::string techMapArgs = " -map +/quicklogic/" + family + "_latches_map.v";
             run("techmap " + techMapArgs);
-            run("abc -lut 4"); // -luts 1,2,2
+            run("abc -luts 1,2,2"); //
 
             techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
             run("techmap " + techMapArgs);

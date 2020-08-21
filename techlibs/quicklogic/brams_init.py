@@ -1,26 +1,28 @@
 #!/usr/bin/env python3
+with open("techlibs/quicklogic/bram_init_8_16.vh", "w") as f:
+    init_snippets = []
+    for i in range(0, 2048):
+        init_snippets.append("INIT[%4d*8 +: 8]" % (i))
+        init_snippets.append("1'b0")
+    init_snippets = list(reversed(init_snippets))
+    for k in range(8, 4096, 8):
+        init_snippets[k] = "\n          " + init_snippets[k]
+    print(".INIT({%s})," % (", ".join(init_snippets)), file=f)
 
-with open("techlibs/quicklogic/brams_init_9.vh", "w") as f:
-    for i in range(4):
-        init_snippets = [" INIT[%3d*9+8]" % (k+256*i,) for k in range(255, -1, -1)]
-        for k in range(4, 256, 4):
-            init_snippets[k] = "\n           " + init_snippets[k]
-        print(".INITP_%02X({%s})," % (i, ",".join(init_snippets)), file=f)
-    for i in range(32):
-        init_snippets = [" INIT[%3d*9 +: 8]" % (k+32*i,) for k in range(31, -1, -1)]
-        for k in range(4, 32, 4):
-            init_snippets[k] = "\n          " + init_snippets[k]
-        print(".INIT_%02X({%s})," % (i, ",".join(init_snippets)), file=f)
-
-with open("techlibs/quicklogic/brams_init_18.vh", "w") as f:
-    for i in range(8):
-        init_snippets = [" INIT[%3d*9+8]" % (k+256*i,) for k in range(255, -1, -1)]
-        for k in range(4, 256, 4):
-            init_snippets[k] = "\n           " + init_snippets[k]
-        print(".INITP_%02X({%s})," % (i, ",".join(init_snippets)), file=f)
-    for i in range(64):
-        init_snippets = [" INIT[%3d*9 +: 8]" % (k+32*i,) for k in range(31, -1, -1)]
-        for k in range(4, 32, 4):
-            init_snippets[k] = "\n          " + init_snippets[k]
-        print(".INIT_%02X({%s})," % (i, ",".join(init_snippets)), file=f)
-
+with open("techlibs/quicklogic/bram_init_32.vh", "w") as f:
+    init_snippets = []
+    for i in range(0, 2048, 4):
+        init_snippets.append("INIT[%4d*8 +: 8]" % (i))
+        init_snippets.append("1'b0")
+        init_snippets.append("INIT[%4d*8 +: 8]" % (i+1))
+        init_snippets.append("1'b0")
+    #init_snippets = list(reversed(init_snippets))
+    for i in range(2, 2049, 4):
+        init_snippets.append("INIT[%4d*8 +: 8]" % (i))
+        init_snippets.append("1'b0")
+        init_snippets.append("INIT[%4d*8 +: 8]" % (i+1))
+        init_snippets.append("1'b0")
+    init_snippets = list(reversed(init_snippets))
+    for k in range(8, 4096, 8):
+        init_snippets[k] = "\n          " + init_snippets[k]
+    print(".INIT({%s})," % (", ".join(init_snippets)), file=f)

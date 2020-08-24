@@ -59,7 +59,6 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 
 	generate if (CFG_DBITS <= 16) begin
        	ram8k_2x1_cell_macro #(
-                        //.INIT(INIT)
 			`include "bram_init_8_16.vh"
 		) _TECHMAP_REPLACE_ (			
 			.A1_0(B1ADDR) ,
@@ -127,7 +126,6 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   );
          end else  if (CFG_DBITS <= 32) begin
        	 ram8k_2x1_cell_macro #(
-                        //.INIT(INIT)
 			`include "bram_init_32.vh"
 		) _TECHMAP_REPLACE_ (			
 			.A1_0(B1ADDR) ,
@@ -284,7 +282,7 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 			.ASYNC_FLUSH_1(GND), //chk
 			.ASYNC_FLUSH_S0(GND),
 			.ASYNC_FLUSH_S1(GND),
-			.CLK1_0(WClk0),
+			.CLK1_0(CLK2),
 			.CLK1_1(GND),
 			.CLK1S_0(!CLKPOL2),
 			.CLK1S_1(GND),

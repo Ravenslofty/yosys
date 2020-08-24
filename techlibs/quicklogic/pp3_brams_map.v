@@ -271,7 +271,6 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 
 	//generate begin
        	ram8k_2x1_cell_macro #(
-            //.INIT(INIT)
             `include "bram_init_8_16.vh"
         ) _TECHMAP_REPLACE_ (			
 			.A1_0(B1ADDR_11) ,

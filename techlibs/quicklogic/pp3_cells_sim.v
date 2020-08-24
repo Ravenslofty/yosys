@@ -3423,6 +3423,13 @@ module ram(
 parameter ADDRWID = 8;
 parameter DEPTH = (1<<ADDRWID);
 
+parameter [9215:0] init_1 = 9216'bx;
+parameter init_ram="init.mem";
+parameter init_ad = 0;
+
+parameter data_width_int = 16;
+parameter data_depth_int = 1024;
+
 	output	[`DATAWID-1:0]	QA;
 	input										CLKA;
 	input										CENA;
@@ -3513,6 +3520,7 @@ parameter DEPTH = (1<<ADDRWID);
 //  assign	QB	= O2;
 
 	reg		[`DATAWID-1:0]	ram[DEPTH-1:0];
+	reg		[data_width_int-1 :0]	ram_dum[data_depth_int-1:0];
 	reg		[`DATAWID-1:0]	wrData1;
 	reg		[`DATAWID-1:0]	wrData2;
 	wire	[`DATAWID-1:0]	tmpData1;
@@ -3536,14 +3544,21 @@ assign	QB = QBreg | O2;
 	
 	assign	overlap	= ( A1_f == A2_f ) & WEN1_f & WEN2_f;
 	
-	initial
-	begin
+    initial begin
+		$readmemb(init_ram,ram_dum);
+    #10
 		for( i = 0; i < DEPTH; i = i+1 )
 		begin
-			ram[i]	= 18'bxxxxxxxxxxxxxxxxxx;
+			//ram[i]	= 18'bxxxxxxxxxxxxxxxxxx;
+			if (data_width_int > 16)
+			  ram[i] <= {1'b0,ram_dum[i][((16*init_ad)+16)-1:((16*init_ad)+8)],1'b0,ram_dum[i][((16*init_ad)+8)-1: (16*init_ad)]};
+            else if (data_width_int <= 8)
+			  ram[i] <= {1'b0,ram_dum[i+1+(1024*init_ad)][7:0],1'b0,ram_dum[i+(1024*init_ad)][7:0]};
+            else
+              ram[i] <= {1'b0,ram_dum[i+(512*init_ad)][15:8],1'b0,ram_dum[i+(512*init_ad)][7:0]};
 		end
-	end
-	
+    end 
+
 	always@( WENB1 or I1 or tmpData1 )
 	begin
 		for( j = 0; j < 9; j = j+1 )
@@ -3558,7 +3573,6 @@ assign	QB = QBreg | O2;
 	
 	always@( posedge CLKA )
 	begin
-		//O1	<= CEN1 ? 18'bxxxxxxxxxxxxxxxxxx : ram[A1];
 		if( ~WEN1 & ~CEN1 )
 		begin
 			ram[A1]	<= wrData1[`DATAWID-1:0];
@@ -3609,8 +3623,6 @@ assign	QB = QBreg | O2;
 	
 	always@( posedge CLKB )
 	begin
-		
-		//O2	<= CEN2 ? 18'bxxxxxxxxxxxxxxxxxx : ram[A2];
 		if( ~WEN2 & ~CEN2 )
 		begin
 			ram[A2]	<= wrData2[`DATAWID-1:0];
@@ -3694,7 +3706,17 @@ module x2_model(
 									ram1_WENBA
 								);
 
-parameter ADDRWID = 10;								
+parameter ADDRWID = 10;	
+parameter [18431:0] INIT = 18432'bx;	
+parameter init_ram1="init1.mem";	
+parameter init_ram2="init2.mem"; 
+parameter init_ad1 = 0;
+parameter init_ad2 = 1;
+parameter data_width_int0 = 16;
+parameter data_depth_int0 = 1024; 
+parameter data_width_int1 = 16;
+parameter data_depth_int1 = 1024;
+					
 
 	input										Concat_En;      
 	
@@ -3736,10 +3758,10 @@ parameter ADDRWID = 10;
 	reg		[`WEWID-1:0]		ram1_WENBA_SEL;
 	reg		[`WEWID-1:0]		ram1_WENBB_SEL;
 	
-  reg										ram0_A_x9_SEL;
-  reg										ram0_B_x9_SEL;
-  reg										ram1_A_x9_SEL;
-  reg										ram1_B_x9_SEL;
+    reg										ram0_A_x9_SEL;
+    reg										ram0_B_x9_SEL;
+    reg										ram1_A_x9_SEL;
+    reg										ram1_B_x9_SEL;
   
 	reg		[ADDRWID-3:0]	ram0_AA_SEL;
 	reg		[ADDRWID-3:0]	ram0_AB_SEL;
@@ -3760,8 +3782,8 @@ parameter ADDRWID = 10;
 	reg										ram1_A_mux_ctl_Q;
 	reg										ram1_B_mux_ctl_Q;
 	
-  reg										ram0_O_mux_ctrl_Q;
-  reg										ram1_O_mux_ctrl_Q;
+    reg										ram0_O_mux_ctrl_Q;
+    reg										ram1_O_mux_ctrl_Q;
   
 	reg										ram_AA_ram_SEL_Q;
 	reg										ram_AB_ram_SEL_Q;
@@ -3853,7 +3875,7 @@ parameter ADDRWID = 10;
 	assign QA_1_SEL1	= ( ram1_PLRDA_SEL ) ? QA_1_Q : QA_1 ;
 	assign QB_1_SEL1	= ( ram1_PLRDB_SEL ) ? QB_1_Q : QB_1 ;
 	
-  assign QA_1_SEL3	= ram1_O_mux_ctrl_Q ? QA_1_SEL2 : QA_0_SEL2;
+    assign QA_1_SEL3	= ram1_O_mux_ctrl_Q ? QA_1_SEL2 : QA_0_SEL2;
 	
 	assign QA_0_SEL2[8:0]	= ram0_A_mux_ctl_Q ? QA_0_SEL1[17:9] : QA_0_SEL1[8:0] ;
 	assign QB_0_SEL2[8:0]	= ram0_B_mux_ctl_Q ? QB_0_SEL1[17:9] : QB_0_SEL1[8:0] ;
@@ -3990,10 +4012,15 @@ parameter ADDRWID = 10;
 			ram1_WENBB_SEL[1]	<= ram0_WIDTH_SELB[1] | ( ram0_WIDTH_SELA[1] | ( ( ~|ram0_WIDTH_SELB & ram1_WENBA[0] ) | ( |ram0_WIDTH_SELB & ram1_WENBA[1] ) ) | ( ~ram0_AB[0] | ( ~ram0_WIDTH_SELB[0] & ~ram0_AB[1] ) ) );
 		end
 	end
-  
 
-
-	ram	#(.ADDRWID(ADDRWID-2)) ram0_inst(
+    ram	#(.ADDRWID(ADDRWID-2),
+          .init_1(INIT[ 0*9216 +: 9216]),
+          .init_ram(init_ram1),
+		  .data_width_int(data_width_int0),  
+		  .data_depth_int(data_depth_int0),
+          .init_ad(init_ad1)
+		  ) 
+						ram0_inst(
 									.AA( ram0_AA_SEL ),
 									.AB( ram0_AB_SEL ),
 									.CLKA( ram0_CEA ),
@@ -4010,7 +4037,14 @@ parameter ADDRWID = 10;
 									.QB( QB_0 )
 								);
 
-	ram	#(.ADDRWID(ADDRWID-2)) ram1_inst(
+	ram	#(.ADDRWID(ADDRWID-2),
+		  .init_1(INIT[ 1*9216 +: 9216]),
+		  .init_ram(init_ad2?init_ram1:init_ram2),
+		  .data_width_int(init_ad2?data_width_int0:data_width_int1),
+		  .data_depth_int(init_ad2?data_depth_int0:data_depth_int1),
+		  .init_ad(init_ad2)
+		  ) 
+						ram1_inst(
 									.AA( ram1_AA_SEL ),
 									.AB( ram1_AB_SEL ),
 									.CLKA( ram1_CEA ),
@@ -4087,6 +4121,15 @@ module ram_block_8K (
 								aFlushN_1
 				
                               );
+
+parameter [18431:0] INIT = 18432'bx;
+parameter init_ram1="init1.mem";	
+parameter init_ram2="init2.mem";
+parameter data_width_int0 = 16;
+parameter data_depth_int0 = 1024;
+parameter data_width_int1 = 16;
+parameter data_depth_int1 = 1024;
+parameter init_ad = 1;
 
   input                   CLK1_0;
   input                   CLK2_0;
@@ -4186,7 +4229,17 @@ module ram_block_8K (
   assign RAM1_CS1_SEL = ( FIFO_EN_1 ? CS1_1 : ~CS1_1 );
   assign RAM1_CS2_SEL = ( FIFO_EN_1 ? CS2_1 : ~CS2_1 );
 
-  x2_model #(.ADDRWID(`ADDRWID)) x2_8K_model_inst(
+  x2_model #(.ADDRWID(`ADDRWID),
+			 .INIT(INIT),
+			 .init_ram1(init_ram1),
+			 .init_ram2(init_ram2),
+			 .data_width_int0(data_width_int0), 
+			 .data_depth_int0(data_depth_int0),
+			 .data_width_int1(data_width_int1), 
+			 .data_depth_int1(data_depth_int1),
+			 .init_ad2(init_ad)
+			) 
+			x2_8K_model_inst(
                             .Concat_En( Concat_En_SEL ),
                             
                             .ram0_WIDTH_SELA( WIDTH_SELECT1_0 ),
@@ -4355,7 +4408,14 @@ module ram8k_2x1_cell (
 
 );
 
-
+parameter [18431:0] INIT = 18432'bx;
+parameter init_ram1="init1.mem";	
+parameter init_ram2="init2.mem";
+parameter data_width_int0 = 16;
+parameter data_depth_int0 = 1024;
+parameter data_width_int1 = 16;
+parameter data_depth_int1 = 1024;
+parameter init_ad = 1;
 
   input                   CLK1_0;
   input                   CLK2_0;
@@ -4513,7 +4573,16 @@ sw_mux RAM1_WidSel1_port2 (.port_out(RAM1_Wid_Sel1_port2), .default_port(WIDTH_S
 
 
 
-ram_block_8K ram_block_8K_inst (  
+ram_block_8K 	# (.INIT(INIT),
+				   .init_ram1(init_ram1),
+				   .init_ram2(init_ram2),
+				   .data_width_int0(data_width_int0), 
+				   .data_depth_int0(data_depth_int0),
+				   .data_width_int1(data_width_int1), 
+				   .data_depth_int1(data_depth_int1),
+				   .init_ad(init_ad)
+				   )
+				ram_block_8K_inst (  
                                 .CLK1_0(RAM0_clk_port1),
                                 .CLK2_0(RAM0_clk_port2),
                                 .WD_0(WD_0),
@@ -4569,7 +4638,16 @@ ram_block_8K ram_block_8K_inst (
 endmodule
 
 (* blackbox *)
-module ram8k_2x1_cell_macro (
+module ram8k_2x1_cell_macro # (parameter [18431:0] INIT = 18432'bx,
+							   parameter init_ram1="init1.mem",	
+							   parameter init_ram2="init2.mem",
+							   parameter data_width_int0 = 16,
+							   parameter data_depth_int0 = 1024,
+							   parameter data_width_int1 = 16,
+							   parameter data_depth_int1 = 1024,
+                               parameter init_ad = 1
+							   ) 
+    (
     input [10:0] A1_0,
     input [10:0] A1_1,
     input [10:0] A2_0,
@@ -4602,8 +4680,18 @@ module ram8k_2x1_cell_macro (
     input SD,DS,LS,SD_RB1,LS_RB1,DS_RB1,RMEA,RMEB,TEST1A,TEST1B,
     input [3:0] RMA,
     input [3:0] RMB);
-	
-	ram8k_2x1_cell I1  ( .A1_0({ A1_0[10:0] }) , .A1_1({ A1_1[10:0] }),
+
+
+	ram8k_2x1_cell   # (.INIT(INIT),
+						.init_ram1(init_ram1),
+						.init_ram2(init_ram2),
+						.data_width_int0(data_width_int0), 
+						.data_depth_int0(data_depth_int0),
+						.data_width_int1(data_width_int1), 
+						.data_depth_int1(data_depth_int1),
+					    .init_ad(init_ad)
+						)
+				I1  ( .A1_0({ A1_0[10:0] }) , .A1_1({ A1_1[10:0] }),
                      .A2_0({ A2_0[10:0] }) , .A2_1({ A2_1[10:0] }),
                      .Almost_Empty_0(Almost_Empty_0),
                      .Almost_Empty_1(Almost_Empty_1),

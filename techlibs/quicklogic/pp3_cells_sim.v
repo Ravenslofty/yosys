@@ -3423,7 +3423,7 @@ module ram(
 parameter ADDRWID = 8;
 parameter DEPTH = (1<<ADDRWID);
 
-parameter [9215:0] init_1 = 9216'bx;
+parameter [9215:0] init = 9216'bx;
 parameter init_ram="init.mem";
 parameter init_ad = 0;
 
@@ -3545,11 +3545,12 @@ assign	QB = QBreg | O2;
 	assign	overlap	= ( A1_f == A2_f ) & WEN1_f & WEN2_f;
 	
     initial begin
-		$readmemb(init_ram,ram_dum);
+	 `ifndef YOSYS
+		$readmemh(init_ram,ram_dum);
+     `endif
     #10
 		for( i = 0; i < DEPTH; i = i+1 )
 		begin
-			//ram[i]	= 18'bxxxxxxxxxxxxxxxxxx;
 			if (data_width_int > 16)
 			  ram[i] <= {1'b0,ram_dum[i][((16*init_ad)+16)-1:((16*init_ad)+8)],1'b0,ram_dum[i][((16*init_ad)+8)-1: (16*init_ad)]};
             else if (data_width_int <= 8)
@@ -3708,15 +3709,12 @@ module x2_model(
 
 parameter ADDRWID = 10;	
 parameter [18431:0] INIT = 18432'bx;	
-parameter init_ram1="init1.mem";	
-parameter init_ram2="init2.mem"; 
+parameter init_ram="init.mem";	
 parameter init_ad1 = 0;
 parameter init_ad2 = 1;
-parameter data_width_int0 = 16;
-parameter data_depth_int0 = 1024; 
-parameter data_width_int1 = 16;
-parameter data_depth_int1 = 1024;
-					
+parameter data_width_int = 16;
+parameter data_depth_int = 1024; 
+			
 
 	input										Concat_En;      
 	
@@ -4014,10 +4012,10 @@ parameter data_depth_int1 = 1024;
 	end
 
     ram	#(.ADDRWID(ADDRWID-2),
-          .init_1(INIT[ 0*9216 +: 9216]),
-          .init_ram(init_ram1),
-		  .data_width_int(data_width_int0),  
-		  .data_depth_int(data_depth_int0),
+          .init(INIT[ 0*9216 +: 9216]),
+          .init_ram(init_ram),
+		  .data_width_int(data_width_int),  
+		  .data_depth_int(data_depth_int),
           .init_ad(init_ad1)
 		  ) 
 						ram0_inst(
@@ -4038,10 +4036,10 @@ parameter data_depth_int1 = 1024;
 								);
 
 	ram	#(.ADDRWID(ADDRWID-2),
-		  .init_1(INIT[ 1*9216 +: 9216]),
-		  .init_ram(init_ad2?init_ram1:init_ram2),
-		  .data_width_int(init_ad2?data_width_int0:data_width_int1),
-		  .data_depth_int(init_ad2?data_depth_int0:data_depth_int1),
+		  .init(INIT[ 1*9216 +: 9216]),
+		  .init_ram(init_ram),
+		  .data_width_int(data_width_int),
+		  .data_depth_int(data_depth_int),
 		  .init_ad(init_ad2)
 		  ) 
 						ram1_inst(
@@ -4123,13 +4121,9 @@ module ram_block_8K (
                               );
 
 parameter [18431:0] INIT = 18432'bx;
-parameter init_ram1="init1.mem";	
-parameter init_ram2="init2.mem";
-parameter data_width_int0 = 16;
-parameter data_depth_int0 = 1024;
-parameter data_width_int1 = 16;
-parameter data_depth_int1 = 1024;
-parameter init_ad = 1;
+parameter init_ram="init.mem";	
+parameter data_width_int = 16;
+parameter data_depth_int = 1024;
 
   input                   CLK1_0;
   input                   CLK2_0;
@@ -4231,13 +4225,9 @@ parameter init_ad = 1;
 
   x2_model #(.ADDRWID(`ADDRWID),
 			 .INIT(INIT),
-			 .init_ram1(init_ram1),
-			 .init_ram2(init_ram2),
-			 .data_width_int0(data_width_int0), 
-			 .data_depth_int0(data_depth_int0),
-			 .data_width_int1(data_width_int1), 
-			 .data_depth_int1(data_depth_int1),
-			 .init_ad2(init_ad)
+			 .init_ram(init_ram),
+			 .data_width_int(data_width_int), 
+			 .data_depth_int(data_depth_int)
 			) 
 			x2_8K_model_inst(
                             .Concat_En( Concat_En_SEL ),
@@ -4409,13 +4399,9 @@ module ram8k_2x1_cell (
 );
 
 parameter [18431:0] INIT = 18432'bx;
-parameter init_ram1="init1.mem";	
-parameter init_ram2="init2.mem";
-parameter data_width_int0 = 16;
-parameter data_depth_int0 = 1024;
-parameter data_width_int1 = 16;
-parameter data_depth_int1 = 1024;
-parameter init_ad = 1;
+parameter init_ram="init.mem";	
+parameter data_width_int = 16;
+parameter data_depth_int = 1024;
 
   input                   CLK1_0;
   input                   CLK2_0;
@@ -4574,13 +4560,9 @@ sw_mux RAM1_WidSel1_port2 (.port_out(RAM1_Wid_Sel1_port2), .default_port(WIDTH_S
 
 
 ram_block_8K 	# (.INIT(INIT),
-				   .init_ram1(init_ram1),
-				   .init_ram2(init_ram2),
-				   .data_width_int0(data_width_int0), 
-				   .data_depth_int0(data_depth_int0),
-				   .data_width_int1(data_width_int1), 
-				   .data_depth_int1(data_depth_int1),
-				   .init_ad(init_ad)
+				   .init_ram(init_ram),
+				   .data_width_int(data_width_int), 
+				   .data_depth_int(data_depth_int)
 				   )
 				ram_block_8K_inst (  
                                 .CLK1_0(RAM0_clk_port1),
@@ -4639,13 +4621,9 @@ endmodule
 
 (* blackbox *)
 module ram8k_2x1_cell_macro # (parameter [18431:0] INIT = 18432'bx,
-							   parameter init_ram1="init1.mem",	
-							   parameter init_ram2="init2.mem",
-							   parameter data_width_int0 = 16,
-							   parameter data_depth_int0 = 1024,
-							   parameter data_width_int1 = 16,
-							   parameter data_depth_int1 = 1024,
-                               parameter init_ad = 1
+							   parameter init_ram="init.mem",	
+							   parameter data_width_int = 16,
+							   parameter data_depth_int = 1024
 							   ) 
     (
     input [10:0] A1_0,
@@ -4683,13 +4661,9 @@ module ram8k_2x1_cell_macro # (parameter [18431:0] INIT = 18432'bx,
 
 
 	ram8k_2x1_cell   # (.INIT(INIT),
-						.init_ram1(init_ram1),
-						.init_ram2(init_ram2),
-						.data_width_int0(data_width_int0), 
-						.data_depth_int0(data_depth_int0),
-						.data_width_int1(data_width_int1), 
-						.data_depth_int1(data_depth_int1),
-					    .init_ad(init_ad)
+						.init_ram(init_ram),
+						.data_width_int(data_width_int), 
+						.data_depth_int(data_depth_int)
 						)
 				I1  ( .A1_0({ A1_0[10:0] }) , .A1_1({ A1_1[10:0] }),
                      .A2_0({ A2_0[10:0] }) , .A2_1({ A2_1[10:0] }),

@@ -146,6 +146,7 @@ struct SynthQuickLogicPass : public ScriptPass
 
         if (check_label("map_bram", "(skip if -nobram)")) {
             run("memory_bram -rules +/quicklogic/" + family + "_brams.txt");
+            run("pp3_braminit");
             run("techmap -map +/quicklogic/" + family + "_brams_map.v");
         }
 		

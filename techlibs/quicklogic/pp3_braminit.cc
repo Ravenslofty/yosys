@@ -31,8 +31,6 @@ static void run_pp3_braminit(Module *module)
 	for (auto cell : module->selected_cells())
 	{
 		uint32_t mem[2048];
-		bool ContactEn;
-                int32_t ramaddrWidth = 9;
                 int32_t ramDataWidth = 32;
                 int32_t ramDataDepth = 512;
                 
@@ -43,16 +41,15 @@ static void run_pp3_braminit(Module *module)
 		    cell->type != ID(RAM_8K_BLK))
 			continue;
                 log("found ram block\n");
-		if (!cell->hasParam(ID(init_ram)))
+		if (!cell->hasParam(ID(INIT_FILE)))
 			continue;
-		std::string init_file = cell->getParam(ID(init_ram)).decode_string();
-		cell->unsetParam(ID(init_ram));
+		std::string init_file = cell->getParam(ID(INIT_FILE)).decode_string();
+		cell->unsetParam(ID(INIT_FILE));
 		if (init_file == "")
 			continue;
 
 		/* Open file */
 		log("Processing %s : %s\n", RTLIL::id2cstr(cell->name), init_file.c_str());
-                //ramaddrWidth = cell->getParam(ID(addr_int0)).as_int();
                 ramDataWidth = cell->getParam(ID(data_width_int)).as_int();
                 ramDataDepth = cell->getParam(ID(data_depth_int)).as_int();
 
@@ -125,7 +122,6 @@ static void run_pp3_braminit(Module *module)
 
 		/* Set attributes */
 		std::string val = "";
-		const char *hex = "0123456789ABCDEF";
 		for (int i=ramDataDepth-1; i>=0; i--) {
 			//std::string val = "";
 			if (ramDataWidth == 8)
@@ -134,7 +130,6 @@ static void run_pp3_braminit(Module *module)
 	                     val += std::bitset<16>(mem[i]).to_string();
 			else if (ramDataWidth == 32)
 	                     val += std::bitset<32>(mem[i]).to_string();
-			//cell->setParam("\\INIT", RTLIL::Const::from_string(val));
 		}
 		cell->setParam("\\INIT", RTLIL::Const::from_string(val));
 	}

@@ -350,7 +350,7 @@ parameter 	addr_int 	= 9,
 	  		reg_rd_int 	= 0;
 			
 parameter [8191:0] INIT = 8192'bx;
-parameter init_ram="init.mem";	
+parameter INIT_FILE="";	
 			
 input [addr_int-1:0] WA;
 input [addr_int-1:0] RA;
@@ -552,7 +552,7 @@ parameter 	addr_int 	= 9,
 	  		reg_rd_int 	= 0;
 
 parameter [16383:0] INIT = 16384'bx;
-parameter init_ram="init.mem";	
+parameter INIT_FILE="";	
 			
 input [addr_int-1:0] WA;
 input [addr_int-1:0] RA;

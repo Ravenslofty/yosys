@@ -175,6 +175,12 @@ struct SynthQuickLogicPass : public ScriptPass {
             run("opt_clean");
         }
 
+        if (check_label("map_bram", "(skip if -nobram)") && family == "pp3") {
+            run("memory_bram -rules +/quicklogic/" + family + "_brams.txt");
+            run("pp3_braminit");
+            run("techmap -map +/quicklogic/" + family + "_brams_map.v");
+        }
+		
         if (check_label("map_ffram")) {
             run("opt -fast -mux_undef -undriven -fine");
             run("memory_map -iattr -attr !ram_block -attr !rom_block -attr logic_block "

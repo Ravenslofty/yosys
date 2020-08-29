@@ -12,7 +12,7 @@ input [A_WIDTH-1:0] A;
 input [B_WIDTH-1:0] B;
 output [Y_WIDTH-1:0] Y;
 
-MISTRAL_MUL27X27 _TECHMAP_REPLACE_ (.A(A), .B(B), .Y(Y));
+MISTRAL_MUL27X27 #(.A_SIGNED(A_SIGNED), .B_SIGNED(B_SIGNED)) _TECHMAP_REPLACE_ (.A(A), .B(B), .Y(Y));
 
 endmodule
 
@@ -29,7 +29,7 @@ input [A_WIDTH-1:0] A;
 input [B_WIDTH-1:0] B;
 output [Y_WIDTH-1:0] Y;
 
-MISTRAL_MUL18X18 _TECHMAP_REPLACE_ (.A(A), .B(B), .Y(Y));
+MISTRAL_MUL18X18 #(.A_SIGNED(A_SIGNED), .B_SIGNED(B_SIGNED)) _TECHMAP_REPLACE_ (.A(A), .B(B), .Y(Y));
 
 endmodule
 
@@ -46,6 +46,6 @@ input [A_WIDTH-1:0] A;
 input [B_WIDTH-1:0] B;
 output [Y_WIDTH-1:0] Y;
 
-MISTRAL_MUL9X9 _TECHMAP_REPLACE_ (.A(A), .B(B), .Y(Y));
+MISTRAL_MUL9X9 #(.A_SIGNED(A_SIGNED), .B_SIGNED(B_SIGNED)) _TECHMAP_REPLACE_ (.A(A), .B(B), .Y(Y));
 
 endmodule

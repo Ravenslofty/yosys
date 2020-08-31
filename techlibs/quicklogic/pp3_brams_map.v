@@ -665,7 +665,7 @@ generate
   if (data_width_int <=16)	begin
 
     ram8k_2x1_cell_macro # (
-                            `include "bram_init_8_16.vh"
+                            `include "bram_init_32.vh"
                             )
 			_TECHMAP_REPLACE_ (
                         .A1_0(addr_wr0) , 

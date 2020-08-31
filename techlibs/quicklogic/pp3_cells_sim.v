@@ -3446,7 +3446,7 @@ parameter data_depth_int = 1024;
 	input		[ADDRWID-1:0]	AB;
 	input		[`DATAWID-1:0]	DB;
 	
-	integer	i, j, k, l, m;
+	integer	i, j, k, l, m, n, o;
 
 	wire									CEN1;
 	wire									OEN1;
@@ -3545,14 +3545,23 @@ parameter data_depth_int = 1024;
       $readmemh(INIT_FILE,ram_dum);
     `endif
     #10
+    n =0;
+    o =0;
 		for( i = 0; i < DEPTH; i = i+1 )
 		begin
 			if (data_width_int > 16)
 			  ram[i] <= {1'b0,ram_dum[i][((16*init_ad)+16)-1:((16*init_ad)+8)],1'b0,ram_dum[i][((16*init_ad)+8)-1: (16*init_ad)]};
-      else if (data_width_int <= 8)
-			  ram[i] <= {1'b0,ram_dum[i+1+(1024*init_ad)][7:0],1'b0,ram_dum[i+(1024*init_ad)][7:0]};
+      else if (data_width_int <= 8 && data_depth_int <= 1024)
+			  ram[i] <= {1'b0,ram_dum[i+n+1+(1024*init_ad)][7:0],1'b0,ram_dum[i+n+(1024*init_ad)][7:0]};
+      else if (data_width_int <= 8 && data_depth_int > 1024)
+			  ram[i] <= {1'b0,ram_dum[i+o+init_ad+1][7:0],1'b0,ram_dum[i+o+init_ad][7:0]};
+      else if (data_width_int > 8 && data_width_int <= 16 && data_depth_int > 512)
+			  ram[i] <= {1'b0,ram_dum[i+n+init_ad][15:8],1'b0,ram_dum[i+n+init_ad][7:0]};
       else
         ram[i] <= {1'b0,ram_dum[i+(512*init_ad)][15:8],1'b0,ram_dum[i+(512*init_ad)][7:0]};
+        
+      n= n+1;
+      o= o+3;
 		end
   end 
 
@@ -3704,7 +3713,14 @@ module x2_model(
 									ram1_WENBA
 								);
 
-parameter ADDRWID = 10;								
+parameter ADDRWID = 10;	
+parameter [18431:0] INIT = 18432'bx;	
+parameter INIT_FILE="init.mem";	
+parameter data_width_int = 16;
+parameter data_depth_int = 1024; 
+parameter init_ad1 = 0;
+parameter init_ad2 = (data_depth_int > 1024)?2:1;
+			
 
 	input										Concat_En;      
 	

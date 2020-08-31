@@ -84,3 +84,11 @@ endmodule
 module  \$__DFFE_PP1 (input D, C, E, R, output Q); 
     dffsep  _TECHMAP_REPLACE_ (.D(D), .Q(Q), .CLK(C), .EN(E), .P(R)); 
 endmodule
+
+module \$_DFFSR_NPP_ (input D, C, R, S, output Q);
+    dffpc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(!C), .CLR(R), .PRE(S));
+endmodule
+
+module \$_DFFSR_PPP_ (input D, C, R, S, output Q);
+    dffpc _TECHMAP_REPLACE_ (.Q(Q), .D(D), .CLK(C), .CLR(R), .PRE(S));
+endmodule

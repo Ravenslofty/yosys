@@ -246,7 +246,6 @@ module d_buff (
 	input EN
 );
 
-
 	assign Q = EN ? 1'b1 : 1'b0;
 	
 endmodule /* d buff */

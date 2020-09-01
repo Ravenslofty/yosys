@@ -279,7 +279,9 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
             } else {
                 run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
-                run("iopadmap -bits -outpad out_buff A:Q -inpad in_buff Q:A -toutpad EN:A:Q A:top");
+                run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A -toutpad EN:A:Q A:top");
+                std::string techMapArgs = " -map +/quicklogic/" + family + "_io_map.v";
+                run("techmap" + techMapArgs);
             } 
         }
 

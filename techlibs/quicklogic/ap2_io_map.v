@@ -5,7 +5,7 @@ module \$__out_buff (Q, A);
     parameter _TECHMAP_CONSTMSK_A = 0;
     parameter _TECHMAP_CONSTVAL_A = 0;
 
-    if(_TECHMAP_CONSTMSK_A == 1'b1) begin
+    if(_TECHMAP_CONSTMSK_A == 1) begin
         d_buff _TECHMAP_REPLACE_ (.Q(Q), .EN(_TECHMAP_CONSTVAL_A));
     end
     else begin

@@ -146,14 +146,16 @@ struct SynthQuickLogicPass : public ScriptPass {
         if (check_label("prepare")) {
             run("proc");
             run("flatten");
-            run("tribuf -logic");
-            run("opt_expr");
-            run("opt_clean");
-            run("deminout");
-            run("opt");
-        }
+            if(family == "pp3") {
+		        run("tribuf -logic");
+            }
+		    run("opt_expr");
+		    run("opt_clean");
+		    run("deminout");
+		    run("opt");
+	    }
 
-        if (check_label("coarse")) {
+	if (check_label("coarse")) {
             run("opt_expr");
             run("opt_clean");
             run("check");
@@ -279,7 +281,7 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
             } else {
                 run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
-                run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A -toutpad EN:A:Q A:top");
+                run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A");
                 std::string techMapArgs = " -map +/quicklogic/" + family + "_io_map.v";
                 run("techmap" + techMapArgs);
             } 

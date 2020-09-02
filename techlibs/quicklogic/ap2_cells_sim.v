@@ -252,6 +252,7 @@ endmodule /* d buff */
 
 module in_reg (
 	output dataOut,
+    (* clkbuf_sink *)
 	input clk, 
 	input sel, 
 	input hold, 
@@ -286,6 +287,7 @@ endmodule /* in_reg*/
 module out_reg (
 	(* iopad_external_pin *)
 	output dataOut,
+    (* clkbuf_sink *)
 	input clk, 
 	input sel,
 	input rst, 

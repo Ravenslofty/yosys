@@ -252,7 +252,7 @@ endmodule /* d buff */
 
 module in_reg (
 	output dataOut,
-    (* clkbuf_sink *)
+	(* clkbuf_inhibit *) 
 	input clk, 
 	input sel, 
 	input hold, 

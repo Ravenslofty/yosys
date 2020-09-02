@@ -282,7 +282,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             } else {
                 run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
                 run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A");
-                std::string techMapArgs = " -map +/quicklogic/" + family + "_io_map.v";
+                std::string techMapArgs = " -map +/quicklogic/" + family + "_io_map.v -autoproc";
                 run("techmap" + techMapArgs);
             } 
         }

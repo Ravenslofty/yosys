@@ -260,7 +260,7 @@ module io_reg(
     parameter INEN = 1'b0;
 
     input A2F_reg, IE, OQI;
-    input OQE, 
+    input OQE; 
     input IQC, IQE, IQR;
     output IQZ, IZ, F2A_reg_0, F2A_reg_1;
 

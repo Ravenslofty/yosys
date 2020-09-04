@@ -95,7 +95,7 @@ module d_buff (
 	output Q
 );
 	parameter DSEL = 1'b0;
-	assign Q = EN ? 1'b1 : 1'b0;
+	assign Q = DSEL ? 1'b1 : 1'b0;
 	
 endmodule /* d buff */
 

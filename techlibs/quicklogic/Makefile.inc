@@ -30,3 +30,25 @@ $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/RAM_16K_BLK.v)
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/MULT_16BIT_X2.v))
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/MULT_32BIT.v))
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/abc9_model.v))
+$(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/pp3_brams.txt))
+$(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/pp3_brams_map.v))
+
+$(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/pp3_lutdefs.txt))
+$(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap2_lutdefs.txt))
+$(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap3_lutdefs.txt))
+
+EXTRA_OBJS += techlibs/quicklogic/brams_init.mk 
+.SECONDARY: techlibs/quicklogic/brams_init.mk 
+
+techlibs/quicklogic/brams_init.mk: techlibs/quicklogic/brams_init.py
+	$(Q) mkdir -p techlibs/quicklogic
+	$(P) $(PYTHON_EXECUTABLE) $<
+	$(Q) touch $@
+
+
+techlibs/quicklogic/bram_init_8_16.vh: techlibs/quicklogic/brams_init.mk
+techlibs/quicklogic/bram_init_32.vh: techlibs/quicklogic/brams_init.mk
+
+$(eval $(call add_gen_share_file,share/quicklogic,techlibs/quicklogic/bram_init_8_16.vh))
+$(eval $(call add_gen_share_file,share/quicklogic,techlibs/quicklogic/bram_init_32.vh))
+

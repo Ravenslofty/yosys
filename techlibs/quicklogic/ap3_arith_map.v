@@ -31,7 +31,7 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
     // force_downto *)
     //wire [Y_WIDTH-1:0] C = {CO, CI};
 
-    full_adder first_inst(
+    FULL_ADDER first_inst(
             .A(AA[0]),
             .B(BB[0]),
 			.CI(CI),
@@ -40,7 +40,7 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
 
     genvar i;
     generate for (i = 1; i < Y_WIDTH-1; i = i + 1) begin: slice
-        full_adder inst_i (
+        FULL_ADDER inst_i (
 			.A(AA[i]),
 			.B(BB[i]),
 			.CI(CO[i-1]),
@@ -51,7 +51,7 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
     end: slice	  
     endgenerate
     
-    full_adder inst_last (
+    FULL_ADDER inst_last (
         .A(AA[Y_WIDTH-1]),
         .B(BB[Y_WIDTH-1]),
         .CI(CO[Y_WIDTH-2]),

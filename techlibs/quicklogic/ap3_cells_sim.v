@@ -16,7 +16,7 @@ module LUT4(
 endmodule
 
 (* abc9_flop, lib_whitebox *)
-module FF(
+module ff(
     output reg CQZ,
     input D,
     //(* clkbuf_sink *)
@@ -39,7 +39,7 @@ module FF(
             CQZ <= D;
 endmodule
 
-module FULL_ADDER(
+module full_adder(
    output S,
    output CO,
    input A,
@@ -60,7 +60,7 @@ module QL_CARRY(
 	assign CO = ((I0 ^ I1) & CI) | (~(I0 ^ I1) & (I0 & I1)); 
 endmodule
 
-module CK_BUFF ( 
+module ck_buff ( 
 	output Q,
     (* iopad_external_pin *)
 	input A
@@ -70,7 +70,7 @@ module CK_BUFF (
 
 endmodule /* ck buff */
 
-module IN_BUFF ( 
+module in_buff ( 
 	output Q,
     (* iopad_external_pin *)
 	input A
@@ -80,7 +80,7 @@ module IN_BUFF (
 
 endmodule /* in buff */
 
-module OUT_BUFF ( 
+module out_buff ( 
     (* iopad_external_pin *)
 	output Q,
 	input A
@@ -90,7 +90,7 @@ module OUT_BUFF (
 
 endmodule /* out buff */
 
-module D_BUFF ( 
+module d_buff ( 
     (* iopad_external_pin *)
 	output Q
 );
@@ -99,7 +99,7 @@ module D_BUFF (
 	
 endmodule /* d buff */
 
-module IN_REG (
+module in_reg (
 	output dataOut,
 	(* clkbuf_inhibit *) 
 	input clk, 
@@ -135,7 +135,7 @@ module IN_REG (
 
 endmodule /* in_reg*/
 
-module OUT_REG (
+module out_reg (
 	(* iopad_external_pin *)
 	output dataOut,
 	(* clkbuf_inhibit *) 

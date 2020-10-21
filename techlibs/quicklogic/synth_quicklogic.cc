@@ -327,7 +327,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 
         if (check_label("blif")) {
             if (!blif_file.empty() || help_mode)
-                run(stringf("write_blif %s %s", top_opt.c_str(), blif_file.c_str()));
+                run(stringf("write_blif -attr -cname -conn -param %s %s", top_opt.c_str(), blif_file.c_str()));
         }
 
     }

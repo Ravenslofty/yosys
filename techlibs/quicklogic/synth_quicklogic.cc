@@ -295,7 +295,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         if (check_label("map_cells")) {
 
             std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
-            if(vpr) {
+            if(vpr && family != "pp3") {
                 techMapArgs += " -D NO_LUT -map +/quicklogic/" + family + "_lut_map.v";
             } else {
                 techMapArgs += " -map +/quicklogic/" + family + "_lut_map.v";
@@ -341,7 +341,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 
         if (check_label("blif")) {
             if (!blif_file.empty() || help_mode) {
-                if(vpr) {
+                if(vpr && family != "pp3") {
                     run(stringf("opt_clean -purge"),
                             "                                 (vpr mode)");
                     run(stringf("write_blif -attr -cname -conn -param %s",

@@ -20,9 +20,6 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 	
 	assign VCC = 1'b1;
 	assign GND = 1'b0;
-
-
-	//wire [3:0] B1EN_4 = {4{B1EN}};
   
 	wire [3:0] DIP, DOP;
 	wire [31:0] DI, DO;
@@ -35,25 +32,25 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 	wire[1:0] WS2_0;
 	wire[1:0] WS2_1;
   
-  wire[4:0] wen_reg;
+  	wire[4:0] wen_reg;
 
-assign wen_reg[4:CFG_ENABLE_B]=0;
-assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
+	assign wen_reg[4:CFG_ENABLE_B]=0;
+	assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 	
 	assign A1DATA = DO;
 	assign DI = B1DATA;
 
-    if(CFG_DBITS <=8)
+    	if(CFG_DBITS <=8)
 	begin
              assign WS1_0 = 2'b00;
              assign WS2_0 = 2'b00;
 	end
-    else if(CFG_DBITS >8 && CFG_DBITS <=16)
+    	else if(CFG_DBITS >8 && CFG_DBITS <=16)
 	begin
              assign WS1_0 = 2'b01;
              assign WS2_0 = 2'b01;
 	end
-    else if(CFG_DBITS > 16)
+    	else if(CFG_DBITS > 16)
 	begin
              assign WS1_0 = 2'b10;
              assign WS2_0 = 2'b10;
@@ -61,27 +58,26 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 
 	generate if (CFG_DBITS <= 16) begin
        	ram8k_2x1_cell_macro #(
-			//`include "bram_init_8_16.vh"
-      `include "bram_init_32.vh"
+		 `include "bram_init_32.vh"
 		) _TECHMAP_REPLACE_ (			
-			.A1_0(B1ADDR) ,
-			.A1_1(GND),
-			.A2_0(A1ADDR),
+		   .A1_0(B1ADDR) ,
+		   .A1_1(GND),
+		   .A2_0(A1ADDR),
 		   .A2_1(GND),
 		   .ASYNC_FLUSH_0(GND), //chk
 		   .ASYNC_FLUSH_1(GND), //chk
 		   .ASYNC_FLUSH_S0(GND),
 		   .ASYNC_FLUSH_S1(GND),
-			.CLK1_0(CLK2),
+		   .CLK1_0(CLK2),
 		   .CLK1_1(CLK2),
-			.CLK1S_0(!CLKPOL2),
-			.CLK1S_1(!CLKPOL2),
-			.CLK1EN_0(VCC),
-			.CLK1EN_1(VCC),
+		   .CLK1S_0(!CLKPOL2),
+		   .CLK1S_1(!CLKPOL2),
+		   .CLK1EN_0(VCC),
+		   .CLK1EN_1(VCC),
 		   .CLK2_0(CLK3),
 		   .CLK2_1(CLK3),
 		   .CLK2S_0(!CLKPOL3),
-			.CLK2S_1(!CLKPOL3),
+		   .CLK2S_1(!CLKPOL3),
 		   .CLK2EN_0(A1EN),
 		   .CLK2EN_1(A1EN),
 		   .CONCAT_EN_0(VCC),
@@ -108,10 +104,8 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 		   .WIDTH_SELECT1_1(GND),
 		   .WIDTH_SELECT2_0(WS2_0),
 		   .WIDTH_SELECT2_1(GND),
-			//.WEN1_0(B1EN_4[1:0]), 
-			//.WEN1_1(B1EN_4[3:2]),
-       .WEN1_0(wen_reg[1:0]), 
-			 .WEN1_1(wen_reg[3:2]),
+                   .WEN1_0(wen_reg[1:0]), 
+		   .WEN1_1(wen_reg[3:2]),
 		   .Almost_Empty_0(),
 		   .Almost_Empty_1(),
 		   .Almost_Full_0(),
@@ -131,26 +125,26 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 		   );
          end else  if (CFG_DBITS <= 32) begin
        	 ram8k_2x1_cell_macro #(
-			`include "bram_init_32.vh"
-		) _TECHMAP_REPLACE_ (			
-			.A1_0(B1ADDR) ,
-			.A1_1(GND),
-			.A2_0(A1ADDR),
+		  `include "bram_init_32.vh"
+		   ) _TECHMAP_REPLACE_ (			
+		   .A1_0(B1ADDR) ,
+		   .A1_1(GND),
+		   .A2_0(A1ADDR),
 		   .A2_1(GND),
 		   .ASYNC_FLUSH_0(GND), //chk
 		   .ASYNC_FLUSH_1(GND), //chk
 		   .ASYNC_FLUSH_S0(GND),
 		   .ASYNC_FLUSH_S1(GND),
-			.CLK1_0(CLK2),
+		   .CLK1_0(CLK2),
 		   .CLK1_1(CLK2),
-			.CLK1S_0(!CLKPOL2),
-			.CLK1S_1(!CLKPOL2),
-			.CLK1EN_0(VCC),
-			.CLK1EN_1(VCC),
+		   .CLK1S_0(!CLKPOL2),
+		   .CLK1S_1(!CLKPOL2),
+		   .CLK1EN_0(VCC),
+		   .CLK1EN_1(VCC),
 		   .CLK2_0(CLK3),
 		   .CLK2_1(CLK3),
 		   .CLK2S_0(!CLKPOL3),
-			.CLK2S_1(!CLKPOL3),
+		   .CLK2S_1(!CLKPOL3),
 		   .CLK2EN_0(A1EN),
 		   .CLK2EN_1(A1EN),
 		   .CONCAT_EN_0(VCC),
@@ -177,10 +171,8 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 		   .WIDTH_SELECT1_1(GND),
 		   .WIDTH_SELECT2_0(WS2_0),
 		   .WIDTH_SELECT2_1(GND),
-			//.WEN1_0(B1EN_4[1:0]), 
-			//.WEN1_1(B1EN_4[3:2]),
-       .WEN1_0(wen_reg[1:0]), 
-			 .WEN1_1(wen_reg[3:2]),
+                   .WEN1_0(wen_reg[1:0]), 
+		   .WEN1_1(wen_reg[3:2]),
 		   .Almost_Empty_0(),
 		   .Almost_Empty_1(),
 		   .Almost_Full_0(),
@@ -227,7 +219,6 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 
 	wire [10:0] A1ADDR_11;
 	wire [10:0] B1ADDR_11;
-	//wire [1:0] B1EN_2 = {2{B1EN}};
 
 	wire [1:0] DIP, DOP;
 	wire [15:0] DI, DO;
@@ -240,11 +231,10 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 	wire[1:0] WS2_0;
 	wire[1:0] WS2_1;
   
-  wire[2:0] wen_reg;
+        wire[2:0] wen_reg;
 
-assign wen_reg[2:CFG_ENABLE_B]=0;
-assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
-
+        assign wen_reg[2:CFG_ENABLE_B]=0;
+        assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 
 	assign GND = 1'b0;
 	assign VCC = 1'b1;
@@ -252,57 +242,56 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 	assign A1DATA = DO;
 	assign DI = B1DATA;
 
-    if(CFG_ABITS == 11)
-        	begin
-        		assign A1ADDR_11[CFG_ABITS-1:0]=A1ADDR;
-        		assign B1ADDR_11[CFG_ABITS-1:0]=B1ADDR;
-        	end
+        if(CFG_ABITS == 11)
+        begin
+             assign A1ADDR_11[CFG_ABITS-1:0]=A1ADDR;
+             assign B1ADDR_11[CFG_ABITS-1:0]=B1ADDR;
+        end
 	else
-        	begin
-				assign A1ADDR_11[10:CFG_ABITS]=0;
-        		assign A1ADDR_11[CFG_ABITS-1:0]=A1ADDR;
-				assign B1ADDR_11[10:CFG_ABITS]=0;
-        		assign B1ADDR_11[CFG_ABITS-1:0]=B1ADDR;
-        	end
+        begin
+	     assign A1ADDR_11[10:CFG_ABITS]=0;
+             assign A1ADDR_11[CFG_ABITS-1:0]=A1ADDR;
+	     assign B1ADDR_11[10:CFG_ABITS]=0;
+             assign B1ADDR_11[CFG_ABITS-1:0]=B1ADDR;
+        end
 
-    if(CFG_DBITS <=9)
-		begin
+        if(CFG_DBITS <=9)
+	begin
              assign WS1_0 = 2'b00;
              assign WS2_0 = 2'b00;
-		end
-    else if(CFG_DBITS >9 && CFG_DBITS <=18)
-		begin
+	end
+    	else if(CFG_DBITS >9 && CFG_DBITS <=18)
+	begin
              assign WS1_0 = 2'b01;
              assign WS2_0 = 2'b01;
-		end
-    else if(CFG_DBITS > 18)
-		begin
+	end
+    	else if(CFG_DBITS > 18)
+	begin
              assign WS1_0 = 2'b10;
              assign WS2_0 = 2'b10;
-		end
+	end
 
-	//generate begin
-       	ram8k_2x1_cell_macro #(
+	ram8k_2x1_cell_macro #(
             `include "bram_init_8_16.vh"
         ) _TECHMAP_REPLACE_ (			
-			.A1_0(B1ADDR_11) ,
-			.A1_1(GND),
-			.A2_0(A1ADDR_11),
-			.A2_1(GND),
-			.ASYNC_FLUSH_0(GND), //chk
-			.ASYNC_FLUSH_1(GND), //chk
-			.ASYNC_FLUSH_S0(GND),
-			.ASYNC_FLUSH_S1(GND),
-			.CLK1_0(CLK2),
-			.CLK1_1(GND),
-			.CLK1S_0(!CLKPOL2),
-			.CLK1S_1(GND),
-			.CLK1EN_0(VCC),
-			.CLK1EN_1(VCC),
-			.CLK2_0(CLK3),
-			.CLK2_1(GND),
-			.CLK2S_0(!CLKPOL3),
-			.CLK2S_1(GND),
+		   .A1_0(B1ADDR_11) ,
+		   .A1_1(GND),
+		   .A2_0(A1ADDR_11),
+		   .A2_1(GND),
+		   .ASYNC_FLUSH_0(GND), //chk
+		   .ASYNC_FLUSH_1(GND), //chk
+		   .ASYNC_FLUSH_S0(GND),
+		   .ASYNC_FLUSH_S1(GND),
+		   .CLK1_0(CLK2),
+		   .CLK1_1(GND),
+		   .CLK1S_0(!CLKPOL2),
+		   .CLK1S_1(GND),
+		   .CLK1EN_0(VCC),
+		   .CLK1EN_1(VCC),
+		   .CLK2_0(CLK3),
+		   .CLK2_1(GND),
+		   .CLK2S_0(!CLKPOL3),
+		   .CLK2S_1(GND),
 		   .CLK2EN_0(A1EN),
 		   .CLK2EN_1(GND),
 		   .CONCAT_EN_0(GND),
@@ -329,8 +318,7 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 		   .WIDTH_SELECT1_1(GND),
 		   .WIDTH_SELECT2_0(WS2_0),
 		   .WIDTH_SELECT2_1(GND),
-		   //.WEN1_0(B1EN_2), 
-       .WEN1_0(wen_reg[1:0]),
+		   .WEN1_0(wen_reg[1:0]),
 		   .WEN1_1(GND),
 		   .Almost_Empty_0(),
 		   .Almost_Empty_1(),
@@ -349,8 +337,6 @@ assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 		   .RMEA(GND),
 		   .RMEB(GND)
 		   );
-
-	//end endgenerate
 endmodule
 
 module RAM_8K_BLK ( WA,RA,WD,WClk,RClk,WClk_En,RClk_En,WEN,RD);

@@ -64,8 +64,8 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   .A1_1(GND),
 		   .A2_0(A1ADDR),
 		   .A2_1(GND),
-		   .ASYNC_FLUSH_0(GND), //chk
-		   .ASYNC_FLUSH_1(GND), //chk
+		   .ASYNC_FLUSH_0(GND), 
+		   .ASYNC_FLUSH_1(GND), 
 		   .ASYNC_FLUSH_S0(GND),
 		   .ASYNC_FLUSH_S1(GND),
 		   .CLK1_0(CLK2),
@@ -90,10 +90,10 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   .DIR_1(GND),
 		   .FIFO_EN_0(GND),
 		   .FIFO_EN_1(GND),
-		   .P1_0(GND), //P1_0
-		   .P1_1(GND), //P1_1
-		   .P2_0(GND), //
-		   .P2_1(GND), //
+		   .P1_0(GND), 
+		   .P1_1(GND), 
+		   .P2_0(GND), 
+		   .P2_1(GND), 
 		   .PIPELINE_RD_0(GND),
 		   .PIPELINE_RD_1(GND),
 		   .SYNC_FIFO_0(GND),
@@ -131,8 +131,8 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   .A1_1(GND),
 		   .A2_0(A1ADDR),
 		   .A2_1(GND),
-		   .ASYNC_FLUSH_0(GND), //chk
-		   .ASYNC_FLUSH_1(GND), //chk
+		   .ASYNC_FLUSH_0(GND), 
+		   .ASYNC_FLUSH_1(GND), 
 		   .ASYNC_FLUSH_S0(GND),
 		   .ASYNC_FLUSH_S1(GND),
 		   .CLK1_0(CLK2),
@@ -157,10 +157,10 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   .DIR_1(GND),
 		   .FIFO_EN_0(GND),
 		   .FIFO_EN_1(GND),
-		   .P1_0(GND), //P1_0
-		   .P1_1(GND), //P1_1
-		   .P2_0(GND), //
-		   .P2_1(GND), //
+		   .P1_0(GND), 
+		   .P1_1(GND), 
+		   .P2_0(GND), 
+		   .P2_1(GND), 
 		   .PIPELINE_RD_0(GND),
 		   .PIPELINE_RD_1(GND),
 		   .SYNC_FIFO_0(GND),
@@ -278,8 +278,8 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 		   .A1_1(GND),
 		   .A2_0(A1ADDR_11),
 		   .A2_1(GND),
-		   .ASYNC_FLUSH_0(GND), //chk
-		   .ASYNC_FLUSH_1(GND), //chk
+		   .ASYNC_FLUSH_0(GND),
+		   .ASYNC_FLUSH_1(GND), 
 		   .ASYNC_FLUSH_S0(GND),
 		   .ASYNC_FLUSH_S1(GND),
 		   .CLK1_0(CLK2),
@@ -304,10 +304,10 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 		   .DIR_1(GND),
 		   .FIFO_EN_0(GND),
 		   .FIFO_EN_1(GND),
-		   .P1_0(GND), //P1_0
-		   .P1_1(GND), //P1_1
-		   .P2_0(GND), //
-		   .P2_1(GND), //
+		   .P1_0(GND), 
+		   .P1_1(GND), 
+		   .P2_0(GND), 
+		   .P2_1(GND), 
 		   .PIPELINE_RD_0(GND),
 		   .PIPELINE_RD_1(GND),
 		   .SYNC_FIFO_0(GND),
@@ -362,8 +362,8 @@ wire VCC,GND;
 wire WClk0_Sel,RClk0_Sel;
 wire WClk1_Sel,RClk1_Sel;
 
-wire 		reg_rd0;
-wire 		reg_rd1;
+wire reg_rd0;
+wire reg_rd1;
 wire [10:0] addr_wr0,addr_rd0,addr_wr1,addr_rd1;
 
 wire [17:0] in_reg0;
@@ -418,60 +418,60 @@ generate
 
 	if(addr_int == 11)
 	begin
-		assign addr_wr0[10:0]=WA;
-		assign addr_rd0[10:0]=RA;
+	     assign addr_wr0[10:0]=WA;
+	     assign addr_rd0[10:0]=RA;
 	end
 	else
 	begin
-		assign addr_wr0[10:addr_int]=0;
-		assign addr_wr0[addr_int-1:0]=WA;
-		assign addr_rd0[10:addr_int]=0;
-		assign addr_rd0[addr_int-1:0]=RA;
+	     assign addr_wr0[10:addr_int]=0;
+	     assign addr_wr0[addr_int-1:0]=WA;
+	     assign addr_rd0[10:addr_int]=0;
+	     assign addr_rd0[addr_int-1:0]=RA;
 	end
 
-  if (data_width_int == 16) 
+  	if (data_width_int == 16) 
 	begin
-    assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
-  end  
-  else if (data_width_int > 8 && data_width_int < 16)
-  begin
-		assign in_reg0[15:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
-  end
-  else if (data_width_int <= 8) 
+    	     assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
+        end  
+        else if (data_width_int > 8 && data_width_int < 16)
+        begin
+	     assign in_reg0[15:data_width_int] =0;
+             assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
+        end
+  	else if (data_width_int <= 8) 
 	begin
-		assign in_reg0[15:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
-  end
+	     assign in_reg0[15:data_width_int] =0;
+             assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
+        end
 
 	if(data_width_int <=8)
-  begin
-		assign WS1_0 = 2'b00;
-		assign WS2_0 = 2'b00;
-    end
+        begin
+	     assign WS1_0 = 2'b00;
+	     assign WS2_0 = 2'b00;
+    	end
 	else if(data_width_int >8 && data_width_int <=16)
-  begin
-		assign WS1_0 = 2'b01;
-		assign WS2_0 = 2'b01;
-  end
+  	begin
+	     assign WS1_0 = 2'b01;
+	     assign WS2_0 = 2'b01;
+        end
 	else if(data_width_int > 16)
-  begin
-		assign WS1_0 = 2'b10;
-		assign WS2_0 = 2'b10;
-  end
+  	begin
+	     assign WS1_0 = 2'b10;
+	     assign WS2_0 = 2'b10;
+        end
 
 endgenerate
 
 	ram8k_2x1_cell_macro # (
-                           `include "bram_init_8_16.vh"
+                       `include "bram_init_8_16.vh"
                          )
-    _TECHMAP_REPLACE_ (
+    	_TECHMAP_REPLACE_ (
                        .A1_0(addr_wr0) , 
                        .A1_1(addr_wr1), 
                        .A2_0(addr_rd0), 
                        .A2_1(addr_rd1), 
-                       .ASYNC_FLUSH_0(GND), //chk
-                       .ASYNC_FLUSH_1(GND), //chk
+                       .ASYNC_FLUSH_0(GND), 
+                       .ASYNC_FLUSH_1(GND), 
                        .ASYNC_FLUSH_S0(GND),
                        .ASYNC_FLUSH_S1(GND),
                        .CLK1_0(WClk), 
@@ -496,10 +496,10 @@ endgenerate
                        .DIR_1(GND), 
                        .FIFO_EN_0(GND), 
                        .FIFO_EN_1(GND), 
-                       .P1_0(GND), //P1_0
-                       .P1_1(GND), //P1_1
-                       .P2_0(GND), //
-                       .P2_1(GND), //
+                       .P1_0(GND), 
+                       .P1_1(GND), 
+                       .P2_0(GND), 
+                       .P2_1(GND), 
                        .PIPELINE_RD_0(reg_rd0), 
                        .PIPELINE_RD_1(reg_rd1), 
                        .SYNC_FIFO_0(GND),
@@ -533,21 +533,21 @@ endgenerate
                        .RMA(4'd0),
                        .RMB(4'd0),
                        .RMEA(GND),
-                       .RMEB(GND)
-							         );
+		       .RMEB(GND)
+	                );
 						
-    assign RD[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
+         assign RD[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
 
 endmodule
 
 
 module RAM_16K_BLK ( WA,RA,WD,WClk,RClk,WClk_En,RClk_En,WEN,RD);
 
-parameter addr_int 	= 9,
+parameter addr_int       = 9,
           data_depth_int = 512,
-	  		  data_width_int = 36,
-          wr_enable_int 	= 4,
-	  		  reg_rd_int 	= 0;
+	  data_width_int = 36,
+          wr_enable_int  = 4,
+	  reg_rd_int 	 = 0;
 
 parameter [16383:0] INIT = 16384'bx;
 parameter INIT_FILE="init.mem";	
@@ -565,8 +565,8 @@ wire VCC,GND;
 wire WClk0_Sel,RClk0_Sel;
 wire WClk1_Sel,RClk1_Sel;
 
-wire 		reg_rd0;
-wire 		reg_rd1;
+wire reg_rd0;
+wire reg_rd1;
 wire [10:0] addr_wr0,addr_rd0,addr_wr1,addr_rd1;
 
 wire [31:0] in_reg0;
@@ -621,52 +621,52 @@ generate
 
 	if(addr_int == 11)
 	begin
-		assign addr_wr0[10:0]=WA;
-		assign addr_rd0[10:0]=RA;
+	     assign addr_wr0[10:0]=WA;
+	     assign addr_rd0[10:0]=RA;
 	end
 	else
 	begin
-		assign addr_wr0[10:addr_int]=0;
-		assign addr_wr0[addr_int-1:0]=WA;
-		assign addr_rd0[10:addr_int]=0;
-		assign addr_rd0[addr_int-1:0]=RA;
+	     assign addr_wr0[10:addr_int]=0;
+	     assign addr_wr0[addr_int-1:0]=WA;
+	     assign addr_rd0[10:addr_int]=0;
+	     assign addr_rd0[addr_int-1:0]=RA;
 	end
 	
-  if (data_width_int == 32) 
+  	if (data_width_int == 32) 
 	begin
-    assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
-  end  
-  else if (data_width_int > 8 && data_width_int < 32)
-  begin
-		assign in_reg0[31:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
-  end
-  else if (data_width_int <= 8) 
+    	     assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
+  	end  
+  	else if (data_width_int > 8 && data_width_int < 32)
+  	begin
+	     assign in_reg0[31:data_width_int] =0;
+             assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
+  	end
+  	else if (data_width_int <= 8) 
 	begin
-		assign in_reg0[31:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
-  end
+	     assign in_reg0[31:data_width_int] =0;
+    	     assign in_reg0[data_width_int-1:0] =WD[data_width_int-1:0]; 
+   	end
 
 	if(data_width_int <=8)
-  begin
-		assign WS1_0 = 2'b00;
-		assign WS2_0 = 2'b00;
-  end
+  	begin
+	     assign WS1_0 = 2'b00;
+	     assign WS2_0 = 2'b00;
+  	end
 	else if(data_width_int >8 && data_width_int <=16)
-  begin
-		assign WS1_0 = 2'b01;
-		assign WS2_0 = 2'b01;
-  end
+  	begin
+	     assign WS1_0 = 2'b01;
+	     assign WS2_0 = 2'b01;
+  	end
 	else if(data_width_int > 16)
-  begin
-		assign WS1_0 = 2'b10;
-		assign WS2_0 = 2'b10;
-  end
+  	begin
+	     assign WS1_0 = 2'b10;
+	     assign WS2_0 = 2'b10;
+  	end
 
-  if (data_width_int <=16)	begin
+	if (data_width_int <=16)  begin
 
-    ram8k_2x1_cell_macro # (
-                            `include "bram_init_32.vh"
+    	    ram8k_2x1_cell_macro # (
+                        `include "bram_init_32.vh"
                             )
 			_TECHMAP_REPLACE_ (
                         .A1_0(addr_wr0) , 
@@ -709,40 +709,40 @@ generate
                         .SYNC_FIFO_1(GND), 
                         .WD_1({18{GND}}), 
                         .WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
-							          .WIDTH_SELECT1_0(WS1_0), 
-							          .WIDTH_SELECT1_1(WS_GND), 
-							          .WIDTH_SELECT2_0(WS2_0),
-							          .WIDTH_SELECT2_1(WS_GND), 
-							          .WEN1_0(wen_reg0[1:0]), 
-							          .WEN1_1(wen_reg0[3:2]), 
-							          .Almost_Empty_0(),
-							          .Almost_Empty_1(), 
-							          .Almost_Full_0(), 
-							          .Almost_Full_1(),
-							          .POP_FLAG_0(), 
-							          .POP_FLAG_1(), 
-							          .PUSH_FLAG_0(), 
-							          .PUSH_FLAG_1(),
-							          .RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
-							          .RD_1(),
-							          .SD(SD),
-							          .SD_RB1(SD_RB1),
-							          .LS(LS),
-							          .LS_RB1(LS_RB1),
-							          .DS(DS),
-							          .DS_RB1(DS_RB1),
-							          .TEST1A(GND),
-							          .TEST1B(GND),
-							          .RMA(4'd0),
-							          .RMB(4'd0),
-							          .RMEA(GND),
-							          .RMEB(GND)
-							          );	
-  end
-  else if (data_width_int > 16)	begin
+			.WIDTH_SELECT1_0(WS1_0), 
+			.WIDTH_SELECT1_1(WS_GND), 
+			.WIDTH_SELECT2_0(WS2_0),
+			.WIDTH_SELECT2_1(WS_GND), 
+			.WEN1_0(wen_reg0[1:0]), 
+			.WEN1_1(wen_reg0[3:2]), 
+			.Almost_Empty_0(),
+			.Almost_Empty_1(), 
+			.Almost_Full_0(), 
+			.Almost_Full_1(),
+			.POP_FLAG_0(), 
+			.POP_FLAG_1(), 
+			.PUSH_FLAG_0(), 
+			.PUSH_FLAG_1(),
+			.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
+			.RD_1(),
+			.SD(SD),
+			.SD_RB1(SD_RB1),
+			.LS(LS),
+			.LS_RB1(LS_RB1),
+			.DS(DS),
+			.DS_RB1(DS_RB1),
+			.TEST1A(GND),
+			.TEST1B(GND),
+			.RMA(4'd0),
+			.RMB(4'd0),
+			.RMEA(GND),
+			.RMEB(GND)
+			);	
+  	end
+	else if (data_width_int > 16)  begin
 
-    ram8k_2x1_cell_macro # (
-                            `include "bram_init_32.vh"
+    	     ram8k_2x1_cell_macro # (
+                        `include "bram_init_32.vh"
                            )
 			_TECHMAP_REPLACE_ (
                         .A1_0(addr_wr0) , 
@@ -814,18 +814,17 @@ generate
                         .RMEA(GND),
                         .RMEB(GND)
                         );	
-  end
-  else 
-  begin
-    wire TECHMAP_FAIL = 1'b1;
-  end
+  	end
+  	else 
+  	begin
+    	     wire TECHMAP_FAIL = 1'b1;
+  	end
 						
 endgenerate	
 
-assign RD[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
+	assign RD[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
 
 endmodule
-
 
 
 module FIFO_8K_BLK(DIN,Fifo_Push_Flush,Fifo_Pop_Flush,PUSH,POP,Push_Clk,Pop_Clk,Push_Clk_En,Pop_Clk_En,Fifo_Dir,Async_Flush,Almost_Full,Almost_Empty,PUSH_FLAG,POP_FLAG,DOUT);
@@ -894,109 +893,110 @@ generate
 
 	if (data_width_int == 16) 
 	begin
-    assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
-  end  
-  else if (data_width_int > 8 && data_width_int < 16)
-  begin
-		assign in_reg0[15:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
-  end
-  else if (data_width_int <= 8) 
+    	     assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
+  	end  
+  	else if (data_width_int > 8 && data_width_int < 16)
+  	begin
+	     assign in_reg0[15:data_width_int] =0;
+    	     assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
+  	end
+  	else if (data_width_int <= 8) 
 	begin
-		assign in_reg0[15:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
-  end
+	     assign in_reg0[15:data_width_int] =0;
+    	     assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
+  	end
 
 	if(data_width_int <=8)
-  begin
-		assign WS1_0 = 2'b00;
-		assign WS2_0 = 2'b00;
-  end
+  	begin
+	     assign WS1_0 = 2'b00;
+	     assign WS2_0 = 2'b00;
+  	end
 	else if(data_width_int >8 && data_width_int <=16)
-  begin
-		assign WS1_0 = 2'b01;
-		assign WS2_0 = 2'b01;
-  end
+  	begin
+	     assign WS1_0 = 2'b01;
+	     assign WS2_0 = 2'b01;
+  	end
 	else if(data_width_int > 16)
-  begin
-		assign WS1_0 = 2'b10;
-		assign WS2_0 = 2'b10;
-  end
+  	begin
+	     assign WS1_0 = 2'b10;
+	     assign WS2_0 = 2'b10;
+  	end
 
 endgenerate
 
 	ram8k_2x1_cell_macro 
-          _TECHMAP_REPLACE_(.A1_0(addr_wr) , 
-							.A1_1(addr_wr), 
-							.A2_0(addr_rd), 
-							.A2_1(addr_rd), 
-							.ASYNC_FLUSH_0(Async_Flush), 
-							.ASYNC_FLUSH_1(GND),
-							.ASYNC_FLUSH_S0(Async_Flush_Sel0), 
-							.ASYNC_FLUSH_S1(GND),
-							.CLK1_0(clk1_sig0), 
-							.CLK1_1(GND), 
-							.CLK1EN_0(clk1_sig_en0), 
-							.CLK1EN_1(GND), 
-							.CLK2_0(clk2_sig0),
-							.CLK2_1(GND), 
-							.CLK1S_0(clk1_sig_sel0), 
-							.CLK1S_1(GND), 
-							.CLK2S_0(clk2_sig_sel0),
-							.CLK2S_1(GND),
-							.CLK2EN_0(clk2_sig_en0), 
-							.CLK2EN_1(GND), 
-							.CONCAT_EN_0(GND),
-							.CONCAT_EN_1(GND), 
-							.CS1_0(fifo_clk1_flush_sig0), 
-							.CS1_1(GND), 
-							.CS2_0(fifo_clk2_flush_sig0), 
-							.CS2_1(GND), 
-							.DIR_0(Fifo_Dir),
-							.DIR_1(GND), 
-							.FIFO_EN_0(VCC), 
-							.FIFO_EN_1(GND), 
-							.P1_0(p1_sig0), 
-							.P1_1(GND), 
-							.P2_0(p2_sig0),
-							.P2_1(GND), 
-							.PIPELINE_RD_0(reg_rd0), 
-							.PIPELINE_RD_1(GND), 
-							.SYNC_FIFO_0(sync_fifo0),
-							.SYNC_FIFO_1(GND), 
-							.WD_1({18{GND}}), 
-							.WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
-							.WIDTH_SELECT1_0(WS1_0), 
-							.WIDTH_SELECT1_1({GND,GND}), 
-							.WIDTH_SELECT2_0(WS2_0),
-							.WIDTH_SELECT2_1({GND,GND}), 
-							.WEN1_0({GND,GND}), 
-							.WEN1_1({GND,GND}), 
-							.Almost_Empty_0(Almost_Empty),
-							.Almost_Empty_1(), 
-							.Almost_Full_0(Almost_Full), 
-							.Almost_Full_1(),
-							.POP_FLAG_0(POP_FLAG), 
-							.POP_FLAG_1(), 
-							.PUSH_FLAG_0(PUSH_FLAG), 
-							.PUSH_FLAG_1(),
-							.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
-							.RD_1(),
-							.SD(SD),
-							.SD_RB1(SD_RB1),
-							.LS(LS),
-							.LS_RB1(LS_RB1),
-							.DS(DS),
-							.DS_RB1(DS_RB1),
-							.TEST1A(GND),
-							.TEST1B(GND),
-							.RMA(4'd0),
-							.RMB(4'd0),
-							.RMEA(GND),
-							.RMEB(GND)
-							);	
+          _TECHMAP_REPLACE_(
+		  	.A1_0(addr_wr) , 
+			.A1_1(addr_wr), 
+			.A2_0(addr_rd), 
+			.A2_1(addr_rd), 
+			.ASYNC_FLUSH_0(Async_Flush), 
+			.ASYNC_FLUSH_1(GND),
+			.ASYNC_FLUSH_S0(Async_Flush_Sel0), 
+			.ASYNC_FLUSH_S1(GND),
+			.CLK1_0(clk1_sig0), 
+			.CLK1_1(GND), 
+			.CLK1EN_0(clk1_sig_en0), 
+			.CLK1EN_1(GND), 
+			.CLK2_0(clk2_sig0),
+			.CLK2_1(GND), 
+			.CLK1S_0(clk1_sig_sel0), 
+			.CLK1S_1(GND), 
+			.CLK2S_0(clk2_sig_sel0),
+			.CLK2S_1(GND),
+			.CLK2EN_0(clk2_sig_en0), 
+			.CLK2EN_1(GND), 
+			.CONCAT_EN_0(GND),
+			.CONCAT_EN_1(GND), 
+			.CS1_0(fifo_clk1_flush_sig0), 
+			.CS1_1(GND), 
+			.CS2_0(fifo_clk2_flush_sig0), 
+			.CS2_1(GND), 
+			.DIR_0(Fifo_Dir),
+			.DIR_1(GND), 
+			.FIFO_EN_0(VCC), 
+			.FIFO_EN_1(GND), 
+			.P1_0(p1_sig0), 
+			.P1_1(GND), 
+			.P2_0(p2_sig0),
+			.P2_1(GND), 
+			.PIPELINE_RD_0(reg_rd0), 
+			.PIPELINE_RD_1(GND), 
+			.SYNC_FIFO_0(sync_fifo0),
+			.SYNC_FIFO_1(GND), 
+			.WD_1({18{GND}}), 
+			.WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
+			.WIDTH_SELECT1_0(WS1_0), 
+			.WIDTH_SELECT1_1({GND,GND}), 
+			.WIDTH_SELECT2_0(WS2_0),
+			.WIDTH_SELECT2_1({GND,GND}), 
+			.WEN1_0({GND,GND}), 
+			.WEN1_1({GND,GND}), 
+			.Almost_Empty_0(Almost_Empty),
+			.Almost_Empty_1(), 
+			.Almost_Full_0(Almost_Full), 
+			.Almost_Full_1(),
+			.POP_FLAG_0(POP_FLAG), 
+			.POP_FLAG_1(), 
+			.PUSH_FLAG_0(PUSH_FLAG), 
+			.PUSH_FLAG_1(),
+			.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
+			.RD_1(),
+			.SD(SD),
+			.SD_RB1(SD_RB1),
+			.LS(LS),
+			.LS_RB1(LS_RB1),
+			.DS(DS),
+			.DS_RB1(DS_RB1),
+			.TEST1A(GND),
+			.TEST1B(GND),
+			.RMA(4'd0),
+			.RMB(4'd0),
+			.RMEA(GND),
+			.RMEB(GND)
+			);	
 						
-    assign DOUT[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
+    	assign DOUT[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
 
 endmodule
 
@@ -1005,8 +1005,8 @@ module FIFO_16K_BLK(DIN,Fifo_Push_Flush,Fifo_Pop_Flush,PUSH,POP,Push_Clk,Pop_Clk
 					
 parameter data_depth_int  = 512,
           data_width_int  = 36,
-          reg_rd_int    	= 0,
-			    sync_fifo_int 	= 0;
+          reg_rd_int      = 0,
+	  sync_fifo_int   = 0;
 			
 input Fifo_Push_Flush,Fifo_Pop_Flush;
 input Push_Clk,Pop_Clk;
@@ -1067,186 +1067,187 @@ assign p2_sig0 = Fifo_Dir ? PUSH : POP ;
 generate 
 	if (data_width_int == 32) 
 	begin
-    assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
-  end  
-  else if (data_width_int > 8 && data_width_int < 32)
-  begin
-    assign in_reg0[31:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
-  end
-  else if (data_width_int <= 8) 
+    	     assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
+  	end  
+  	else if (data_width_int > 8 && data_width_int < 32)
+  	begin
+    	     assign in_reg0[31:data_width_int] =0;
+    	     assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
+  	end
+  	else if (data_width_int <= 8) 
 	begin
-		assign in_reg0[31:data_width_int] =0;
-    assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
-  end
+	     assign in_reg0[31:data_width_int] =0;
+    	     assign in_reg0[data_width_int-1:0] =DIN[data_width_int-1:0]; 
+  	end
 
 	if(data_width_int <=8)
-  begin
-		assign WS1_0 = 2'b00;
-		assign WS2_0 = 2'b00;
-  end
+  	begin
+	     assign WS1_0 = 2'b00;
+	     assign WS2_0 = 2'b00;
+  	end
 	else if(data_width_int >8 && data_width_int <=16)
-  begin
-		assign WS1_0 = 2'b01;
-		assign WS2_0 = 2'b01;
-  end
+   	begin
+	     assign WS1_0 = 2'b01;
+	     assign WS2_0 = 2'b01;
+  	end
 	else if(data_width_int > 16)
-  begin
-		assign WS1_0 = 2'b10;
-		assign WS2_0 = 2'b10;
-  end
+  	begin
+	     assign WS1_0 = 2'b10;
+	     assign WS2_0 = 2'b10;
+  	end
 
-  if (data_width_int <=16)	begin
+	if (data_width_int <=16)   begin
 
-		ram8k_2x1_cell_macro
-          _TECHMAP_REPLACE_(.A1_0(addr_wr) , 
-							.A1_1(addr_wr), 
-							.A2_0(addr_rd), 
-							.A2_1(addr_rd), 
-							.ASYNC_FLUSH_0(Async_Flush), 
-							.ASYNC_FLUSH_1(GND),
-							.ASYNC_FLUSH_S0(Async_Flush_Sel0), 
-							.ASYNC_FLUSH_S1(Async_Flush_Sel0),
-							.CLK1_0(clk1_sig0), 
-							.CLK1_1(clk1_sig0), 
-							.CLK1EN_0(clk1_sig_en0), 
-							.CLK1EN_1(clk1_sig_en0), 
-							.CLK2_0(clk2_sig0),
-							.CLK2_1(clk2_sig0), 
-							.CLK1S_0(clk1_sig_sel0), 
-							.CLK1S_1(clk1_sig_sel0), 
-							.CLK2S_0(clk2_sig_sel0),
-							.CLK2S_1(clk2_sig_sel0),
-							.CLK2EN_0(clk2_sig_en0), 
-							.CLK2EN_1(clk2_sig_en0), 
-							.CONCAT_EN_0(VCC),
-							.CONCAT_EN_1(GND), 
-							.CS1_0(fifo_clk1_flush_sig0), 
-							.CS1_1(GND), 
-							.CS2_0(fifo_clk2_flush_sig0), 
-							.CS2_1(GND), 
-							.DIR_0(Fifo_Dir),
-							.DIR_1(GND), 
-							.FIFO_EN_0(VCC), 
-							.FIFO_EN_1(GND), 
-							.P1_0(p1_sig0), 
-							.P1_1(GND), 
-							.P2_0(p2_sig0),
-							.P2_1(GND), 
-							.PIPELINE_RD_0(reg_rd0), 
-							.PIPELINE_RD_1(GND), 
-							.SYNC_FIFO_0(sync_fifo0),
-							.SYNC_FIFO_1(GND), 
-							.WD_1({18{GND}}), 
-							.WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
-							.WIDTH_SELECT1_0(WS1_0), 
-							.WIDTH_SELECT1_1({GND,GND}), 
-							.WIDTH_SELECT2_0(WS2_0),
-							.WIDTH_SELECT2_1({GND,GND}), 
-							.WEN1_0({GND,GND}), 
-							.WEN1_1({GND,GND}), 
-							.Almost_Empty_0(Almost_Empty),
-							.Almost_Empty_1(), 
-							.Almost_Full_0(Almost_Full), 
-							.Almost_Full_1(),
-							.POP_FLAG_0(POP_FLAG), 
-							.POP_FLAG_1(), 
-							.PUSH_FLAG_0(PUSH_FLAG), 
-							.PUSH_FLAG_1(),
-							.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
-							.RD_1(),
-							.SD(SD),
-							.SD_RB1(SD_RB1),
-							.LS(LS),
-							.LS_RB1(LS_RB1),
-							.DS(DS),
-							.DS_RB1(DS_RB1),
-							.TEST1A(GND),
-							.TEST1B(GND),
-							.RMA(4'd0),
-							.RMB(4'd0),
-							.RMEA(GND),
-							.RMEB(GND)
-							);	
+	   ram8k_2x1_cell_macro
+             _TECHMAP_REPLACE_(
+		     	.A1_0(addr_wr) , 
+			.A1_1(addr_wr), 
+			.A2_0(addr_rd), 
+			.A2_1(addr_rd), 
+			.ASYNC_FLUSH_0(Async_Flush), 
+			.ASYNC_FLUSH_1(GND),
+			.ASYNC_FLUSH_S0(Async_Flush_Sel0), 
+			.ASYNC_FLUSH_S1(Async_Flush_Sel0),
+			.CLK1_0(clk1_sig0), 
+			.CLK1_1(clk1_sig0), 
+			.CLK1EN_0(clk1_sig_en0), 
+			.CLK1EN_1(clk1_sig_en0), 
+			.CLK2_0(clk2_sig0),
+			.CLK2_1(clk2_sig0), 
+			.CLK1S_0(clk1_sig_sel0), 
+			.CLK1S_1(clk1_sig_sel0), 
+			.CLK2S_0(clk2_sig_sel0),
+			.CLK2S_1(clk2_sig_sel0),
+			.CLK2EN_0(clk2_sig_en0), 
+			.CLK2EN_1(clk2_sig_en0), 
+			.CONCAT_EN_0(VCC),
+			.CONCAT_EN_1(GND), 
+			.CS1_0(fifo_clk1_flush_sig0), 
+			.CS1_1(GND), 
+			.CS2_0(fifo_clk2_flush_sig0), 
+			.CS2_1(GND), 
+			.DIR_0(Fifo_Dir),
+			.DIR_1(GND), 
+			.FIFO_EN_0(VCC), 
+			.FIFO_EN_1(GND), 
+			.P1_0(p1_sig0), 
+			.P1_1(GND), 
+			.P2_0(p2_sig0),
+			.P2_1(GND), 
+			.PIPELINE_RD_0(reg_rd0), 
+			.PIPELINE_RD_1(GND), 
+			.SYNC_FIFO_0(sync_fifo0),
+			.SYNC_FIFO_1(GND), 
+			.WD_1({18{GND}}), 
+			.WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
+			.WIDTH_SELECT1_0(WS1_0), 
+			.WIDTH_SELECT1_1({GND,GND}), 
+			.WIDTH_SELECT2_0(WS2_0),
+			.WIDTH_SELECT2_1({GND,GND}), 
+			.WEN1_0({GND,GND}), 
+			.WEN1_1({GND,GND}), 
+			.Almost_Empty_0(Almost_Empty),
+			.Almost_Empty_1(), 
+			.Almost_Full_0(Almost_Full), 
+			.Almost_Full_1(),
+			.POP_FLAG_0(POP_FLAG), 
+			.POP_FLAG_1(), 
+			.PUSH_FLAG_0(PUSH_FLAG), 
+			.PUSH_FLAG_1(),
+			.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
+			.RD_1(),
+			.SD(SD),
+			.SD_RB1(SD_RB1),
+			.LS(LS),
+			.LS_RB1(LS_RB1),
+			.DS(DS),
+			.DS_RB1(DS_RB1),
+			.TEST1A(GND),
+			.TEST1B(GND),
+			.RMA(4'd0),
+			.RMB(4'd0),
+			.RMEA(GND),
+			.RMEB(GND)
+			);	
 
-  end
-  else if (data_width_int > 16)	begin
+  	end
+  	else if (data_width_int > 16)	begin
 	
-    ram8k_2x1_cell_macro 
-           _TECHMAP_REPLACE_(
-              .A1_0(addr_wr) , 
-							.A1_1(addr_wr), 
-							.A2_0(addr_rd), 
-							.A2_1(addr_rd), 
-							.ASYNC_FLUSH_0(Async_Flush), 
-							.ASYNC_FLUSH_1(GND),
-							.ASYNC_FLUSH_S0(Async_Flush_Sel0), 
-							.ASYNC_FLUSH_S1(Async_Flush_Sel0),
-							.CLK1_0(clk1_sig0), 
-							.CLK1_1(clk1_sig0), 
-							.CLK1EN_0(clk1_sig_en0), 
-							.CLK1EN_1(clk1_sig_en0), 
-							.CLK2_0(clk2_sig0),
-							.CLK2_1(clk2_sig0), 
-							.CLK1S_0(clk1_sig_sel0), 
-							.CLK1S_1(clk1_sig_sel0), 
-							.CLK2S_0(clk2_sig_sel0),
-							.CLK2S_1(clk2_sig_sel0),
-							.CLK2EN_0(clk2_sig_en0), 
-							.CLK2EN_1(clk2_sig_en0), 
-							.CONCAT_EN_0(VCC),
-							.CONCAT_EN_1(GND), 
-							.CS1_0(fifo_clk1_flush_sig0), 
-							.CS1_1(GND), 
-							.CS2_0(fifo_clk2_flush_sig0), 
-							.CS2_1(GND), 
-							.DIR_0(Fifo_Dir),
-							.DIR_1(GND), 
-							.FIFO_EN_0(VCC), 
-							.FIFO_EN_1(GND), 
-							.P1_0(p1_sig0), 
-							.P1_1(GND), 
-							.P2_0(p2_sig0),
-							.P2_1(GND), 
-							.PIPELINE_RD_0(reg_rd0), 
-							.PIPELINE_RD_1(GND), 
-							.SYNC_FIFO_0(sync_fifo0),
-							.SYNC_FIFO_1(GND), 
-							.WD_1({1'b0,in_reg0[31:24],1'b0,in_reg0[23:16]}), 
-							.WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
-							.WIDTH_SELECT1_0(WS1_0), 
-							.WIDTH_SELECT1_1({GND,GND}), 
-							.WIDTH_SELECT2_0(WS2_0),
-							.WIDTH_SELECT2_1({GND,GND}), 
-							.WEN1_0({GND,GND}), 
-							.WEN1_1({GND,GND}), 
-							.Almost_Empty_0(Almost_Empty),
-							.Almost_Empty_1(), 
-							.Almost_Full_0(Almost_Full), 
-							.Almost_Full_1(),
-							.POP_FLAG_0(POP_FLAG), 
-							.POP_FLAG_1(), 
-							.PUSH_FLAG_0(PUSH_FLAG), 
-							.PUSH_FLAG_1(),
-							.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
-							.RD_1({out_par0[3],out_reg0[31:24],out_par0[2],out_reg0[23:16]}),
-							.SD(SD),
-							.SD_RB1(SD_RB1),
-							.LS(LS),
-							.LS_RB1(LS_RB1),
-							.DS(DS),
-							.DS_RB1(DS_RB1),
-							.TEST1A(GND),
-							.TEST1B(GND),
-							.RMA(4'd0),
-							.RMB(4'd0),
-							.RMEA(GND),
-							.RMEB(GND)
-							);
-  end              
+    	    ram8k_2x1_cell_macro 
+               _TECHMAP_REPLACE_(
+              		.A1_0(addr_wr) , 
+			.A1_1(addr_wr), 
+			.A2_0(addr_rd), 
+			.A2_1(addr_rd), 
+			.ASYNC_FLUSH_0(Async_Flush), 
+			.ASYNC_FLUSH_1(GND),
+			.ASYNC_FLUSH_S0(Async_Flush_Sel0), 
+			.ASYNC_FLUSH_S1(Async_Flush_Sel0),
+			.CLK1_0(clk1_sig0), 
+			.CLK1_1(clk1_sig0), 
+			.CLK1EN_0(clk1_sig_en0), 
+			.CLK1EN_1(clk1_sig_en0), 
+			.CLK2_0(clk2_sig0),
+			.CLK2_1(clk2_sig0), 
+			.CLK1S_0(clk1_sig_sel0), 
+			.CLK1S_1(clk1_sig_sel0), 
+			.CLK2S_0(clk2_sig_sel0),
+			.CLK2S_1(clk2_sig_sel0),
+			.CLK2EN_0(clk2_sig_en0), 
+			.CLK2EN_1(clk2_sig_en0), 
+			.CONCAT_EN_0(VCC),
+			.CONCAT_EN_1(GND), 
+			.CS1_0(fifo_clk1_flush_sig0), 
+			.CS1_1(GND), 
+			.CS2_0(fifo_clk2_flush_sig0), 
+			.CS2_1(GND), 
+			.DIR_0(Fifo_Dir),
+			.DIR_1(GND), 
+			.FIFO_EN_0(VCC), 
+			.FIFO_EN_1(GND), 
+			.P1_0(p1_sig0), 
+			.P1_1(GND), 
+			.P2_0(p2_sig0),
+			.P2_1(GND), 
+			.PIPELINE_RD_0(reg_rd0), 
+			.PIPELINE_RD_1(GND), 
+			.SYNC_FIFO_0(sync_fifo0),
+			.SYNC_FIFO_1(GND), 
+			.WD_1({1'b0,in_reg0[31:24],1'b0,in_reg0[23:16]}), 
+			.WD_0({1'b0,in_reg0[15:8],1'b0,in_reg0[7:0]}), 
+			.WIDTH_SELECT1_0(WS1_0), 
+			.WIDTH_SELECT1_1({GND,GND}), 
+			.WIDTH_SELECT2_0(WS2_0),
+			.WIDTH_SELECT2_1({GND,GND}), 
+			.WEN1_0({GND,GND}), 
+			.WEN1_1({GND,GND}), 
+			.Almost_Empty_0(Almost_Empty),
+			.Almost_Empty_1(), 
+			.Almost_Full_0(Almost_Full), 
+			.Almost_Full_1(),
+			.POP_FLAG_0(POP_FLAG), 
+			.POP_FLAG_1(), 
+			.PUSH_FLAG_0(PUSH_FLAG), 
+			.PUSH_FLAG_1(),
+			.RD_0({out_par0[1],out_reg0[15:8],out_par0[0],out_reg0[7:0]}), 
+			.RD_1({out_par0[3],out_reg0[31:24],out_par0[2],out_reg0[23:16]}),
+			.SD(SD),
+			.SD_RB1(SD_RB1),
+			.LS(LS),
+			.LS_RB1(LS_RB1),
+			.DS(DS),
+			.DS_RB1(DS_RB1),
+			.TEST1A(GND),
+			.TEST1B(GND),
+			.RMA(4'd0),
+			.RMB(4'd0),
+			.RMEA(GND),
+			.RMEB(GND)
+			);
+  	end              
 
 endgenerate
 
-  assign DOUT[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
+  	assign DOUT[data_width_int-1 :0]= out_reg0[data_width_int-1 :0];
 
 endmodule

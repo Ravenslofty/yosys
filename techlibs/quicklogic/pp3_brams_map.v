@@ -22,8 +22,8 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 	assign GND = 1'b0;
 
 
-	wire [3:0] B1EN_4 = {4{B1EN}};
-
+	//wire [3:0] B1EN_4 = {4{B1EN}};
+  
 	wire [3:0] DIP, DOP;
 	wire [31:0] DI, DO;
 
@@ -34,7 +34,11 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 	wire[1:0] WS1_1;
 	wire[1:0] WS2_0;
 	wire[1:0] WS2_1;
+  
+  wire[4:0] wen_reg;
 
+assign wen_reg[4:CFG_ENABLE_B]=0;
+assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 	
 	assign A1DATA = DO;
 	assign DI = B1DATA;
@@ -57,7 +61,8 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 
 	generate if (CFG_DBITS <= 16) begin
        	ram8k_2x1_cell_macro #(
-			`include "bram_init_8_16.vh"
+			//`include "bram_init_8_16.vh"
+      `include "bram_init_32.vh"
 		) _TECHMAP_REPLACE_ (			
 			.A1_0(B1ADDR) ,
 			.A1_1(GND),
@@ -103,8 +108,10 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   .WIDTH_SELECT1_1(GND),
 		   .WIDTH_SELECT2_0(WS2_0),
 		   .WIDTH_SELECT2_1(GND),
-			.WEN1_0(B1EN_4[1:0]),
-			.WEN1_1(B1EN_4[3:2]),
+			//.WEN1_0(B1EN_4[1:0]), 
+			//.WEN1_1(B1EN_4[3:2]),
+       .WEN1_0(wen_reg[1:0]), 
+			 .WEN1_1(wen_reg[3:2]),
 		   .Almost_Empty_0(),
 		   .Almost_Empty_1(),
 		   .Almost_Full_0(),
@@ -170,8 +177,10 @@ module \$__QUICKLOGIC_RAMB16K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA,
 		   .WIDTH_SELECT1_1(GND),
 		   .WIDTH_SELECT2_0(WS2_0),
 		   .WIDTH_SELECT2_1(GND),
-			.WEN1_0(B1EN_4[1:0]),
-			.WEN1_1(B1EN_4[3:2]),
+			//.WEN1_0(B1EN_4[1:0]), 
+			//.WEN1_1(B1EN_4[3:2]),
+       .WEN1_0(wen_reg[1:0]), 
+			 .WEN1_1(wen_reg[3:2]),
 		   .Almost_Empty_0(),
 		   .Almost_Empty_1(),
 		   .Almost_Full_0(),
@@ -218,7 +227,7 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 
 	wire [10:0] A1ADDR_11;
 	wire [10:0] B1ADDR_11;
-	wire [1:0] B1EN_2 = {2{B1EN}};
+	//wire [1:0] B1EN_2 = {2{B1EN}};
 
 	wire [1:0] DIP, DOP;
 	wire [15:0] DI, DO;
@@ -230,6 +239,11 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 	wire[1:0] WS1_1;
 	wire[1:0] WS2_0;
 	wire[1:0] WS2_1;
+  
+  wire[2:0] wen_reg;
+
+assign wen_reg[2:CFG_ENABLE_B]=0;
+assign wen_reg[CFG_ENABLE_B-1:0]=B1EN;
 
 
 	assign GND = 1'b0;
@@ -315,7 +329,8 @@ module \$__QUICKLOGIC_RAMB8K (CLK2, CLK3, A1ADDR, A1DATA, A1EN, B1ADDR, B1DATA, 
 		   .WIDTH_SELECT1_1(GND),
 		   .WIDTH_SELECT2_0(WS2_0),
 		   .WIDTH_SELECT2_1(GND),
-		   .WEN1_0(B1EN_2),
+		   //.WEN1_0(B1EN_2), 
+       .WEN1_0(wen_reg[1:0]),
 		   .WEN1_1(GND),
 		   .Almost_Empty_0(),
 		   .Almost_Empty_1(),

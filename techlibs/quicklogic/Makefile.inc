@@ -6,6 +6,7 @@ OBJS += techlibs/quicklogic/pp3_braminit.o
 #OBJS += techlibs/quicklogic/quicklogic_fixcarry.o
 
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap3_ffs_map.v))
+$(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap3_openfpga_ffs_map.v))
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap2_ffs_map.v))
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/pp3_ffs_map.v))
 $(eval $(call add_share_file,share/quicklogic,techlibs/quicklogic/ap3_lut_map.v))

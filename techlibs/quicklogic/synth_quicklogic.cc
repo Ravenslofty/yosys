@@ -63,6 +63,8 @@ struct SynthQuickLogicPass : public ScriptPass {
         log("    -vpr\n");
         log("        generate an output netlist (and BLIF file) suitable for VPR\n");
         log("        (this feature is experimental and incomplete)\n");
+        log("    -openfpga\n");
+        log("        use ff required for running in openfpga flow\n");
         log("\n");
         log("\n");
         log("The following commands are executed by this synthesis command:\n");
@@ -71,7 +73,7 @@ struct SynthQuickLogicPass : public ScriptPass {
     }
 
     string top_opt, edif_file, blif_file, family, currmodule;
-    bool inferAdder, vpr;
+    bool inferAdder, vpr, openfpga;
     bool abcOpt;
 
     void clear_flags() YS_OVERRIDE
@@ -84,6 +86,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         inferAdder = false;
         abcOpt = true;
         vpr=false;
+        openfpga=false;
     }
 
     void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
@@ -138,6 +141,10 @@ struct SynthQuickLogicPass : public ScriptPass {
             }
             if (args[argidx] == "-vpr") {
                 vpr = true;
+                continue;
+            }
+            if (args[argidx] == "-openfpga") {
+                openfpga = true;
                 continue;
             }
             break;
@@ -243,7 +250,15 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("dff2dffe -direct-match $_DFF_*");
             }
 
-            std::string techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
+            std::string techMapArgs = " -map +/quicklogic/" + family;
+            
+            if(family == "ap3" && openfpga) {
+                techMapArgs += "_openfpga_ffs_map.v";
+
+            } else {
+                techMapArgs += "_ffs_map.v";
+            }
+
             run("techmap " + techMapArgs);
             run("opt_expr -mux_undef");
             run("simplemap");

@@ -333,9 +333,13 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("iopadmap -bits -outpad outpad A:P -inpad inpad Q:P -tinoutpad bipad EN:Q:A:P A:top");
             } else {
                 run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
-                run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A");
-                std::string techMapArgs = " -map +/quicklogic/" + family + "_io_map.v -autoproc";
-                run("techmap" + techMapArgs);
+                if (openfpga) {
+                    run("iopadmap -bits -outpad outpad A:Q -inpad inpad Q:A");
+                } else {
+                    run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A");
+                    std::string techMapArgs = " -map +/quicklogic/" + family + "_io_map.v -autoproc";
+                    run("techmap" + techMapArgs);
+                }
             } 
         }
 

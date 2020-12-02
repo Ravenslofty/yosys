@@ -243,7 +243,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 			}
 			run("opt_dff");
 
-			run("dfflegalize -cell $_DFFSRE_PPPP_ 0 -cell $_DLATCH_?_ x -cell $_DLATCHSR_???_ x");
+			run("dfflegalize -cell $_DFFSRE_PPPP_ 0 -cell $_DLATCH_?_ x");
 			std::string techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
 			run("techmap " + techMapArgs);
 			run("opt_expr -mux_undef");

@@ -14,19 +14,19 @@ module \$lut (A, Y);
         end
         else if (WIDTH == 2)
         begin
-            LUT4 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(1'b0), .I2(A[1]), .I3(A[0]));
+            LUT4 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(1'b0), .I2(A[0]), .I3(A[1]));
         end
         else if (WIDTH == 3)
         begin
-            LUT4 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(A[2]), .I2(A[1]), .I3(A[0]));
+            LUT4 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(1'b0), .I1(A[0]), .I2(A[1]), .I3(A[2]));
         end
         else if (WIDTH == 4)
         begin
-            LUT4 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[3]), .I1(A[2]), .I2(A[1]), .I3(A[0]));
+            LUT4 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]), .I2(A[2]), .I3(A[3]));
         end
         else if (WIDTH == 5)
         begin
-            LUT5 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[4]), .I1(A[3]), .I2(A[2]), .I3(A[1]), .I4(A[0]));
+            LUT5 #(.EQN(""),.INIT(LUT)) _TECHMAP_REPLACE_ (.O(Y), .I0(A[0]), .I1(A[1]), .I2(A[2]), .I3(A[3]), .I4(A[4]));
         end else
         begin
             wire _TECHMAP_FAIL_ = 1;

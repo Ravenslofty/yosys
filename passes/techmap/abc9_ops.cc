@@ -626,7 +626,6 @@ void prep_delays(RTLIL::Design *design, bool dff_mode)
 		auto inst_module = design->module(cell->type);
 		log_assert(inst_module);
 
-		auto &t = timing.at(cell->type).required;
 		for (auto &conn : cell->connections_) {
 			auto port_wire = inst_module->wire(conn.first);
 			if (!port_wire)
@@ -638,16 +637,20 @@ void prep_delays(RTLIL::Design *design, bool dff_mode)
 				continue;
 
 			SigSpec O = module->addWire(NEW_ID, GetSize(conn.second));
-			for (int i = 0; i < GetSize(conn.second); i++) {
-				auto d = t.at(TimingInfo::NameBit(conn.first,i), 0);
+
+			for (auto &i : timing.at(cell->type).required) {
+				auto d = i.second.first;
 				if (d == 0)
 					continue;
 
+				auto offset = i.first.offset;
+				auto rhs = cell->getPort(i.first.name);
+
 #ifndef NDEBUG
 				if (ys_debug(1)) {
-					static std::set<std::tuple<IdString,IdString,int>> seen;
-					if (seen.emplace(cell->type, conn.first, i).second) log("%s.%s[%d] abc9_required = %d\n",
-							log_id(cell->type), log_id(conn.first), i, d);
+					static pool<std::pair<IdString,TimingInfo::NameBit>> seen;
+					if (seen.emplace(cell->type, i.first).second) log("%s.%s[%d] abc9_required = %d\n",
+							log_id(cell->type), log_id(i.first.name), offset, d);
 				}
 #endif
 				auto r = box_cache.insert(d);
@@ -656,9 +659,9 @@ void prep_delays(RTLIL::Design *design, bool dff_mode)
 					log_assert(r.first->second.begins_with("$paramod$__ABC9_DELAY\\DELAY="));
 				}
 				auto box = module->addCell(NEW_ID, r.first->second);
-				box->setPort(ID::I, conn.second[i]);
-				box->setPort(ID::O, O[i]);
-				conn.second[i] = O[i];
+				box->setPort(ID::I, rhs[offset]);
+				box->setPort(ID::O, O[offset]);
+				conn.second[offset] = O[offset];
 			}
 		}
 	}
@@ -986,16 +989,16 @@ void prep_box(RTLIL::Design *design)
 				log_assert(GetSize(wire) == 1);
 				auto it = t.find(TimingInfo::NameBit(port_name,0));
 				if (it == t.end())
-					// Assume no connectivity if no setup time
-					ss << "-";
+					// Assume that no setup time means zero
+					ss << 0;
 				else {
-					ss << it->second;
+					ss << it->second.first;
 
 #ifndef NDEBUG
 					if (ys_debug(1)) {
 						static std::set<std::pair<IdString,IdString>> seen;
 						if (seen.emplace(module->name, port_name).second) log("%s.%s abc9_required = %d\n", log_id(module),
-								log_id(port_name), it->second);
+								log_id(port_name), it->second.first);
 					}
 #endif
 				}

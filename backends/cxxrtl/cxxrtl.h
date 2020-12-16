@@ -53,6 +53,20 @@
 #define CXXRTL_ALWAYS_INLINE inline
 #endif
 
+// CXXRTL uses assert() to check for C++ contract violations (which may result in e.g. undefined behavior
+// of the simulation code itself), and CXXRTL_ASSERT to check for RTL contract violations (which may at
+// most result in undefined simulation results).
+//
+// Though by default, CXXRTL_ASSERT() expands to assert(), it may be overridden e.g. when integrating
+// the simulation into another process that should survive violating RTL contracts.
+#ifndef CXXRTL_ASSERT
+#ifndef CXXRTL_NDEBUG
+#define CXXRTL_ASSERT(x) assert(x)
+#else
+#define CXXRTL_ASSERT(x)
+#endif
+#endif
+
 namespace cxxrtl {
 
 // All arbitrary-width values in CXXRTL are backed by arrays of unsigned integers called chunks. The chunk size
@@ -96,8 +110,10 @@ struct value : public expr_base<value<Bits>> {
 	explicit constexpr value(Init ...init) : data{init...} {}
 
 	value(const value<Bits> &) = default;
-	value(value<Bits> &&) = default;
 	value<Bits> &operator=(const value<Bits> &) = default;
+
+	value(value<Bits> &&) = default;
+	value<Bits> &operator=(value<Bits> &&) = default;
 
 	// A (no-op) helper that forces the cast to value<>.
 	CXXRTL_ALWAYS_INLINE
@@ -643,13 +659,19 @@ struct wire {
 	value<Bits> next;
 
 	wire() = default;
-	constexpr wire(const value<Bits> &init) : curr(init), next(init) {}
+	explicit constexpr wire(const value<Bits> &init) : curr(init), next(init) {}
 	template<typename... Init>
 	explicit constexpr wire(Init ...init) : curr{init...}, next{init...} {}
 
+	// Copying and copy-assigning values is natural. If, however, a value is replaced with a wire,
+	// e.g. because a module is built with a different optimization level, then existing code could
+	// unintentionally copy a wire instead, which would create a subtle but serious bug. To make sure
+	// this doesn't happen, prohibit copying and copy-assigning wires.
 	wire(const wire<Bits> &) = delete;
-	wire(wire<Bits> &&) = default;
 	wire<Bits> &operator=(const wire<Bits> &) = delete;
+
+	wire(wire<Bits> &&) = default;
+	wire<Bits> &operator=(wire<Bits> &&) = default;
 
 	template<class IntegerT>
 	CXXRTL_ALWAYS_INLINE
@@ -691,6 +713,9 @@ struct memory {
 
 	memory(const memory<Width> &) = delete;
 	memory<Width> &operator=(const memory<Width> &) = delete;
+
+	memory(memory<Width> &&) = default;
+	memory<Width> &operator=(memory<Width> &&) = default;
 
 	// The only way to get the compiler to put the initializer in .rodata and do not copy it on stack is to stuff it
 	// into a plain array. You'd think an std::initializer_list would work here, but it doesn't, because you can't
@@ -815,7 +840,7 @@ struct metadata {
 
 typedef std::map<std::string, metadata> metadata_map;
 
-// Helper class to disambiguate values/wires and their aliases.
+// Tag class to disambiguate values/wires and their aliases.
 struct debug_alias {};
 
 // This structure is intended for consumption via foreign function interfaces, like Python's ctypes.
@@ -965,12 +990,24 @@ struct debug_items {
 	}
 };
 
+// Tag class to disambiguate module move constructor and module constructor that takes black boxes
+// out of another instance of the module.
+struct adopt {};
+
 struct module {
 	module() {}
 	virtual ~module() {}
 
+	// Modules with black boxes cannot be copied. Although not all designs include black boxes,
+	// delete the copy constructor and copy assignment operator to make sure that any downstream
+	// code that manipulates modules doesn't accidentally depend on their availability.
 	module(const module &) = delete;
 	module &operator=(const module &) = delete;
+
+	module(module &&) = default;
+	module &operator=(module &&) = default;
+
+	virtual void reset() = 0;
 
 	virtual bool eval() = 0;
 	virtual bool commit() = 0;

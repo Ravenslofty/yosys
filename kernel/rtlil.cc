@@ -445,6 +445,27 @@ vector<string> RTLIL::AttrObject::get_hdlname_attribute() const
 	return split_tokens(get_string_attribute(ID::hdlname), " ");
 }
 
+void RTLIL::AttrObject::set_intvec_attribute(RTLIL::IdString id, const vector<int> &data)
+{
+	std::stringstream attrval;
+	for (auto &i : data) {
+		if (attrval.tellp() > 0)
+			attrval << " ";
+		attrval << i;
+	}
+	attributes[id] = RTLIL::Const(attrval.str());
+}
+
+vector<int> RTLIL::AttrObject::get_intvec_attribute(RTLIL::IdString id) const
+{
+	vector<int> data;
+	auto it = attributes.find(id);
+	if (it != attributes.end())
+		for (const auto &s : split_tokens(attributes.at(id).decode_string()))
+			data.push_back(atoi(s.c_str()));
+	return data;
+}
+
 bool RTLIL::Selection::selected_module(RTLIL::IdString mod_name) const
 {
 	if (full_selection)
@@ -1826,7 +1847,7 @@ void RTLIL::Module::remove(const pool<RTLIL::Wire*> &wires)
 			sig.pack();
 			for (auto &c : sig.chunks_)
 				if (c.wire != NULL && wires_p->count(c.wire)) {
-					c.wire = module->addWire(NEW_ID, c.width);
+					c.wire = module->addWire(stringf("$delete_wire$%d", autoidx++), c.width);
 					c.offset = 0;
 				}
 		}

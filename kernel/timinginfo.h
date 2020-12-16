@@ -49,9 +49,9 @@ struct TimingInfo
 
 	struct ModuleTiming
 	{
-		RTLIL::IdString type;
 		dict<BitBit, int> comb;
-		dict<NameBit, int> arrival, required;
+		dict<NameBit, std::pair<int,NameBit>> arrival, required;
+		bool has_inputs;
 	};
 
 	dict<RTLIL::IdString, ModuleTiming> data;
@@ -136,8 +136,12 @@ struct TimingInfo
 					max = 0;
 				}
 				for (const auto &d : dst) {
-					auto &v = t.arrival[NameBit(d)];
-					v = std::max(v, max);
+					auto r = t.arrival.insert(NameBit(d));
+					auto &v = r.first->second;
+					if (r.second || v.first < max) {
+						v.first = max;
+						v.second = NameBit(src);
+					}
 				}
 			}
 			else if (cell->type == ID($specrule)) {
@@ -158,9 +162,21 @@ struct TimingInfo
 					max = 0;
 				}
 				for (const auto &s : src) {
-					auto &v = t.required[NameBit(s)];
-					v = std::max(v, max);
+					auto r = t.required.insert(NameBit(s));
+					auto &v = r.first->second;
+					if (r.second || v.first < max) {
+						v.first = max;
+						v.second = NameBit(dst);
+					}
 				}
+			}
+		}
+
+		for (auto port_name : module->ports) {
+			auto wire = module->wire(port_name);
+			if (wire->port_input) {
+				t.has_inputs = true;
+				break;
 			}
 		}
 

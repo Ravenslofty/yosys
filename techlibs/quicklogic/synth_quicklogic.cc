@@ -67,8 +67,10 @@ struct SynthQuickLogicPass : public ScriptPass {
         log("    -vpr\n");
         log("        generate an output netlist (and BLIF file) suitable for VPR\n");
         log("        (this feature is experimental and incomplete)\n");
+        log("\n");
         log("    -openfpga\n");
-        log("        use ff required for running in openfpga flow\n");
+        log("        to generate blif file compliant with openfpga flow\n");
+        log("        (this feature is experimental and incomplete)\n");
         log("\n");
         log("\n");
         log("The following commands are executed by this synthesis command:\n");
@@ -254,7 +256,9 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("opt_expr -clkinv");
                 run("dff2dffe");
             } else {
-                run("dff2dffe -direct-match $_DFF_*");
+                if(!openfpga) {
+                    run("dff2dffe -direct-match $_DFF_*");
+                }
             }
 
             std::string techMapArgs = " -map +/quicklogic/" + family;
@@ -265,7 +269,9 @@ struct SynthQuickLogicPass : public ScriptPass {
                 techMapArgs += "_ffs_map.v";
             }
 
-            run("techmap " + techMapArgs);
+            if(!openfpga) {
+                run("techmap " + techMapArgs);
+            }
             run("opt_expr -mux_undef");
             run("simplemap");
             if(family == "ap3" || family == "ap2") {
@@ -279,7 +285,9 @@ struct SynthQuickLogicPass : public ScriptPass {
 
         if (check_label("map_luts")) {
             std::string techMapArgs = " -map +/quicklogic/" + family + "_latches_map.v";
-            run("techmap " + techMapArgs);
+            if(!openfpga) {
+                run("techmap " + techMapArgs);
+            }
 
             if (abcOpt) {
                 std::string lutDefs = "+/quicklogic/" + family + "_lutdefs.txt";
@@ -291,14 +299,17 @@ struct SynthQuickLogicPass : public ScriptPass {
                     "dress"; // "dress" to preserve names
 
                 run("abc -script " + abcArgs);
-            }
-            else {
+            } else {
                 if (family == "pp3" || family == "ap") {
                     run("abc -luts 1,2,2,4:8");
                 } else if (family == "ap2") {
                     run("abc -dress -lut 4:5 -dff"); //-luts 5,4,4,1,3
                 } else {
-                    run("abc -dress -lut 4 -dff");
+                    if(openfpga) {
+                        run("abc -lut 4 ");
+                    } else {
+                        run("abc -dress -lut 4 -dff");
+                    }
                 }
             }
 
@@ -307,7 +318,10 @@ struct SynthQuickLogicPass : public ScriptPass {
             //}
 
             techMapArgs = " -map +/quicklogic/" + family + "_ffs_map.v";
-            run("techmap " + techMapArgs);
+            if(!openfpga) {
+                run("techmap " + techMapArgs);
+            }
+
             run("clean");
             if(family != "pp3" && family != "ap") {
                 run("opt_lut -dlogic QL_CARRY:I0=2:I1=1:CI=0");
@@ -366,7 +380,7 @@ struct SynthQuickLogicPass : public ScriptPass {
                 if(vpr && family != "pp3") {
                     run(stringf("opt_clean -purge"),
                             "                                 (vpr mode)");
-                    run(stringf("write_blif -attr -cname -conn -param %s",
+                    run(stringf("write_blif %s",
                                 help_mode ? "<file-name>" : blif_file.c_str()),
                             " (vpr mode)");
 

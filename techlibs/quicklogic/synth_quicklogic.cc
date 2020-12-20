@@ -76,6 +76,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 	bool abcOpt;
 	bool spde;
 	bool abc9;
+	bool inferMult;
 
 	void clear_flags() override
 	{
@@ -88,6 +89,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 		inferAdder = false;
 		abcOpt = true;
 		abc9 = false;
+		inferMult = false;
 	}
 
 	void execute(std::vector<std::string> args, RTLIL::Design *design) override
@@ -128,6 +130,10 @@ struct SynthQuickLogicPass : public ScriptPass {
 			}
 			if (args[argidx] == "-abc9") {
 				abc9 = true;
+				continue;
+			}
+			if (args[argidx] == "-mult") {
+				inferMult = true;
 				continue;
 			}
 			break;
@@ -174,6 +180,16 @@ struct SynthQuickLogicPass : public ScriptPass {
 			run("peepopt");
 			run("pmuxtree");
 			run("opt_clean");
+
+			if (family == "pp3" && inferMult) {
+				//run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=32 -D DSP_B_MAXWIDTH=32  -D DSP_A_MINWIDTH=17 -D DSP_B_MINWIDTH=4 -D DSP_NAME=__MUL32X32 -D DSP_SIGNEDONLY");
+				//run("chtype -set $mul t:$__soft_mul");
+				//run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=32 -D DSP_B_MAXWIDTH=32  -D DSP_A_MINWIDTH=4 -D DSP_B_MINWIDTH=17 -D DSP_NAME=__MUL32X32 -D DSP_SIGNEDONLY");
+				//run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=16 -D DSP_B_MAXWIDTH=16  -D DSP_A_MINWIDTH=4 -D DSP_B_MINWIDTH=4 -D DSP_NAME=__MUL16X16 -D DSP_SIGNEDONLY");
+				run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/quicklogic/pp3_mul_map.v");
+			}
 
 			run("alumacc");
 			run("opt");

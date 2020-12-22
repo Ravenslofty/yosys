@@ -346,16 +346,15 @@ struct SynthQuickLogicPass : public ScriptPass {
             } else {
                 if (!openfpga) {
                     run("clkbufmap -buf $_BUF_ Y:A -inpad ck_buff Q:A");
-                    run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A");
                     string ioTechmapFile;
                     if(infer_dbuff) {
+                        run("iopadmap -bits -outpad $__out_buff A:Q -inpad $__in_buff Q:A");
                         ioTechmapFile = family + "_io_map_dbuff.v";
+                        std::string techMapArgs = " -map +/quicklogic/" + ioTechmapFile + " -autoproc ";
+                        run("techmap" + techMapArgs);
                     } else {
-                        ioTechmapFile = family + "_io_map.v";
-
+                        run("iopadmap -bits -outpad out_buff A:Q -inpad in_buff Q:A");
                     }
-                    std::string techMapArgs = " -map +/quicklogic/" + ioTechmapFile + " -autoproc ";
-                    run("techmap" + techMapArgs);
                 }
             } 
         }

@@ -360,7 +360,9 @@ struct SynthQuickLogicPass : public ScriptPass {
         }
 
         if (check_label("finalize")) {
-            run("splitnets -ports -format ()");
+            if(!openfpga) {
+                run("splitnets -ports -format ()");
+            }
             run("setundef -zero -params -undriven");
             run("hilomap -hicell logic_1 a -locell logic_0 a -singleton A:top");
             run("opt_clean");

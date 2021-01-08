@@ -64,10 +64,6 @@ struct SynthQuickLogicPass : public ScriptPass {
         log("    -infer_dbuff\n");
         log("        Infer d_buff for const driver IO signals (applicable for AP, AP2 & AP3 device)\n");
         log("\n");
-        log("    -vpr\n");
-        log("        generate an output netlist (and BLIF file) suitable for VPR\n");
-        log("        (this feature is experimental and incomplete)\n");
-        log("\n");
         log("    -openfpga\n");
         log("        to generate blif file compliant with openfpga flow\n");
         log("        (this feature is experimental and incomplete)\n");
@@ -79,7 +75,7 @@ struct SynthQuickLogicPass : public ScriptPass {
     }
 
     string top_opt, edif_file, blif_file, family, currmodule;
-    bool inferAdder, vpr, openfpga, infer_dbuff;
+    bool inferAdder, openfpga, infer_dbuff;
     bool abcOpt;
 
     void clear_flags() YS_OVERRIDE
@@ -91,7 +87,6 @@ struct SynthQuickLogicPass : public ScriptPass {
         family = "pp3";
         inferAdder = false;
         abcOpt = true;
-        vpr=false;
         openfpga=false;
         infer_dbuff = false;
     }
@@ -150,12 +145,10 @@ struct SynthQuickLogicPass : public ScriptPass {
                 abcOpt = false;
                 continue;
             }
-            if (args[argidx] == "-vpr") {
-                vpr = true;
-                continue;
-            }
             if (args[argidx] == "-openfpga") {
                 openfpga = true;
+                // pick ap3 related cells in openfpga mode
+                family = "ap3";
                 continue;
             }
             break;
@@ -325,6 +318,14 @@ struct SynthQuickLogicPass : public ScriptPass {
             run("clean");
             if(family != "pp3" && family != "ap") {
                 run("opt_lut -dlogic QL_CARRY:I0=2:I1=1:CI=0");
+            }
+        }
+
+        if (check_label("map_cells")) {
+
+            std::string techMapArgs = " -map +/quicklogic/" + family + "_cells_map.v";
+            if(openfpga && family != "pp3" && family != "ap") {
+                techMapArgs += " -D NO_LUT -map +/quicklogic/" + family + "_lut_map.v";
             } else {
                 techMapArgs += " -map +/quicklogic/" + family + "_lut_map.v";
             }
@@ -362,10 +363,10 @@ struct SynthQuickLogicPass : public ScriptPass {
         if (check_label("finalize")) {
             if(!openfpga) {
                 run("splitnets -ports -format ()");
+                run("setundef -zero -params -undriven");
+                run("hilomap -hicell logic_1 a -locell logic_0 a -singleton A:top");
+                run("opt_clean -purge");
             }
-            run("setundef -zero -params -undriven");
-            run("hilomap -hicell logic_1 a -locell logic_0 a -singleton A:top");
-            run("opt_clean");
             run("check");
             run("autoname");
 			run("clean");
@@ -378,9 +379,9 @@ struct SynthQuickLogicPass : public ScriptPass {
 
         if (check_label("blif")) {
             if (!blif_file.empty() || help_mode) {
-                if(vpr && family != "pp3") {
+                if(openfpga && family != "pp3") {
                     run(stringf("opt_clean -purge"),
-                            "                                 (vpr mode)");
+                            "                                 (openfpga mode)");
                     run(stringf("write_blif %s",
                                 help_mode ? "<file-name>" : blif_file.c_str()),
                             " (vpr mode)");

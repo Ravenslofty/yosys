@@ -42,6 +42,8 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
         wire ci;
         wire co;
 
+        wire [1:0] lut2_out;
+
         // First in chain
         generate if (i == 0) begin
 
@@ -53,34 +55,36 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
                     16'b11100000_00001001;
 
                 // LUT4 configured as 1-bit adder with CI=const
-                soft_adder #(
-                    .LUT(INIT),
-                    .I2_IS_CI(1'b0)
-                ) lut_ci_adder (
-                    .A(AA[i]),
-                    .B(BB[i]),
-                    .I2(1'b0),
-                    .I3(1'b0),
-                    .O(Y[i]),
-                    .CI(),
-                    .CO(ci)
+                frac_lut4 #(
+                    .LUT(INIT)
+                ) lut_inst_1 (
+                    .in({1'b0, 1'b0, BB[i], AA[i]}),
+                    .lut2_out(lut2_out),
+                    .lut4_out(Y[i])
+                );
+                carry_follower carry_inst_1(
+                    .a(lut2_out[1]),
+                    .b(),
+                    .cin(lut2_out[0]),
+                    .cout(ci)
                 );
 
             // CI connected to a non-const driver
             end else begin
 
                 // LUT4 configured as passthrough to drive CI of the next stage
-                soft_adder #(
-                    .LUT(16'b11000000_00001100),
-                    .I2_IS_CI(1'b0)
-                ) lut_ci (
-                    .A(),
-                    .B(CI),
-                    .I2(),
-                    .I3(),
-                    .O(),
-                    .CI(),
-                    .CO(ci)
+                frac_lut4 #(
+                    .LUT(16'b11000000_00001100)
+                ) lut_inst_2 (
+                    .in({1'bx, 1'bx, CI, 1'bx}),
+                    .lut2_out(lut2_out),
+                    .lut4_out()
+                );
+                carry_follower carry_inst_2(
+                    .a(lut2_out[1]),
+                    .b(),
+                    .cin(lut2_out[0]),
+                    .cout(ci)
                 );
             end
 
@@ -97,18 +101,19 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
         generate if ((i == 0 && _TECHMAP_CONSTMSK_CI_ == 0) || (i > 0)) begin
             
             // LUT4 configured as full 1-bit adder
-            soft_adder #(
-                    .LUT(16'b10000110_10010110),
-                    .I2_IS_CI(1'b1)
-                ) lut_adder (
-                    .A(AA[i]),
-                    .B(BB[i]),
-                    .I2(),
-                    .I3(1'b0),
-                    .O(Y[i]),
-                    .CI(ci),
-                    .CO(co)
-                );
+            frac_lut4 #(
+                .LUT(16'b10000110_10010110)
+            ) lut_inst_3 (
+                .in({1'b0, ci, BB[i], AA[i]}),
+                .lut2_out(lut2_out),
+                .lut4_out(Y[i])
+            );
+            carry_follower carry_inst_3(
+                .a(lut2_out[1]),
+                .b(ci),
+                .cin(lut2_out[0]),
+                .cout(co)
+            );
                          
         end else begin
             assign co = ci;
@@ -121,18 +126,19 @@ module _80_quicklogic_alu (A, B, CI, BI, X, Y, CO);
         generate if (i == Y_WIDTH-1) begin
             // LUT4 configured for passing its CI input to output. This should
             // get pruned if the actual CO port is not connected anywhere.
-            soft_adder #(
-                    .LUT(16'b11110000_11110000),
-                    .I2_IS_CI(1'b1)
-                ) lut_co (
-                    .A(),
-                    .B(),
-                    .I2(),
-                    .I3(),
-                    .O(C[i]),
-                    .CI(co),
-                    .CO()
-                );
+            frac_lut4 #(
+                .LUT(16'b11110000_11110000)
+            ) lut_inst_4 (
+                .in({1'bx, 1'bx, co, 1'bx}),
+                .lut2_out(lut2_out),
+                .lut4_out(C[i])
+            );
+            carry_follower carry_inst_4(
+                .a(lut2_out[1]),
+                .b(co),
+                .cin(lut2_out[0]),
+                .cout()
+            );
         // Not last in chain
         end else begin
             assign C[i] = co;

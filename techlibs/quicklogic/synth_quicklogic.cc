@@ -177,7 +177,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             }
             run("read_verilog -lib -specify +/quicklogic/cells_sim.v" + readVelArgs);
             if(openfpga) {
-                run("read_verilog -lib -specify +/quicklogic/abc9_softadder_model.v");
+                //run("read_verilog -lib -specify +/quicklogic/abc9_softadder_model.v");
             }
             run(stringf("hierarchy -check %s", help_mode ? "-top <top>" : top_opt.c_str()));
         }
@@ -398,11 +398,13 @@ struct SynthQuickLogicPass : public ScriptPass {
                 if(openfpga && family != "pp3") {
                     run(stringf("opt_clean -purge"),
                             "                                 (openfpga mode)");
-                    run(stringf("write_blif %s",
-                                help_mode ? "<file-name>" : blif_file.c_str()),
-                            " (vpr mode)");
+		    if (inferAdder) {
+			    run(stringf("write_blif -param %s", help_mode ? "<file-name>" : blif_file.c_str()));
+		    } else {
+			    run(stringf("write_blif %s", help_mode ? "<file-name>" : blif_file.c_str()));
+		    }
 
-                } else {
+		} else {
                     run(stringf("write_blif -attr -param %s %s", top_opt.c_str(), blif_file.c_str()));
                 }
             }

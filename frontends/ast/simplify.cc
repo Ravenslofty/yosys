@@ -1205,6 +1205,11 @@ bool AstNode::simplify(bool const_fold, bool at_zero, bool in_lvalue, int stage,
 				current_block = this;
 				current_block_child = children[i];
 			}
+			if (!in_param_here && type == AST_FCALL) {
+				bool recommend_const_eval = false;
+				bool require_const_eval = has_const_only_constructs(recommend_const_eval);
+				in_param_here = recommend_const_eval || require_const_eval;
+			}
 			if ((type == AST_ALWAYS || type == AST_INITIAL) && children[i]->type == AST_BLOCK)
 				current_top_block = children[i];
 			if (i == 0 && child_0_is_self_determined)
@@ -3170,6 +3175,8 @@ skip_dynamic_range_lvalue_expansion:;
 
 			if (all_args_const) {
 				AstNode *func_workspace = current_scope[str]->clone();
+				func_workspace->str = NEW_ID.str();
+				func_workspace->replace_result_wire_name_in_function(str, func_workspace->str);
 				newNode = func_workspace->eval_const_function(this);
 				delete func_workspace;
 				goto apply_newNode;
@@ -3337,6 +3344,25 @@ skip_dynamic_range_lvalue_expansion:;
 						wire->type = AST_LOCALPARAM;
 						wire->attributes.erase(ID::nosync);
 						wire->children.insert(wire->children.begin(), arg->clone());
+						// args without a range implicitly have width 1
+						if (wire->children.back()->type != AST_RANGE) {
+							// check if this wire is redeclared with an explicit size
+							bool uses_explicit_size = false;
+							for (const AstNode *other_child : decl->children)
+								if (other_child->type == AST_WIRE && child->str == other_child->str
+										&& !other_child->children.empty()
+										&& other_child->children.back()->type == AST_RANGE) {
+									uses_explicit_size = true;
+									break;
+								}
+							if (!uses_explicit_size) {
+								AstNode* range = new AstNode();
+								range->type = AST_RANGE;
+								wire->children.push_back(range);
+								range->children.push_back(mkconst_int(0, true));
+								range->children.push_back(mkconst_int(0, true));
+							}
+						}
 						continue;
 					}
 					AstNode *wire_id = new AstNode(AST_IDENTIFIER);
@@ -3427,7 +3453,14 @@ replace_fcall_later:;
 				if (current_scope[str]->children[0]->isConst())
 					newNode = current_scope[str]->children[0]->clone();
 			}
-			else if (at_zero && current_scope.count(str) > 0 && (current_scope[str]->type == AST_WIRE || current_scope[str]->type == AST_AUTOWIRE)) {
+			else if (at_zero && current_scope.count(str) > 0) {
+				AstNode *node = current_scope[str];
+				if (node->type == AST_WIRE || node->type == AST_AUTOWIRE || node->type == AST_MEMORY)
+					newNode = mkconst_int(0, sign_hint, width_hint);
+			}
+			break;
+		case AST_MEMRD:
+			if (at_zero) {
 				newNode = mkconst_int(0, sign_hint, width_hint);
 			}
 			break;
@@ -3683,12 +3716,12 @@ apply_newNode:
 	return did_something;
 }
 
-static void replace_result_wire_name_in_function(AstNode *node, std::string &from, std::string &to)
+void AstNode::replace_result_wire_name_in_function(const std::string &from, const std::string &to)
 {
-	for (auto &it : node->children)
-		replace_result_wire_name_in_function(it, from, to);
-	if (node->str == from)
-		node->str = to;
+	for (AstNode *child : children)
+		child->replace_result_wire_name_in_function(from, to);
+	if (str == from && type != AST_FCALL && type != AST_TCALL)
+		str = to;
 }
 
 // replace a readmem[bh] TCALL ast node with a block of memory assignments
@@ -3881,7 +3914,7 @@ void AstNode::expand_genblock(std::string index_var, std::string prefix, std::ma
 
 		name_map[child->str] = new_name;
 		if (child->type == AST_FUNCTION)
-			replace_result_wire_name_in_function(child, child->str, new_name);
+			child->replace_result_wire_name_in_function(child->str, new_name);
 		else
 			child->str = new_name;
 		current_scope[new_name] = child;
@@ -4461,15 +4494,31 @@ bool AstNode::detect_latch(const std::string &var)
 
 bool AstNode::has_const_only_constructs(bool &recommend_const_eval)
 {
+	std::set<std::string> visited;
+	return has_const_only_constructs(visited, recommend_const_eval);
+}
+
+bool AstNode::has_const_only_constructs(std::set<std::string>& visited, bool &recommend_const_eval)
+{
+	if (type == AST_FUNCTION || type == AST_TASK)
+	{
+		if (visited.count(str))
+		{
+			recommend_const_eval = true;
+			return false;
+		}
+		visited.insert(str);
+	}
+
 	if (type == AST_FOR)
 		recommend_const_eval = true;
 	if (type == AST_WHILE || type == AST_REPEAT)
 		return true;
 	if (type == AST_FCALL && current_scope.count(str))
-		if (current_scope[str]->has_const_only_constructs(recommend_const_eval))
+		if (current_scope[str]->has_const_only_constructs(visited, recommend_const_eval))
 			return true;
 	for (auto child : children)
-		if (child->AstNode::has_const_only_constructs(recommend_const_eval))
+		if (child->AstNode::has_const_only_constructs(visited, recommend_const_eval))
 			return true;
 	return false;
 }

@@ -6,7 +6,7 @@ CONFIG := clang
 # CONFIG := emcc
 # CONFIG := wasi
 # CONFIG := mxe
-# CONFIG := msys2
+# CONFIG := msys2-32
 # CONFIG := msys2-64
 
 # features (the more the better)
@@ -16,6 +16,7 @@ ENABLE_GLOB := 1
 ENABLE_PLUGINS := 1
 ENABLE_READLINE := 1
 ENABLE_EDITLINE := 0
+ENABLE_GHDL := 0
 ENABLE_VERIFIC := 0
 ENABLE_COVER := 1
 ENABLE_LIBYOSYS := 0
@@ -125,7 +126,7 @@ LDFLAGS += -rdynamic
 LDLIBS += -lrt
 endif
 
-YOSYS_VER := 0.9+3760
+YOSYS_VER := 0.9+3833
 GIT_REV := $(shell cd $(YOSYS_SRC) && git rev-parse --short HEAD 2> /dev/null || echo UNKNOWN)
 OBJS = kernel/version_$(GIT_REV).o
 
@@ -322,7 +323,7 @@ ABCMKARGS += ARCHFLAGS="-DWIN32_NO_DLL -DHAVE_STRUCT_TIMESPEC -fpermissive -w"
 ABCMKARGS += LIBS="lib/x86/pthreadVC2.lib -s" LDFLAGS="-Wl,--allow-multiple-definition" ABC_USE_NO_READLINE=1 CC="/usr/local/src/mxe/usr/bin/i686-w64-mingw32.static-gcc"
 EXE = .exe
 
-else ifeq ($(CONFIG),msys2)
+else ifeq ($(CONFIG),msys2-32)
 CXX = i686-w64-mingw32-g++
 LD = i686-w64-mingw32-g++
 CXXFLAGS += -std=c++11 -Os -D_POSIX_SOURCE -DYOSYS_WIN32_UNIX_DIR
@@ -345,7 +346,7 @@ ABCMKARGS += LIBS="-lpthread -s" ABC_USE_NO_READLINE=0 CC="x86_64-w64-mingw32-gc
 EXE = .exe
 
 else ifneq ($(CONFIG),none)
-$(error Invalid CONFIG setting '$(CONFIG)'. Valid values: clang, gcc, gcc-4.8, emcc, mxe, msys2, msys2-64)
+$(error Invalid CONFIG setting '$(CONFIG)'. Valid values: clang, gcc, gcc-4.8, emcc, mxe, msys2-32, msys2-64)
 endif
 
 ifeq ($(ENABLE_LIBYOSYS),1)
@@ -509,6 +510,14 @@ ifeq ($(ABCEXTERNAL),)
 TARGETS += $(PROGRAM_PREFIX)yosys-abc$(EXE)
 endif
 endif
+endif
+
+ifeq ($(ENABLE_GHDL),1)
+GHDL_PREFIX ?= $(PREFIX)
+GHDL_INCLUDE_DIR ?= $(GHDL_PREFIX)/include
+GHDL_LIB_DIR ?= $(GHDL_PREFIX)/lib
+CXXFLAGS += -I$(GHDL_INCLUDE_DIR) -DYOSYS_ENABLE_GHDL
+LDLIBS += $(GHDL_LIB_DIR)/libghdl.a $(file <$(GHDL_LIB_DIR)/libghdl.link)
 endif
 
 ifeq ($(ENABLE_VERIFIC),1)
@@ -989,13 +998,15 @@ config-mxe: clean
 	echo 'CONFIG := mxe' > Makefile.conf
 	echo 'ENABLE_PLUGINS := 0' >> Makefile.conf
 
-config-msys2: clean
-	echo 'CONFIG := msys2' > Makefile.conf
+config-msys2-32: clean
+	echo 'CONFIG := msys2-32' > Makefile.conf
 	echo 'ENABLE_PLUGINS := 0' >> Makefile.conf
+	echo "PREFIX := $(MINGW_PREFIX)" >> Makefile.conf
 
 config-msys2-64: clean
 	echo 'CONFIG := msys2-64' > Makefile.conf
 	echo 'ENABLE_PLUGINS := 0' >> Makefile.conf
+	echo "PREFIX := $(MINGW_PREFIX)" >> Makefile.conf
 
 config-cygwin: clean
 	echo 'CONFIG := cygwin' > Makefile.conf

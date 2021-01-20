@@ -1,11 +1,11 @@
-(* lib_blackbox *)
+(* abc9_box, lib_whitebox *)
 module carry_follower(
     input a,
     input b,
-	input cin,
-	output cout
+    input cin,
+    output cout
 );
-	//assign cout = ((a ^ b) & cin) | (~(a ^ b) & (a & b)); 
+    assign cout = ((a ^ b) & cin) | (~(a ^ b) & (a & b)); 
 endmodule
 
 (* abc9_lut=1, lib_blackbox *)

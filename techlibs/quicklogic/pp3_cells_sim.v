@@ -133,7 +133,7 @@ module dffec (
     else if (EN) Q <= D;
 endmodule
 
-(* abc9_box, lib_whitebox *)
+(* lib_whitebox *)
 module dffepc (
   output reg Q,
   input D,
@@ -149,8 +149,8 @@ module dffepc (
 
   specify
     if (EN) (posedge CLK => (Q : D)) = 1701; // QCK -> QZ
-    if (CLR) (CLR => Q) = 967; // QRT -> QZ
-    if (PRE) (PRE => Q) = 1252; // QST -> QZ
+    // if (CLR) (CLR => Q) = 967; // QRT -> QZ
+    // if (PRE) (PRE => Q) = 1252; // QST -> QZ
     $setup(D, posedge CLK, 216); // QCK -> QDS
     $setup(EN, posedge CLK, 590); // QCK -> QEN
   endspecify

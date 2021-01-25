@@ -257,6 +257,9 @@ struct SynthQuickLogicPass : public ScriptPass {
 				run("opt_clean");
 				run("opt");
 			}
+
+			// hack to work around upstream bug 2546.
+			run("attrmap -remove init");
 		}
 
 		if (check_label("map_luts")) {

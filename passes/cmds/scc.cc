@@ -157,14 +157,14 @@ struct SccWorker
 
 					for (auto bit : subcell->getPort(ID::SRC))
 					{
-						if (!cell->hasPort(bit.wire->name))
+						if (!bit.wire || !cell->hasPort(bit.wire->name))
 							continue;
 						inputSignals.append(sigmap(cell->getPort(bit.wire->name)));
 					}
 
 					for (auto bit : subcell->getPort(ID::DST))
 					{
-						if (!cell->hasPort(bit.wire->name))
+						if (!bit.wire || !cell->hasPort(bit.wire->name))
 							continue;
 						outputSignals.append(sigmap(cell->getPort(bit.wire->name)));
 					}

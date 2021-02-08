@@ -236,11 +236,11 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("muxcover -mux8 -mux4");
             }
             if(family == "ap3" || family == "ap2") {
-                run("opt_expr -clkinv");
+                run("opt_expr");
                 run("opt -fast");
                 run("opt_expr");
                 run("opt_merge");
-                run("opt_rmdff");
+                run("opt_dff");
                 run("opt_clean");
                 run("opt");
             }
@@ -248,7 +248,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 
         if (check_label("map_ffs")) {
             if (family == "pp3" || family == "ap") {
-                run("opt_expr -clkinv");
+                run("opt_expr");
                 run("dff2dffe");
             } else {
                 if(!openfpga) {
@@ -268,7 +268,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             if(family == "ap3" || family == "ap2") {
                 run("opt_expr");
                 run("opt_merge");
-                run("opt_rmdff");
+                run("opt_dff");
                 run("opt_clean");
                 run("opt");
             }

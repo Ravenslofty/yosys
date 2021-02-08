@@ -137,7 +137,7 @@ static void run_pp3_braminit(Module *module)
 
 struct PP3BRAMInitPass : public Pass {
 	PP3BRAMInitPass() : Pass("pp3_braminit", "PP3: perform RAM Block initialization from file") { }
-	void help() YS_OVERRIDE
+	void help() override
 	{
 		//   |---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|
 		log("\n");
@@ -147,7 +147,7 @@ struct PP3BRAMInitPass : public Pass {
 		log("parameter and converts it into the required INIT attributes\n");
 		log("\n");
 	}
-	void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
+	void execute(std::vector<std::string> args, RTLIL::Design *design) override
 	{
 		log_header(design, "Executing PP3_BRAMINIT pass.\n");
 

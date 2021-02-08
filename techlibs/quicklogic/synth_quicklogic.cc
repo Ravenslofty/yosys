@@ -82,7 +82,7 @@ struct SynthQuickLogicPass : public ScriptPass {
     bool inferAdder, openfpga, infer_dbuff;
     bool abcOpt;
 
-    void clear_flags() YS_OVERRIDE
+    void clear_flags() override
     {
         top_opt = "-auto-top";
         edif_file = "";
@@ -96,25 +96,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         infer_dbuff = false;
     }
 
-    void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
-    {
-        string run_from, run_to;
-        clear_flags();
-
-	std::string top_opt, edif_file, blif_file, family, currmodule;
-	bool inferAdder;
-
-	void clear_flags() YS_OVERRIDE
-	{
-		top_opt = "-auto-top";
-		edif_file = "";
-		blif_file = "";
-		currmodule = "";
-		family = "pp3";
-		inferAdder = false;
-	}
-
-	void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
+	void execute(std::vector<std::string> args, RTLIL::Design *design) override
 	{
 		std::string run_from, run_to;
 		clear_flags();
@@ -175,7 +157,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         log_pop();
     }
 
-    void script() YS_OVERRIDE
+    void script() override
     {
         if (check_label("begin")) {
             std::string readVelArgs;

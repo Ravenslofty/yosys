@@ -72,7 +72,7 @@ void create_ap3_wrapcarry(ap3_wrapcarry_pm &pm)
 
 struct AP3WrapCarryPass : public Pass {
 	AP3WrapCarryPass() : Pass("ap3_wrapcarry", "AP3: wrap carries") { }
-	void help() YS_OVERRIDE
+	void help() override
 	{
 		//   |---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|---v---|
 		log("\n");
@@ -91,7 +91,7 @@ struct AP3WrapCarryPass : public Pass {
 		log("        including restoring their attributes.\n");
 		log("\n");
 	}
-	void execute(std::vector<std::string> args, RTLIL::Design *design) YS_OVERRIDE
+	void execute(std::vector<std::string> args, RTLIL::Design *design) override
 	{
 		bool unwrap = false;
 

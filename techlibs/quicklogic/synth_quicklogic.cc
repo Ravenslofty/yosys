@@ -96,22 +96,22 @@ struct SynthQuickLogicPass : public ScriptPass {
         infer_dbuff = false;
     }
 
-	void execute(std::vector<std::string> args, RTLIL::Design *design) override
-	{
-		std::string run_from, run_to;
-		clear_flags();
+    void execute(std::vector<std::string> args, RTLIL::Design *design) override
+    {
+        std::string run_from, run_to;
+        clear_flags();
 
-		size_t argidx;
-		for (argidx = 1; argidx < args.size(); argidx++)
-		{
-			if (args[argidx] == "-top" && argidx+1 < args.size()) {
-				top_opt = "-top " + args[++argidx];
-				continue;
-			}
-			if (args[argidx] == "-edif" && argidx+1 < args.size()) {
-				edif_file = args[++argidx];
-				continue;
-			}
+        size_t argidx;
+        for (argidx = 1; argidx < args.size(); argidx++)
+        {
+            if (args[argidx] == "-top" && argidx+1 < args.size()) {
+                top_opt = "-top " + args[++argidx];
+                continue;
+            }
+            if (args[argidx] == "-edif" && argidx+1 < args.size()) {
+                edif_file = args[++argidx];
+                continue;
+            }
             if (args[argidx] == "-family" && argidx+1 < args.size()) {
                 family = args[++argidx];
                 continue;
@@ -363,8 +363,8 @@ struct SynthQuickLogicPass : public ScriptPass {
             }
             run("check");
             run("autoname");
-			run("clean");
-		}
+            run("clean");
+        }
 
         if (check_label("edif")) {
             if (!edif_file.empty() || help_mode)

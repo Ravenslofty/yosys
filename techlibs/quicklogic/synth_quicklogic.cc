@@ -220,6 +220,9 @@ struct SynthQuickLogicPass : public ScriptPass {
         
         if (check_label("map_gates")) {
             if(openfpga) {
+                // Using async2sync is valid (if strange) if there is only one clock domain.
+                // If there are multiple clock domains this would cause a miscompile, because
+                // an asynchronous reset is no longer necessarily synchronous to a given clock.
                 run("async2sync");
             }
             if (inferAdder && family != "pp3" && family != "ap") {

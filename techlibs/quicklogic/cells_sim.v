@@ -1,41 +1,65 @@
-//                FZ        FS
+(* abc9_lut=1, lib_whitebox *)
 module LUT1(output O, input I0);
     parameter [1:0] INIT = 0;
     parameter EQN = "(I0)";
+  // These timings are for PolarPro 3E; other families will need updating.
+  specify
+    (I0 => O) = 698; // FS -> FZ
+  endspecify
     assign O = I0 ? INIT[1] : INIT[0];
 endmodule
 
-//               TZ        TSL TAB
+(* abc9_lut=2, lib_whitebox *)
 module LUT2(output O, input I0, I1);
     parameter [3:0] INIT = 4'h0;
 	parameter EQN = "(I0)";
+    // These timings are for PolarPro 3E; other families will need updating.
+    specify
+        (I0 => O) = 1251; // TAB -> TZ
+        (I1 => O) = 1406; // TSL -> TZ
+    endspecify
     assign O = INIT[{I1, I0}];
 endmodule
 
-// O:  TZ
-// I0: TA1 TA2 TB1 TB2
-// I1: TSL
-// I2: TAB
+(* abc9_lut=2, lib_whitebox *)
 module LUT3(output O, input I0, I1, I2);
     parameter [7:0] INIT = 8'h0;
 	parameter EQN = "(I0)";
+    // These timings are for PolarPro 3E; other families will need updating.
+    specify
+        (I0 => O) = 1251; // TAB -> TZ
+        (I1 => O) = 1406; // TSL -> TZ
+        (I2 => O) = 1699; // ('TA1', 'TA2', 'TB1', 'TB2') -> TZ
+    endspecify
     assign O = INIT[{I2, I1, I0}];
 endmodule
 
-// O:  CZ
-// I0: TA1 TA2 TB1 TB2 BA1 BA2 BB1 BB2
-// I1: TSL BSL
-// I2: TAB BAB
-// I3: TBS
+(* abc9_lut=4, lib_whitebox *)
 module LUT4(output O, input I0, I1, I2, I3);
     parameter [15:0] INIT = 16'h0;
     parameter EQN = "(I0)";
+    // These timings are for PolarPro 3E; other families will need updating.
+    specify
+        (I0 => O) = 995;  // TBS -> CZ
+        (I1 => O) = 1437; // ('TAB', 'BAB') -> CZ
+        (I2 => O) = 1593; // ('TSL', 'BSL') -> CZ
+        (I3 => O) = 1887; // ('TA1', 'TA2', 'TB1', 'TB2', 'BA1', 'BA2', 'BB1', 'BB2') -> CZ
+    endspecify
     assign O = INIT[{I3, I2, I1, I0}];
 endmodule
 
+(* abc9_lut=1, lib_whitebox *)
 module LUT5(output O, input I0, I1, I2, I3, I4);
     parameter [31:0] INIT = 32'h0;
     parameter EQN = "(I0)";
+    // These timings are for PolarPro 3E; other families will need updating.
+    specify
+        (I0 => O) = 995;  // TBS -> CZ
+        (I1 => O) = 1437; // ('TAB', 'BAB') -> CZ
+        (I2 => O) = 1593; // ('TSL', 'BSL') -> CZ
+        (I3 => O) = 1887; // ('TA1', 'TA2', 'TB1', 'TB2', 'BA1', 'BA2', 'BB1', 'BB2') -> CZ
+        (I4 => O) = 1887; // ('TA1', 'TA2', 'TB1', 'TB2', 'BA1', 'BA2', 'BB1', 'BB2') -> CZ
+    endspecify
     assign O = INIT[{I4, I3, I2, I1, I0}];
 endmodule
 

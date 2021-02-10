@@ -72,6 +72,9 @@ struct SynthQuickLogicPass : public ScriptPass {
         log("        to generate blif file compliant with openfpga flow\n");
         log("        (this feature is experimental and incomplete)\n");
         log("\n");
+        log("    -noabc9\n");
+        log("        disable using timing-driven synthesis for PP3\n");
+        log("\n");
         log("\n");
         log("The following commands are executed by this synthesis command:\n");
         help_script();
@@ -81,6 +84,7 @@ struct SynthQuickLogicPass : public ScriptPass {
     string top_opt, edif_file, blif_file, family, currmodule, verilog_file;
     bool inferAdder, openfpga, infer_dbuff;
     bool abcOpt;
+    bool abc9;
 
     void clear_flags() override
     {
@@ -94,6 +98,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         abcOpt = true;
         openfpga=false;
         infer_dbuff = false;
+        abc9 = true;
     }
 
     void execute(std::vector<std::string> args, RTLIL::Design *design) override
@@ -140,6 +145,10 @@ struct SynthQuickLogicPass : public ScriptPass {
                 openfpga = true;
                 // pick ap3 related cells in openfpga mode
                 family = "ap3";
+                continue;
+            }
+            if (args[argidx] == "-noabc9") {
+                abc9 = false;
                 continue;
             }
             break;
@@ -284,7 +293,9 @@ struct SynthQuickLogicPass : public ScriptPass {
             if(!openfpga) {
                 run("techmap " + techMapArgs);
 
-                if (abcOpt) {
+                if (abc9 && family == "pp3") {
+                    run("abc9 -maxlut 4");
+                } else if (abcOpt) {
                     std::string lutDefs = "+/quicklogic/" + family + "_lutdefs.txt";
                     rewrite_filename(lutDefs);
 

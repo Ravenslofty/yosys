@@ -298,6 +298,7 @@ struct SynthQuickLogicPass : public ScriptPass {
 
                 if (abc9 && family == "pp3") {
                     run("read_verilog -lib -specify -D pp3 +/quicklogic/abc9_model.v");
+                    run(stringf("techmap -map +/quicklogic/%s_cells_map.v t:$_MUX4_ t:$_MUX8_", family.c_str()));
                     run("techmap -map +/quicklogic/abc9_map.v");
                     run("abc9 -maxlut 4 -dff");
                     run("techmap -map +/quicklogic/abc9_unmap.v");

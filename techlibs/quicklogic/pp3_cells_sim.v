@@ -3,6 +3,9 @@ module inpad(
     (* iopad_external_pin *)
     input P
 );
+    specify
+        (P => Q) = 0;
+    endspecify
     assign Q = P;
 endmodule
 
@@ -11,6 +14,9 @@ module outpad(
     output P,
     input A
 );
+    specify
+        (A => P) = 0;
+    endspecify
     assign P = A;
 endmodule
 
@@ -19,6 +25,9 @@ module ckpad(
     (* iopad_external_pin *)
     input P
 );
+    specify
+        (P => Q) = 0;
+    endspecify
     assign Q = P;
 endmodule
 
@@ -171,22 +180,48 @@ module dffepc(
 endmodule
 
 //                  FZ       FS F2 (F1 TO 0)
+(* abc9_box, lib_whitebox *)
 module AND2I0(output Q, input A, B);
+    specify
+        (A => Q) = 698; // FS -> FZ
+        (B => Q) = 639; // F2 -> FZ
+    endspecify
     assign Q = A ? B : 0;
 endmodule
 
 //                  FZ       FS F1 F2
+(* abc9_box, lib_whitebox *)
 module mux2x0(output Q, input S, A, B);
+    specify
+        (S => Q) = 698; // FS -> FZ
+        (A => Q) = 639; // F1 -> FZ
+        (B => Q) = 639; // F2 -> FZ
+    endspecify
     assign Q = S ? B : A;
 endmodule
 
 //                  FZ       FS F1 F2
+(* abc9_box, lib_whitebox *)
 module mux2x1(output Q, input S, A, B);
+    specify
+        (S => Q) = 698; // FS -> FZ
+        (A => Q) = 639; // F1 -> FZ
+        (B => Q) = 639; // F2 -> FZ
+    endspecify
     assign Q = S ? B : A;
 endmodule
 
 //                  TZ       TSL TABTA1TA2TB1TB2 
+(* abc9_box, lib_whitebox *)
 module mux4x0(output Q, input S0, S1, A, B, C, D);
+    specify
+        (S0 => Q) = 1251; // TAB -> TZ
+        (S1 => Q) = 1406; // TSL -> TZ
+        (A => Q) = 1699;  // TA1 -> TZ
+        (B => Q) = 1687;  // TA2 -> TZ
+        (C => Q) = 1669;  // TB1 -> TZ
+        (D => Q) = 1679;  // TB2 -> TZ
+    endspecify
     assign Q = S1 ? (S0 ? D : C) : (S0 ? B : A);
 endmodule
 
@@ -202,7 +237,21 @@ endmodule
 // G BB1
 // H BB2
 // Q CZ
+(* abc9_box, lib_whitebox *)
 module mux8x0(output Q, input S0, S1, S2, A, B, C, D, E, F, G, H);
+    specify
+        (S0 => Q) = 1593; // ('TSL', 'BSL') -> CZ
+        (S1 => Q) = 1437; // ('TAB', 'BAB') -> CZ
+        (S2 => Q) = 995; // TBS -> CZ
+        (A => Q) = 1887; // TA1 -> CZ
+        (B => Q) = 1873; // TA2 -> CZ
+        (C => Q) = 1856; // TB1 -> CZ
+        (D => Q) = 1860; // TB2 -> CZ
+        (E => Q) = 1714; // BA1 -> CZ
+        (F => Q) = 1773; // BA2 -> CZ
+        (G => Q) = 1749; // BB1 -> CZ
+        (H => Q) = 1723; // BB2 -> CZ
+    endspecify
     assign Q = S2 ? (S1 ? (S0 ? H : G) : (S0 ? F : E)) : (S1 ? (S0 ? D : C) : (S0 ? B : A));
 endmodule
 

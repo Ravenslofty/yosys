@@ -65,6 +65,9 @@ struct SynthQuickLogicPass : public ScriptPass {
         log("    -adder\n");
         log("        use adder cells in output netlist\n");
         log("\n");
+		log("    -mult\n");
+		log("        use multiplier cells in output netlist\n");
+		log("\n");
         log("    -infer_dbuff\n");
         log("        Infer d_buff for const driver IO signals (applicable for AP, AP2 & AP3 device)\n");
         log("\n");
@@ -85,6 +88,7 @@ struct SynthQuickLogicPass : public ScriptPass {
     bool inferAdder, openfpga, infer_dbuff;
     bool abcOpt;
     bool abc9;
+    bool inferMult;
 
     void clear_flags() override
     {
@@ -99,6 +103,7 @@ struct SynthQuickLogicPass : public ScriptPass {
         openfpga=false;
         infer_dbuff = false;
         abc9 = true;
+        inferMult = false;
     }
 
     void execute(std::vector<std::string> args, RTLIL::Design *design) override
@@ -149,6 +154,10 @@ struct SynthQuickLogicPass : public ScriptPass {
             }
             if (args[argidx] == "-noabc9") {
                 abc9 = false;
+                continue;
+            }
+            if (args[argidx] == "-mult") {
+                inferMult = true;
                 continue;
             }
             break;
@@ -204,6 +213,16 @@ struct SynthQuickLogicPass : public ScriptPass {
             run("techmap -map +/cmp2lut.v -D LUT_WIDTH=4");
             run("opt_expr");
             run("opt_clean");
+
+			if (family == "pp3" && inferMult) {
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=32 -D DSP_B_MAXWIDTH=32  -D DSP_A_MINWIDTH=17 -D DSP_B_MINWIDTH=4 -D DSP_NAME=__MUL32X32 -D DSP_SIGNEDONLY");
+				run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=32 -D DSP_B_MAXWIDTH=32  -D DSP_A_MINWIDTH=4 -D DSP_B_MINWIDTH=17 -D DSP_NAME=__MUL32X32 -D DSP_SIGNEDONLY");
+				run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/mul2dsp.v -D DSP_A_MAXWIDTH=16 -D DSP_B_MAXWIDTH=16  -D DSP_A_MINWIDTH=4 -D DSP_B_MINWIDTH=4 -D DSP_NAME=__MUL16X16 -D DSP_SIGNEDONLY");
+				run("chtype -set $mul t:$__soft_mul");
+				run("techmap -map +/quicklogic/pp3_mul_map.v");
+			}
 
             run("alumacc");
             run("opt");

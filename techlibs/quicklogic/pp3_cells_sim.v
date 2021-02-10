@@ -136,6 +136,8 @@ module dffec(
             Q <= D;
 endmodule
 
+// This should be (* abc9_box *) but isn't due to YosysHQ/yosys#2530.
+(* lib_whitebox *)
 module dffepc(
     output reg Q,
     input D,
@@ -149,6 +151,15 @@ module dffepc(
 );
     parameter [0:0] INIT = 1'b0;
     initial Q = INIT;
+
+    // The CLR => Q and PRE => Q paths are commented out due to YosysHQ/yosys#2530.
+    specify
+        if (EN) (posedge CLK => (Q : D)) = 1701; // QCK -> QZ
+        // if (CLR) (CLR => Q) = 967; // QRT -> QZ
+        // if (PRE) (PRE => Q) = 1252; // QST -> QZ
+        $setup(D, posedge CLK, 216); // QCK -> QDS
+        $setup(EN, posedge CLK, 590); // QCK -> QEN
+    endspecify
 
     always @(posedge CLK or posedge CLR or posedge PRE)
         if (CLR)

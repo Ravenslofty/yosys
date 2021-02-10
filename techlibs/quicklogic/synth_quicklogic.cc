@@ -286,6 +286,9 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("opt_clean");
                 run("opt");
             }
+
+			// Work around YosysHQ/yosys#2546 by ensuring there are no wire init attributes left over after flop mapping.
+			run("attrmap -remove init");
         }
 
         if (check_label("map_luts")) {
@@ -294,7 +297,10 @@ struct SynthQuickLogicPass : public ScriptPass {
                 run("techmap " + techMapArgs);
 
                 if (abc9 && family == "pp3") {
-                    run("abc9 -maxlut 4");
+                    run("read_verilog -lib -specify -D pp3 +/quicklogic/abc9_model.v");
+                    run("techmap -map +/quicklogic/abc9_map.v");
+                    run("abc9 -maxlut 4 -dff");
+                    run("techmap -map +/quicklogic/abc9_unmap.v");
                 } else if (abcOpt) {
                     std::string lutDefs = "+/quicklogic/" + family + "_lutdefs.txt";
                     rewrite_filename(lutDefs);

@@ -4687,6 +4687,15 @@ module ram8k_2x1_cell_macro # (
     input [3:0] RMA,
     input [3:0] RMB);
 
+    specify
+        $setup(A1_0, posedge CLK1_0, 0);
+        $setup(A1_1, posedge CLK1_1, 0);
+        $setup(A2_0, posedge CLK2_0, 0);
+        $setup(A2_1, posedge CLK2_1, 0);
+
+        (posedge CLK1_0 => (RD_0 : WD_0)) = 0;
+        (posedge CLK2_0 => (RD_1 : WD_1)) = 0;
+    endspecify
 
 	ram8k_2x1_cell  # (.INIT(INIT),
                      .INIT_FILE(INIT_FILE),

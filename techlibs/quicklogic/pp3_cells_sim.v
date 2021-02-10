@@ -3519,6 +3519,7 @@ parameter data_depth_int = 1024;
   //assign	QB	= O2;
 
 	reg		[`DATAWID-1:0]	ram[DEPTH-1:0];
+    reg		[data_width_int-1 :0]	ram_dum[data_depth_int-1:0];
 	reg		[`DATAWID-1:0]	wrData1;
 	reg		[`DATAWID-1:0]	wrData2;
 	wire	[`DATAWID-1:0]	tmpData1;
@@ -4126,6 +4127,11 @@ module ram_block_8K (
                      aFlushN_1
                      );
 
+parameter [18431:0] INIT = 18432'bx;
+parameter INIT_FILE="init.mem";	
+parameter data_width_int = 16;
+parameter data_depth_int = 1024;
+
   input                   CLK1_0;
   input                   CLK2_0;
   input   [`DATAWID-1:0]  WD_0;
@@ -4398,7 +4404,10 @@ module ram8k_2x1_cell (
         CONCAT_EN_1
       );
 
-
+parameter [18431:0] INIT = 18432'bx;
+parameter INIT_FILE="init.mem";	
+parameter data_width_int = 16;
+parameter data_depth_int = 1024;
 
   input                   CLK1_0;
   input                   CLK2_0;

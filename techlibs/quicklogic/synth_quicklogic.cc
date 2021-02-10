@@ -252,10 +252,12 @@ struct SynthQuickLogicPass : public ScriptPass {
         if (check_label("map_ffs")) {
             if (family == "pp3" || family == "ap") {
                 run("opt_expr");
-                run("dff2dffe");
+                run("dfflegalize -cell $_DFFSRE_PPPP_ 0 -cell $_DLATCH_P_ x");
             } else {
                 if(!openfpga) {
-                    run("dff2dffe -direct-match $_DFF_*");
+                    run("dfflegalize -cell $_DFFSRE_PPPP_ 0 -cell $_DLATCH_P_ x");
+                } else {
+                    run("dfflegalize -cell $_DFF_P_ 0 -cell $_DLATCH_P_ x");
                 }
             }
 
@@ -324,6 +326,7 @@ struct SynthQuickLogicPass : public ScriptPass {
             } else {
                 techMapArgs += " -map +/quicklogic/" + family + "_lut_map.v";
             }
+            run("techmap" + techMapArgs);
             run("clean");
             if (!edif_file.empty()) {
                 run("quicklogic_eqn");
